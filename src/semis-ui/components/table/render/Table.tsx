@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Center as CenteredContent, CircularLoader } from "@dhis2/ui";
+import { Center as Center, CircularLoader } from "@dhis2/ui";
 import RenderHeader from './RenderHeader'
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
@@ -120,9 +120,9 @@ function Table(props: TableRenderProps): React.ReactElement {
                             </>
                         </TableComponent>
                         {(loading) ? (
-                            <CenteredContent className="p-5">
+                            <Center className="p-5">
                                 <CircularLoader />
-                            </CenteredContent>
+                            </Center>
                         ) : null}
                     </div>
                     <Pagination

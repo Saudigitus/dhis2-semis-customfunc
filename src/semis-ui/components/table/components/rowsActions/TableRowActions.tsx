@@ -1,7 +1,7 @@
 import style from './tableRowActions.module.css'
 import IconActions from './components/IconActions';
 import MenuActions from './components/MenuActions';
-import { CircularLoader, Center as CenteredContent } from '@dhis2/ui'
+import { CircularLoader, Center as Center } from '@dhis2/ui'
 import { TableRowActionsProps } from '../../../../types/table/TableRowActionsProps';
 
 
@@ -21,9 +21,9 @@ export default function TableRowActions(props: TableRowActionsProps) {
 
   if (loading) {
     return (
-      <CenteredContent>
+      <Center>
         <CircularLoader small />
-      </CenteredContent>
+      </Center>
     )
   }
 

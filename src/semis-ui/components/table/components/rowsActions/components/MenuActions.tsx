@@ -1,6 +1,6 @@
 import React from 'react';
 import { MoreVert } from '@material-ui/icons';
-import { Center as CenteredContent } from '@dhis2/ui'
+import { Center as Center } from '@dhis2/ui'
 import { RowActionsProps } from '../../../../../types/table/TableRowActionsProps';
 import { ListItemText, Menu, MenuItem, IconButton, ListItemIcon } from '@material-ui/core';
 
@@ -20,7 +20,7 @@ export default function MenuActions(props: RowActionsProps) {
 
   return (
     <React.Fragment>
-      <CenteredContent>
+      <Center>
         <IconButton
           id="basic-button"
           aria-haspopup="true"
@@ -32,7 +32,7 @@ export default function MenuActions(props: RowActionsProps) {
         >
           < MoreVert />
         </IconButton>
-      </CenteredContent>
+      </Center>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}

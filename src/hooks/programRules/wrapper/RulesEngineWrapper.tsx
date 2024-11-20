@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react'
 import FetchEngineVariables from './FetchEngineVariables';
-import { CenteredContent, CircularLoader } from "@dhis2/ui";
+import { Center, CircularLoader } from "@dhis2/ui";
 import { initializeRulesEngine } from '../rules-engine/InitializeRulesEngine';
 import { RulesEngineWrapperProps } from '../../../types/programRules/RulesEngineProps';
 
@@ -15,17 +15,17 @@ export default function RulesEngineWrapper(props: RulesEngineWrapperProps) {
 
     if (loading) {
         return (
-            <CenteredContent>
+            <Center>
                 <CircularLoader />
-            </CenteredContent>
+            </Center>
         )
     }
 
     if (error) {
         return (
-            <CenteredContent>
+            <Center>
                 Something went wrong wen loading the app program rules, please check if you app is already configured.
-            </CenteredContent>
+            </Center>
         )
     }
 
