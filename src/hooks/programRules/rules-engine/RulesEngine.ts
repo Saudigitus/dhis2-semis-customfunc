@@ -17,7 +17,6 @@ export const RulesEngine = (props: RulesEngineProps) => {
     const [updatedVariables, setupdatedVariables] = useState<any>([])
     const orgUnitsGroups = useRecoilValue(OrgUnitsGroupsConfigState)
 
-
     useEffect(() => {
         if (updatedVariables.length === 0) {
             setupdatedVariables([...variables])
@@ -69,12 +68,9 @@ export const RulesEngine = (props: RulesEngineProps) => {
     // apply rules to variables
     function applyRulesToVariable(variable: any) {
         const newProgramRulesFiltered = newProgramRules.filter(x => x.variable === variable.name)
-        // const newProgramRulesFiltered = programStage ? newProgramRules.filter(x => x.programStage === programStage) : newProgramRules.filter(x => x.variable === variable.name)
+        // const newProgramRulesFiltered = !programStage ? newProgramRules.filter(x => x.programStage === programStage) : newProgramRules.filter(x => x.variable === variable.name)
 
-        console.log(Boolean(programStage), newProgramRulesFiltered, newProgramRules)
-        // console.log(newProgramRulesFiltered, variable)
         for (const programRule of newProgramRulesFiltered || []) {
-            // console.log(programRule, 40404)
             try {
                 switch (programRule.type) {
                     case "attribute":

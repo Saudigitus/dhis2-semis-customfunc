@@ -9,7 +9,7 @@ export const RulesEngineForm = (props: any) => {
     const { } = props;
     const [values, setValues] = useState<Record<string, string>>({})
     const formRef: React.MutableRefObject<FormApi<IForm, Partial<IForm>>> = useRef(null);
-    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection })
+    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection, programStage: undefined })
 
     useEffect(() => {
         runRulesEngine(fields)

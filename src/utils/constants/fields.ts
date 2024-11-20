@@ -1,6 +1,6 @@
-import { SectionVariablesProps } from "../../types/programRules/RulesEngineProps";
+import { GroupFormProps } from "dhis2-semis-components";
 
-export const fields : SectionVariablesProps[] = [
+export const fields : GroupFormProps[] = [
     {
         name: "Attributes",
         description: "All attributes",
@@ -332,6 +332,31 @@ export const fields : SectionVariablesProps[] = [
                 "searchable": false,
                 "type": "dataElement",
                 "valueType": "LIST",
+                "visible": true
+            },
+            {
+                "content": "",
+                "disabled": false,
+                "displayInFilters": false,
+                "displayName": "Mathematics",
+                "error": false,
+                "header": "Mathematics",
+                "id": "qPwGZal50yH_aDmsN3qemOA",
+                "initialOptions": {
+                    "optionSet": {}
+                },
+                "key": "qPwGZal50yH_aDmsN3qemOA",
+                "labelName": "Mathematics",
+                "name": "qPwGZal50yH",
+                "options": {
+                    "optionSet": {}
+                },
+                "rawId": "qPwGZal50yH",
+                "pattern": "",
+                "required": true,
+                "searchable": false,
+                "type": "Performance",
+                "valueType": "NUMBER",
                 "visible": true
             },
         ]

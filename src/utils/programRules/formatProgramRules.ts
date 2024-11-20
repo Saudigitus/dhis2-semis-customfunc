@@ -3,7 +3,6 @@ import { ProgramRuleConfig, ProgramRuleVariableConfig } from "../../types/progra
 
 
 export function formatProgramRules(programRules: ProgramRuleConfig[]): FormattedPRulesType[] {
-    console.log(programRules)
     const programRulesResponses: FormattedPRulesType[] = [];
     for (const prules of programRules || []) {
         for (const pRulesAction of prules.programRuleActions) {

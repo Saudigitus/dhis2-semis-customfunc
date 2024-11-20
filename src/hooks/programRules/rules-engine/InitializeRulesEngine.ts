@@ -3,28 +3,32 @@ import { useFormatProgramRules } from "../hooks/useFormatProgramRules"
 import { ProgramRulesFormatedState } from "../../../schema/programRulesFormated"
 import { FormattedPRulesType } from "../../../types/programRules/FormattedPRules"
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables"
-import { getFunctionExpression, getValueTypeVariable, removeSpecialCharacters, replaceConditionVariables } from "./RulesEngine"
+import { getFunctionExpression, removeSpecialCharacters, replaceConditionVariables } from "./RulesEngine"
 
+/**
+ * The program rules values formatter.
+ *
+ * @returns {{ initialize: () => void; }} - A method to trigger the formatter.
+ */
 export const initializeRulesEngine = () => {
     const { programRules } = useFormatProgramRules()
     const { programRulesVariables } = useFormatProgramRulesVariables()
-    const [newProgramRules, setnewProgramRules] = useRecoilState(ProgramRulesFormatedState)
+    const [newProgramRules, setNewProgramRules] = useRecoilState(ProgramRulesFormatedState)
 
     function initialize() {
-        if (programRules?.length > 0 && Object.keys(programRulesVariables)?.length > 0 && newProgramRules?.length === 0) {
+        if (programRules?.length && Object.keys(programRulesVariables)?.length && newProgramRules?.length === 0) {
             const newProgramRule: FormattedPRulesType[] = programRules
                 .map((programRule: FormattedPRulesType) => {
                     return {
                         ...programRule,
                         functionName: getFunctionExpression(programRule.condition),
-                        condition: replaceConditionVariables(removeSpecialCharacters(programRule?.condition), programRulesVariables),
                         data: replaceConditionVariables(removeSpecialCharacters(programRule?.data), programRulesVariables),
+                        condition: replaceConditionVariables(removeSpecialCharacters(programRule?.condition), programRulesVariables),
                     }
                 })
-            setnewProgramRules(newProgramRule)
+            setNewProgramRules(newProgramRule)
         }
     }
 
     return { initialize }
-
 }
