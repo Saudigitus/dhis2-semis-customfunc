@@ -4,12 +4,25 @@ import { WithPadding, GroupForm } from "dhis2-semis-components";
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { RulesType } from "../../types/programRules/RulesEngineProps";
 import { RulesEngine } from '../../hooks/programRules/rules-engine/RulesEngine';
+import useShowAlerts from "../../hooks/commons/useShowAlert";
 
 export const RulesEngineForm = (props: any) => {
     const { } = props;
+    const { hide, show } = useShowAlerts()
     const [values, setValues] = useState<Record<string, string>>({})
     const formRef: React.MutableRefObject<FormApi<IForm, Partial<IForm>>> = useRef(null);
-    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection, programStage: undefined })
+
+    const onError = (message: string) => {
+        show({
+            type: { critical: true },
+            message: `${("Error when running programRules:")} ${message}`,
+        });
+        setTimeout(hide, 5000);
+    }
+
+    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection, programStage: undefined, onError: onError })
+
+
 
     useEffect(() => {
         runRulesEngine(fields)

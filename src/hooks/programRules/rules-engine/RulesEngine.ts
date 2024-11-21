@@ -12,9 +12,44 @@ import { formatKeyValueType as formatValuesToKeyValue } from "../../../utils/pro
 /**
  * The function that implements the program rules.
  * @returns {{ runRulesEngine: (data?: {}) => void; updatedVariables: any; }} The fields modified based on their values and program rule.
- */
+ * 
+ *  @example
+ * Example usage:
+ export const RulesEngineForm = (props: any) => {
+    
+    const onError = (message: string) => {
+        console.error(message)
+    }
+
+    const { runRulesEngine, updatedVariables } = RulesEngine({
+        variables: [] // an array of valid variables,
+          values: { "id": "value", ...},
+        type: RulesType.ProgramStageSection,
+        onError: onError
+    })
+
+    useEffect(() => {
+        runRulesEngine(fields)
+    }, [values])
+
+    return (
+        <Form>
+            updatedVariables?.map((field: any, index: number) => {
+                return (
+                    <GroupForm
+                        key={index}
+                        name={field.section}
+                        fields={field.fields}
+                        description={field.description}
+                    />
+                )
+            })
+        </Form>
+    )
+}
+*/
 export const RulesEngine = (props: RulesEngineProps) => {
-    const { variables = [], values, type, programStage } = props
+    const { variables = [], values, type, programStage, onError } = props
     const formatKeyValueType = formatValuesToKeyValue(variables)
     const getOptionGroups = useRecoilValue(OptionGroupsConfigState)
     const orgUnitsGroups = useRecoilValue(OrgUnitsGroupsConfigState)
@@ -183,8 +218,9 @@ export const RulesEngine = (props: RulesEngineProps) => {
                         }
                         break;
                 }
-            } catch (error) {
-                console.log("Error when running programRules:", error)
+            }
+            catch (error) {
+                onError(error)
             }
 
         }

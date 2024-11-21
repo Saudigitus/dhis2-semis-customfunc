@@ -34,6 +34,11 @@ interface RulesEngineProps {
      * @type {(GroupFormProps[] | CustomAttributeProps[])}
      */
     variables: GroupFormProps[] | CustomAttributeProps[]
+    /**
+     * A method to run when an error occurs.
+     * @type {void}
+     */
+    onError: (message: string) => void
 }
 
 /**
