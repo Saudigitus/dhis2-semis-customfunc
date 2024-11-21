@@ -9,6 +9,12 @@ import { RulesEngineProps, RulesType } from "../../../types/programRules/RulesEn
 import { formatKeyValueType as formatValuesToKeyValue } from "../../../utils/programRules/formatKeyValueType";
 
 
+/**
+ * The function that implementates of program rules.
+ *
+ * @param {RulesEngineProps} props
+ * @returns {{ runRulesEngine: (data?: {}) => void; updatedVariables: any; }}
+ */
 export const RulesEngine = (props: RulesEngineProps) => {
     const { variables = [], values, type, programStage } = props
     const formatKeyValueType = formatValuesToKeyValue(variables)
@@ -194,6 +200,13 @@ export const RulesEngine = (props: RulesEngineProps) => {
 }
 
 // remove scpecial characters
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {(string | undefined)} text
+ * @returns {*}
+ */
 export function removeSpecialCharacters(text: string | undefined) {
     if (typeof text === "string") {
         return text
@@ -210,6 +223,14 @@ export function removeSpecialCharacters(text: string | undefined) {
 }
 
 // replace condition with specific variable
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {(string | undefined)} condition
+ * @param {Record<string, string | undefined>} variables
+ * @returns {*}
+ */
 export function replaceConditionVariables(condition: string | undefined, variables: Record<string, string | undefined>) {
     if (!condition) {
         return condition;
@@ -226,11 +247,27 @@ export function replaceConditionVariables(condition: string | undefined, variabl
 }
 
 // get function name
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {(string | undefined)} condition
+ * @returns {*}
+ */
 export function getFunctionExpression(condition: string | undefined) {
     return condition?.split("d2:")?.[1]?.split("(")[0];
 }
 
 // replace variables with specific value
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {Record<string, any>} values
+ * @param {Record<string, string>} variables
+ * @param {string} variable
+ * @returns {(string | false)}
+ */
 export function replaceEspecifValue(values: Record<string, any>, variables: Record<string, string>, variable: string) {
     // eslint-disable-next-line no-prototype-builtins
     if (values.hasOwnProperty(variables[variable])) {
@@ -242,6 +279,12 @@ export function replaceEspecifValue(values: Record<string, any>, variables: Reco
     return false;
 }
 
+/**
+ * Description placeholder
+ *
+ * @param {string} str
+ * @returns {boolean}
+ */
 function isDate(str: string) {
     // Remove os parênteses se existirem
     if (typeof str === 'string') {
@@ -257,6 +300,13 @@ function isDate(str: string) {
 }
 
 // execute function
+/**
+ * Description placeholder
+ *
+ * @param {(string | undefined)} functionName
+ * @param {(string | undefined)} condition
+ * @returns {*}
+ */
 function executeFunctionName(functionName: string | undefined, condition: string | undefined) {
     switch (functionName) {
         case "hasValue":
@@ -280,6 +330,12 @@ function executeFunctionName(functionName: string | undefined, condition: string
     }
 }
 
+/**
+ * Description placeholder
+ *
+ * @param {string} value
+ * @returns {string}
+ */
 function returnSubstring(value: string) {
     const [stringToRepair, startStr, endStr] = value.replaceAll(")", "").split(",");
     const start = Number(startStr);
@@ -294,6 +350,12 @@ function returnSubstring(value: string) {
 }
 
 //compare values in string
+/**
+ * Description placeholder
+ *
+ * @param {string} condition
+ * @returns {string}
+ */
 function compareLength(condition: string) {
     const results: string[] = [];
     let newcondition = 'false'
@@ -313,6 +375,13 @@ function compareLength(condition: string) {
 }
 
 // get years between dates
+/**
+ * Description placeholder
+ *
+ * @param {(string | undefined)} origin
+ * @param {(string[] | undefined)} condition
+ * @returns {(string | undefined)}
+ */
 function d2YearsBetween(origin: string | undefined, condition: string[] | undefined): string | undefined {
     if (!origin || !condition || condition.length !== 1) {
         return undefined;
@@ -330,6 +399,15 @@ function d2YearsBetween(origin: string | undefined, condition: string[] | undefi
 
 
 // replace varieble by value from condition
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {(string | undefined)} condition
+ * @param {Record<string, any>} [values={}]
+ * @param {*} formatKeyValueType
+ * @returns {string}
+ */
 export function existValue(condition: string | undefined, values: Record<string, any> = {}, formatKeyValueType: any) {
     let localCondition = condition as string;
     let valueToReturn = condition as string
@@ -368,6 +446,14 @@ export function existValue(condition: string | undefined, values: Record<string,
     return localCondition;
 }
 
+/**
+ * Description placeholder
+ *
+ * @export
+ * @param {*} variables
+ * @param {*} variable
+ * @returns {string}
+ */
 export function getValueTypeVariable(variables: any, variable: any) {
     let variableType = ""
     variables?.map((section: any) => {
