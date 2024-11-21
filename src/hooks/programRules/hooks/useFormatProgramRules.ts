@@ -5,7 +5,6 @@ import { formatProgramRules } from "../../../utils/programRules/formatProgramRul
 export function useFormatProgramRules() {
     const programRulesConfigState = useRecoilValue(ProgramRulesConfigState)
 
-    console.log(formatProgramRules(programRulesConfigState), "lena")
     return {
         programRules: formatProgramRules(programRulesConfigState),
     }

@@ -147,7 +147,7 @@ export const RulesEngine = (props: RulesEngineProps) => {
 
                                     } catch (error) {
                                         // In case of error, disable the variable
-                                        console.error("Error evaluating condition:", error);
+                                        onError(error)
                                         variable.disabled = true;
                                     }
                                 }
