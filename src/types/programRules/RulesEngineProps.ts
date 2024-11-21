@@ -1,11 +1,6 @@
-import { GroupFormProps } from "dhis2-semis-components"
-import { CustomAttributeProps } from "../variables/AttributeColumns"
+import { CustomAttributeProps, GroupFormProps } from "dhis2-semis-components"
 
-/**
- * A group of valid program rules types to specify the implementation.
- * @export
- * @enum {string}
- */
+/** A group of valid program rules types to specify the implementation. */
 export enum RulesType {
     ProgramStage = "ProgramStage",
     AttributesSection = "AttributesSection",

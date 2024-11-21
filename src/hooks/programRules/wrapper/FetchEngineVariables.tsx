@@ -5,10 +5,8 @@ import { useGetProgramRulesVariables } from '../hooks/useGetProgramRulesVariable
 
 /**
  * A function to fetch the required variables to run program rules.
- *
- * @export
  * @param {string[]} programs - An array of strings whith the required program ids.
- * @returns {{ error: boolean; loading: boolean; }}
+ * @returns {{loading: boolean; error: boolean; }}
  */
 export default function FetchEngineVariables(programs: string[]) {
     const { loadingPRules, errorPRules } = useGetProgramRules(programs);

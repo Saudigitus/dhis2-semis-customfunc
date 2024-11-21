@@ -7,8 +7,7 @@ import { getFunctionExpression, removeSpecialCharacters, replaceConditionVariabl
 
 /**
  * The program rules values formatter.
- *
- * @returns {{ initialize: () => void; }} - A method to trigger the formatter.
+ * @returns {{ initialize: () => void }} A method for triggering the program rules variable formatter.
  */
 export const initializeRulesEngine = () => {
     const { programRules } = useFormatProgramRules()
