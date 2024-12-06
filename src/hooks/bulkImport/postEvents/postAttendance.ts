@@ -5,7 +5,7 @@ import { splitArrayIntoChunks } from "../../../utils/common/splitArray"
 import { useGetEvents } from "../../events/useGetEvents"
 import useUploadEvents from "../../events/useUploadEvents"
 
-export function postAttendanceValues({ setStats }) {
+export function postAttendanceValues({ setStats }:{ setStats: (args: any) => void }) {
     const { uploadValues } = useUploadEvents()
     const { getEvents, error: eventsError } = useGetEvents()
     let updatedStats: any = { stats: { ignored: 0, created: 0, updated: 0, total: 0 }, errorDetails: [] }
@@ -61,7 +61,7 @@ export function postAttendanceValues({ setStats }) {
             const chunks = splitArrayIntoChunks(values[key], 50);
 
             for (const chunk of chunks) {
-                const response = await uploadValues({ events: chunk }, importMode, importStrategy[key]);
+                const response = await uploadValues({ events: chunk }, importMode, (importStrategy as unknown as any)[key]);
                 updatedStats = importSummary(response, updatedStats)
             }
         }

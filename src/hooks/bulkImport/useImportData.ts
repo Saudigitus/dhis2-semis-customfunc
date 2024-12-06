@@ -14,15 +14,15 @@ export function useImportData() {
     const { postEnrollments } = postEnrollmentData({ setStats })
 
     async function importData(props: importData) {
-        const { excelData, importMode, updating = false, programConfig, seletedSectionDataStore, orgUnit, sectionType } = props
+        const { excelData, importMode, updating = false, programConfig, selectedSectionDataStore, orgUnit, sectionType } = props
         const studentsData = excelData.mapping
         const profile = sectionType.substring(0, 1).toUpperCase() + sectionType.substring(1, sectionType.length) + ' profile'
         const programStages = [
             ...(
                 excelData.module != modules.enrollment ?
-                    seletedSectionDataStore?.[excelData.module as unknown as any].programStage ?
-                        [seletedSectionDataStore?.[excelData.module as unknown as any].programStage] :
-                        seletedSectionDataStore?.[excelData.module as unknown as any].programStages.map((x: any) => x.programStage)
+                    (selectedSectionDataStore as unknown as any)?.[excelData.module].programStage ?
+                        [(selectedSectionDataStore as unknown as any)?.[excelData.module].programStage] :
+                        (selectedSectionDataStore as unknown as any)?.[excelData.module].programStages.map((x: any) => x.programStage)
                     : []
             )
         ]
@@ -31,13 +31,13 @@ export function useImportData() {
 
         switch (excelData.module) {
             case modules.attendance:
-                const { attendanceEvents } = generateAttendanceEventObjects(displayNames, studentsData, seletedSectionDataStore as unknown as DataStoreRecord)
-                const attendanceDisplayName = programConfig.programStages.find(x => x.id === seletedSectionDataStore?.attendance.programStage)?.displayName
+                const { attendanceEvents } = generateAttendanceEventObjects(displayNames, studentsData, selectedSectionDataStore as unknown as DataStoreRecord)
+                const attendanceDisplayName = programConfig.programStages.find(x => x.id === selectedSectionDataStore?.attendance.programStage)?.displayName
 
                 await postAttendance(
                     attendanceEvents,
                     attendanceDisplayName as unknown as string,
-                    seletedSectionDataStore?.attendance.programStage as unknown as string,
+                    selectedSectionDataStore?.attendance.programStage as unknown as string,
                     excelData.mapping,
                     programConfig.id,
                     importMode
@@ -51,12 +51,12 @@ export function useImportData() {
                  * program stages que devem ser ignorados na hora de actualizar e/ou registar um novo estudante
                  */
                 const stagesToIgnore = [
-                    seletedSectionDataStore?.attendance.programStage as unknown as string,
-                    seletedSectionDataStore?.transfer.programStage as unknown as string,
+                    selectedSectionDataStore?.attendance.programStage as unknown as string,
+                    selectedSectionDataStore?.transfer.programStage as unknown as string,
                     ...(updating ? [
-                        seletedSectionDataStore?.["final-result"].programStage as unknown as string,
-                        seletedSectionDataStore?.registration.programStage as unknown as string,
-                        ...(seletedSectionDataStore?.performance.programStages.map(x => x.programStage)) as unknown as string
+                        selectedSectionDataStore?.["final-result"].programStage as unknown as string,
+                        selectedSectionDataStore?.registration.programStage as unknown as string,
+                        ...(selectedSectionDataStore?.performance.programStages.map(x => x.programStage)) as unknown as string
                     ] : [""])
                 ]
 
@@ -75,7 +75,7 @@ export function useImportData() {
                     importMode,
                     programConfig.id,
                     updating,
-                    seletedSectionDataStore as unknown as DataStoreRecord,
+                    selectedSectionDataStore as unknown as DataStoreRecord,
                     orgUnit as unknown as string
                 )
                 break

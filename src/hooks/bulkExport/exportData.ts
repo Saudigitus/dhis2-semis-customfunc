@@ -7,9 +7,9 @@ import { DataStoreRecord } from "../../types/dataStore/DataStoreConfig";
 import { getMetaData } from '../../utils/excelMetadata/getMetadata';
 import { generateHeaders } from './excelHeaders/generateExcelHeaders';
 import { getCommonSheetData } from './useGetCommonData/commonData';
-import { gererateFile } from './dataExporter/fileGenerator';
+import { generateFile } from './dataExporter/fileGenerator';
 import { modules } from '../../types/common/moduleTypes';
-import { genarateEmpttyRows } from '../../utils/common/generateData';
+import { generateEmptyRows } from '../../utils/common/generateData';
 import { generateAndReserveIds } from './generateIds/generateAndReserve';
 
 export function useExportData(props: ExportData) {
@@ -18,7 +18,7 @@ export function useExportData(props: ExportData) {
     const { getEvents, error: eventsError } = useGetEvents()
     const { generate } = generateAndReserveIds()
     const {
-        numberOfEmpyRows = 25,
+        numberOfEmptyRows = 25,
         programConfig,
         fileName,
         isSchoolDay,
@@ -27,18 +27,18 @@ export function useExportData(props: ExportData) {
         module,
         endDate,
         startDate,
-        seletedSectionDataStore = {} as unknown as DataStoreRecord,
+        selectedSectionDataStore = {} as unknown as DataStoreRecord,
         withSocioEconomics = false,
         sectionType,
         empty = false,
         orgUnitName
     } = props
-    const { excelGenerator } = gererateFile({ unavailableDays: isSchoolDay as unknown as (date: Date) => boolean })
+    const { excelGenerator } = generateFile({ unavailableDays: isSchoolDay as unknown as (date: Date) => boolean })
     const { getHeaders } = generateHeaders({
         module,
         programConfig,
         stagesToExport,
-        seletedSectionDataStore,
+        selectedSectionDataStore,
         sectionType,
         withSocioEconomics,
         endDate,
@@ -66,7 +66,7 @@ export function useExportData(props: ExportData) {
                         for (let a = 0; a < stagesToExport.length; a++) {
 
                             await getEvents({
-                                program: seletedSectionDataStore?.program as unknown as string,
+                                program: selectedSectionDataStore?.program as unknown as string,
                                 ...(module === modules.attendance ? {
                                     occurredAfter: startDate,
                                     occurredBefore: endDate
@@ -86,7 +86,7 @@ export function useExportData(props: ExportData) {
                                         module: module,
                                         stageId: stagesToExport[a],
                                         events: events,
-                                        dataStore: seletedSectionDataStore as unknown as DataStoreRecord
+                                        dataStore: selectedSectionDataStore as unknown as DataStoreRecord
                                     })
                                 }
                             }).catch((error) => {
@@ -96,14 +96,14 @@ export function useExportData(props: ExportData) {
                     }
                 }
             } else if (empty && module == modules.enrollment) {
-                let ids = {}
+                let ids: any = {}
 
                 for (const idToGenerate of toGenerate) {
-                    const generatedIds = await generate(numberOfEmpyRows, idToGenerate) as unknown as any
+                    const generatedIds = await generate(numberOfEmptyRows, idToGenerate) as unknown as any
                     ids[idToGenerate] = generatedIds?.result?.map((x: any) => x.value)
                 }
 
-                data = genarateEmpttyRows(numberOfEmpyRows, formatedHeaders, ids, orgUnitName)
+                data = generateEmptyRows(numberOfEmptyRows, formatedHeaders, ids, orgUnitName)
             } else {
                 setError('empty só é aplicavel para o módulo do enrollment!')
             }

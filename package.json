@@ -1,24 +1,33 @@
 {
   "name": "dhis2-semis-functions",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "license": "BSD-3-Clause",
-  "private": true,
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/declarations/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/declarations/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "d2-app-scripts build",
-    "start": "d2-app-scripts start --proxy https://emis.dhis2.org/startracker",
+    "start": "d2-app-scripts start",
     "test": "d2-app-scripts test",
-    "deploy": "d2-app-scripts deploy"
+    "deploy": "d2-app-scripts deploy",
+    "lib": "rimraf ./dist && npx tsc -b"
   },
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.0.0-alpha.23",
+    "@types/node": "^22.10.1",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
     "typescript": "*"
   },
   "dependencies": {
-    "exceljs": "^4.4.0",
-    "file-saver": "^2.0.5",
-    "@types/css-modules": "^1.0.5",
-    "typescript": "*",
     "@date-io/date-fns": "1.3.13",
     "@dhis2-ui/modal": "^9.14.0",
     "@dhis2/app-runtime": "^3.11.2",
@@ -28,16 +37,23 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@material-ui/pickers": "^3.3.11",
+    "@types/css-modules": "^1.0.5",
     "bootstrap": "^5.3.3",
     "classnames": "^2.5.1",
     "date-fns": "2.29.3",
     "dhis2-semis-components": "^0.5.9",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "lottie-react": "^2.4.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.5",
     "react-final-form": "^6.5.9",
     "react-router-dom": "^6.28.0",
     "recoil": "^0.7.7",
+    "typescript": "^5.7.2",
     "xlsx": "^0.18.5"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

@@ -27,11 +27,8 @@ export interface CustomAttributeProps {
             options: OptionsProps[]
         }
     }
-    pattern?: string
-    searchable?: boolean
     error?: boolean
     warning?:boolean
-    content?: string
     key?: any
     description?: string
     displayInFilters?: boolean
@@ -45,14 +42,8 @@ export interface CustomAttributeProps {
             options: OptionsProps[]
         }
     }
-    pattern?: string
-    warning?: boolean
-    searchable?: boolean
-    error?: boolean
     content?: string
-    key?: any
-    description?: string
-    type: VariablesTypes
+    pattern?: string
 }
 
 export interface OptionsProps {

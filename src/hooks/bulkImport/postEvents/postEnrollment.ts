@@ -6,7 +6,7 @@ import useUploadEvents from "../../events/useUploadEvents";
 import { splitArrayIntoChunks } from "../../../utils/common/splitArray";
 import { importSummary } from "../../../utils/common/getImportSummary";
 
-export function postEnrollmentData({ setStats }) {
+export function postEnrollmentData({ setStats }: { setStats: (args: any) => void }) {
     const { getEvents, error: eventsError } = useGetEvents()
     const { uploadValues } = useUploadEvents()
 
@@ -23,7 +23,7 @@ export function postEnrollmentData({ setStats }) {
 
 
         if (updating) {
-            const teis = excelData.map(x => {
+            const teis = excelData.map((x: any) => {
                 return { tei: x.Ids.trackedEntity, orgUnit: x.Ids.orgUnit, enrollment: x.Ids.enrollment }
             })
 

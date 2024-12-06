@@ -145,7 +145,7 @@ export const RulesEngine = (props: RulesEngineProps) => {
                                         // Disable the variable after processing
                                         variable.disabled = true;
 
-                                    } catch (error) {
+                                    } catch (error: any) {
                                         // In case of error, disable the variable
                                         onError(error)
                                         variable.disabled = true;
@@ -219,7 +219,7 @@ export const RulesEngine = (props: RulesEngineProps) => {
                         break;
                 }
             }
-            catch (error) {
+            catch (error: any) {
                 onError(error)
             }
 

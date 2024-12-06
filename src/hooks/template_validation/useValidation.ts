@@ -14,11 +14,11 @@ type Structure = Record<string, Section>;
 
 export class useValidation {
     private module?: modules
-    private configData: any[];
+    private configData: any[] = [];
     private rawData: any;
-    private SheetNames: string[];
+    private SheetNames: string[] = []; //	
     private headerSectionSheets: any
-    private headerVariablesSheets: Record<string, string>[]
+    private headerVariablesSheets: Record<string, string>[] = []
 
     constructor(module?: modules) {
         this.module = module;

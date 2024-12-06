@@ -101,7 +101,7 @@ interface ExportData {
      *
      * @type {DataStoreRecord}
      */
-    seletedSectionDataStore?: DataStoreRecord
+    selectedSectionDataStore?: DataStoreRecord
 
     /**
     * Program configurations
@@ -133,12 +133,12 @@ interface ExportData {
      *
      * @type {?boolean}
      */
-    numberOfEmpyRows?: number
+    numberOfEmptyRows?: number
 }
 
 interface GenerateHeaders {
     stagesToExport: string[]
-    seletedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: DataStoreRecord
     withSocioEconomics: boolean
     programConfig: ProgramConfig
     sectionType: string
@@ -161,7 +161,7 @@ interface excelProps {
 }
 
 
-enum importStrategy {
+export enum importStrategy {
     CREATE = "CREATE_AND_UPDATE",
     UPDATE = "UPDATE"
 }
@@ -175,8 +175,8 @@ interface importData {
     importMode: "VALIDATE" | "COMMIT",
     programConfig: ProgramConfig
     sectionType: string
-    seletedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: DataStoreRecord
     orgUnit?: string
 }
 
-export { ExportData, GenerateHeaders, excelProps, importStrategy, importData }
+export type { ExportData, GenerateHeaders, excelProps, importData }

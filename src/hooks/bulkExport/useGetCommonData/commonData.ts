@@ -4,19 +4,19 @@ import { ExportData } from "../../../types/bulk/bulkOperations"
 
 export function getCommonSheetData(props: ExportData) {
     const { getEvents } = useGetEvents()
-    const { orgUnit, eventFilters = [], seletedSectionDataStore } = props
+    const { orgUnit, eventFilters = [], selectedSectionDataStore } = props
     const { getEnrollmentDetails } = useGetEnrollmentData({ ...props })
 
     async function getData() {
         const events = await getEvents({
-            program: seletedSectionDataStore?.program as unknown as string,
-            programStage: seletedSectionDataStore?.registration.programStage,
+            program: selectedSectionDataStore?.program as unknown as string,
+            programStage: selectedSectionDataStore?.registration.programStage,
             fields: "trackedEntity,enrollment,orgUnit,program",
             filter: eventFilters,
             orgUnit,
             skipPaging: true,
             ouMode: 'SELECTED',
-            order: seletedSectionDataStore?.defaults.defaultOrder
+            order: selectedSectionDataStore?.defaults.defaultOrder
         })
 
         const enrollmentDetails = await getEnrollmentDetails(events)

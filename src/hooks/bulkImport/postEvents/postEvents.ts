@@ -5,7 +5,8 @@ import { importData, importStrategy } from "../../../types/bulk/bulkOperations";
 import { importSummary } from "../../../utils/common/getImportSummary";
 import { ProgramConfig } from "../../../types/programConfig/ProgramConfig";
 
-export function postValues({ setStats }) {
+
+export function postValues({ setStats }: { setStats: (args: any) => void }) {
     const { uploadValues } = useUploadEvents()
     const { getEvents, error: eventsError } = useGetEvents()
     let updatedStats: any = { stats: { ignored: 0, created: 0, updated: 0, total: 0 }, errorDetails: [] }
