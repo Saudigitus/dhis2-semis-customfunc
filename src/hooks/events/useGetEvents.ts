@@ -1,6 +1,7 @@
 import { type EventQueryProps } from "../../types/api/WithoutRegistrationTypes";
 import { useDataEngine } from "@dhis2/app-runtime";
 import { useState } from 'react'
+import useShowAlerts from "../commons/useShowAlert";
 
 const EVENT_QUERY = (queryProps: EventQueryProps) => ({
     results: {
@@ -12,7 +13,7 @@ const EVENT_QUERY = (queryProps: EventQueryProps) => ({
 })
 export function useGetEvents() {
     const engine = useDataEngine();
-    const [error, setError] = useState<any>(null)
+    const { hide, show } = useShowAlerts()
 
     async function getEvents(props: EventQueryProps): Promise<any> {
 
@@ -20,10 +21,11 @@ export function useGetEvents() {
             { ...props }
         )).then((resp: any) => {
             return resp.results?.instances
-        }).catch((resp: any) => {
-            setError(resp)
+        }).catch((error: any) => {
+            show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
+            setTimeout(hide, 5000);
         })
     }
 
-    return { getEvents, error }
+    return { getEvents }
 }
