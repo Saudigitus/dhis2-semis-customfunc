@@ -7,7 +7,7 @@ import { splitArrayIntoChunks } from "../../../utils/common/splitArray";
 import { importSummary } from "../../../utils/common/getImportSummary";
 
 export function postEnrollmentData({ setStats }: { setStats: (args: any) => void }) {
-    const { getEvents, error: eventsError } = useGetEvents()
+    const { getEvents } = useGetEvents()
     const { uploadValues } = useUploadEvents()
 
     async function postEnrollments(

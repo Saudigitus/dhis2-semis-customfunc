@@ -8,7 +8,7 @@ import { ProgramConfig } from "../../../types/programConfig/ProgramConfig";
 
 export function postValues({ setStats }: { setStats: (args: any) => void }) {
     const { uploadValues } = useUploadEvents()
-    const { getEvents, error: eventsError } = useGetEvents()
+    const { getEvents } = useGetEvents()
     let updatedStats: any = { stats: { ignored: 0, created: 0, updated: 0, total: 0 }, errorDetails: [] }
 
     async function postData(
