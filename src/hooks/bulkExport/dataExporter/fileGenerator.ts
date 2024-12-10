@@ -9,7 +9,7 @@ import { modules } from '../../../types/common/moduleTypes';
 import { generateValidationSheet } from '../../../utils/common/generateValidationSheet';
 import { convertNumberToLetter } from '../../../utils/common/convertNumberToLetter';
 
-export function gererateFile({ unavailableDays }: { unavailableDays: (date: Date) => boolean }) {
+export function generateFile({ unavailableDays }: { unavailableDays: (date: Date) => boolean }) {
     const password = '#saudigitus_SEMIS_Export#'
 
     async function excelGenerator(props: excelProps) {

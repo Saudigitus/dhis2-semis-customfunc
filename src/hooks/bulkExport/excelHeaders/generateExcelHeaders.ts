@@ -11,7 +11,7 @@ export function generateHeaders(props: GenerateHeaders) {
         programConfig,
         stagesToExport,
         sectionType,
-        seletedSectionDataStore,
+        selectedSectionDataStore,
         withSocioEconomics,
         isSchoolDay,
         endDate,
@@ -23,20 +23,20 @@ export function generateHeaders(props: GenerateHeaders) {
         let formatedHeaders: any[] = [], toGenerate: any[] = []
         const Profile = (sectionType ?? '').substring(0, 1).toUpperCase() + (sectionType ?? '').substring(1, (sectionType ?? '').length) + ' profile'
         let defaultLockedHeaders: any = [Profile, "Ids"], filters: any = {}
-        const stageHeaders = [seletedSectionDataStore.registration.programStage,
-        ...((withSocioEconomics || module === modules.enrollment) ? [seletedSectionDataStore["socio-economics"].programStage] : []),
+        const stageHeaders = [selectedSectionDataStore.registration.programStage,
+        ...((withSocioEconomics || module === modules.enrollment) ? [selectedSectionDataStore["socio-economics"].programStage] : []),
         ...(module != modules.enrollment ? stagesToExport : [])
         ]
         const colors = {
-            [seletedSectionDataStore.registration.programStage]: "FCE5CD",
-            [seletedSectionDataStore["socio-economics"].programStage]: "FFFFC5"
+            [selectedSectionDataStore.registration.programStage]: "FCE5CD",
+            [selectedSectionDataStore["socio-economics"].programStage]: "FFFFC5"
         }
 
 
         for (const stageId of stageHeaders) {
             const currStage = programConfig?.programStages?.find(x => x.id == stageId)
 
-            if (stageId === seletedSectionDataStore.attendance.programStage) {
+            if (stageId === selectedSectionDataStore.attendance.programStage) {
                 let section: any = {
                     name: currStage?.displayName,
                     headers: [
@@ -51,14 +51,14 @@ export function generateHeaders(props: GenerateHeaders) {
                     ]
                 }
 
-                const statusDe = currStage?.programStageDataElements.find(x => x.dataElement.id === seletedSectionDataStore.attendance.status)
+                const statusDe = currStage?.programStageDataElements.find(x => x.dataElement.id === selectedSectionDataStore.attendance.status)
                 filters["Attendance"] = getFilterLables(statusDe?.dataElement.optionSet.options ?? [])
 
                 formatedHeaders.push(section)
             } else {
                 let schoolKey: any = []
 
-                if (currStage?.id === seletedSectionDataStore.registration.programStage) {
+                if (currStage?.id === selectedSectionDataStore.registration.programStage) {
                     defaultLockedHeaders.push(currStage?.displayName)
                     const defaultHeaders = [
                         {
@@ -98,7 +98,7 @@ export function generateHeaders(props: GenerateHeaders) {
                     }
                 })
 
-                if (currStage?.id === seletedSectionDataStore.registration.programStage)
+                if (currStage?.id === selectedSectionDataStore.registration.programStage)
                     formatedHeaders.unshift(section)
                 else formatedHeaders.push(section)
             }

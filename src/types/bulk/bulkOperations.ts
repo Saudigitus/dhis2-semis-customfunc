@@ -101,7 +101,7 @@ interface ExportData {
      *
      * @type {DataStoreRecord}
      */
-    seletedSectionDataStore?: DataStoreRecord
+    selectedSectionDataStore?: DataStoreRecord
 
     /**
     * Program configurations
@@ -133,12 +133,12 @@ interface ExportData {
      *
      * @type {?boolean}
      */
-    numberOfEmpyRows?: number
+    numberOfEmptyRows?: number
 }
 
 interface GenerateHeaders {
     stagesToExport: string[]
-    seletedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: DataStoreRecord
     withSocioEconomics: boolean
     programConfig: ProgramConfig
     sectionType: string

@@ -10,13 +10,13 @@ export function useGetEnrollmentData(props: ExportData) {
     const { getTei } = useGetTei()
     const { getEvents } = useGetEvents()
     const [error, setError] = useState<boolean>(false)
-    const { orgUnitName, orgUnit, eventFilters, withSocioEconomics, seletedSectionDataStore, module } = props
+    const { orgUnitName, orgUnit, eventFilters, withSocioEconomics, selectedSectionDataStore, module } = props
 
     const getEnrollmentDetails = async (events: any) => {
         const trackedEntityIds = events?.map((x: { trackedEntity: string }) => x.trackedEntity).join(';')
 
         try {
-            return getTei(seletedSectionDataStore?.program as unknown as string, trackedEntityIds)
+            return getTei(selectedSectionDataStore?.program as unknown as string, trackedEntityIds)
                 .then(async (trackedEntityInstance: any) => {
                     let rows: any = []
                     let counter = 0
@@ -27,8 +27,8 @@ export function useGetEnrollmentData(props: ExportData) {
                         let socioEconomiscData: any = []
 
                         const registrationData: any = await getEvents({
-                            program: seletedSectionDataStore?.program as unknown as string,
-                            programStage: seletedSectionDataStore?.registration.programStage as unknown as string,
+                            program: selectedSectionDataStore?.program as unknown as string,
+                            programStage: selectedSectionDataStore?.registration.programStage as unknown as string,
                             ouMode: "SELECTED",
                             fields: "*",
                             filter: eventFilters,
@@ -39,8 +39,8 @@ export function useGetEnrollmentData(props: ExportData) {
 
                         if (withSocioEconomics || module === modules.enrollment) {
                             socioEconomiscData = await getEvents({
-                                program: seletedSectionDataStore?.program as unknown as string,
-                                programStage: seletedSectionDataStore?.['socio-economics'].programStage as unknown as string,
+                                program: selectedSectionDataStore?.program as unknown as string,
+                                programStage: selectedSectionDataStore?.['socio-economics'].programStage as unknown as string,
                                 ouMode: "SELECTED",
                                 fields: "*",
                                 filter: eventFilters,
@@ -61,8 +61,8 @@ export function useGetEnrollmentData(props: ExportData) {
                             enrollment: enrollment,
                             trackedEntity: tei.trackedEntity,
                             ...attributes(tei?.attributes ?? []),
-                            ...dataValues(currEnrollmentRegistration?.dataValues ?? [], seletedSectionDataStore?.registration.programStage as unknown as string),
-                            ...dataValues(currEnrollmentSocioEconomics?.dataValues ?? [], seletedSectionDataStore?.['socio-economics'].programStage as unknown as string),
+                            ...dataValues(currEnrollmentRegistration?.dataValues ?? [], selectedSectionDataStore?.registration.programStage as unknown as string),
+                            ...dataValues(currEnrollmentSocioEconomics?.dataValues ?? [], selectedSectionDataStore?.['socio-economics'].programStage as unknown as string),
                         }]
                     }
 
