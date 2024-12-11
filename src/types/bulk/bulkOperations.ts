@@ -36,11 +36,13 @@ interface ExportData {
     stagesToExport: string[]
 
     /**
-     * The array of filters applied to the headers (class and grid)
+     * The array of filters applied to the headers (class, grade & academic year)
+     * 
+     * dataElementId:operator:value
      *
-     * @type {?any[]}
+     * @type {?string[]}
      */
-    eventFilters?: any[]
+    eventFilters: string[]
 
     /**
      * The selected org unit name
