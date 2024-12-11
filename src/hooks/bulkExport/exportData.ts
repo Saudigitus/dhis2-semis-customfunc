@@ -28,7 +28,7 @@ export function useExportData(props: ExportData) {
         module,
         endDate,
         startDate,
-        selectedSectionDataStore = {} as unknown as DataStoreRecord,
+        selectedSectionDataStore,
         withSocioEconomics = false,
         sectionType,
         empty = false,

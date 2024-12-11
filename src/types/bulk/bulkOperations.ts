@@ -101,7 +101,7 @@ interface ExportData {
      *
      * @type {DataStoreRecord}
      */
-    selectedSectionDataStore?: DataStoreRecord
+    selectedSectionDataStore: DataStoreRecord
 
     /**
     * Program configurations
