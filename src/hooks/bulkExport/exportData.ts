@@ -12,6 +12,7 @@ import { modules } from '../../types/common/moduleTypes';
 import { generateEmptyRows } from '../../utils/common/generateData';
 import { generateAndReserveIds } from './generateIds/generateAndReserve';
 import useShowAlerts from '../commons/useShowAlert';
+import { areParamsValid } from '../../utils/common/validateRequiredParams';
 
 export function useExportData(props: ExportData) {
     const { hide, show } = useShowAlerts()
@@ -46,11 +47,12 @@ export function useExportData(props: ExportData) {
         startDate,
         empty
     })
+    const { msg, valid } = areParamsValid({ ...props })
 
     async function exportData() {
 
-        if (module === modules.attendance && (!isDateFormatValid(endDate as unknown as string) || !isDateFormatValid(startDate as unknown as string))) {
-            show({ message: `Export error: The date format is not correct, the expected date format is: yyyy-MM-dd`, type: { critical: true } })
+        if (!valid) {
+            show({ message: `Export error: ${msg}`, type: { critical: true } })
             setTimeout(hide, 5000);
         } else {
             if (empty && module != modules.enrollment) {
