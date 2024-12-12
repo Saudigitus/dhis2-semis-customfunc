@@ -7,11 +7,13 @@ interface GetTableDataProps {
     order?: string
     orgUnit: string
     baseProgramStage: string
-    secondaryProgramStages?: string[]
     attributeFilters?: string[]
     dataElementFilters?: string[]
-    showAlert: (arg: any) => void
-    hideAlert: () => void
 }
 
-export type { TableDataProps, GetTableDataProps }
+interface GetAttendanceDataProps {
+    tei: string
+    selectedDate: any
+}
+
+export type { TableDataProps, GetTableDataProps, GetAttendanceDataProps }
