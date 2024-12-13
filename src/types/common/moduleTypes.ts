@@ -3,4 +3,5 @@ export enum modules {
     final_result = "final-result",
     enrollment = "enrollment",
     performance = "performance",
+    transfer = "transfer",
 }
