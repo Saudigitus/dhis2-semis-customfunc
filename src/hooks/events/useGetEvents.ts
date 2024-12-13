@@ -1,6 +1,5 @@
 import { type EventQueryProps } from "../../types/api/WithoutRegistrationTypes";
 import { useDataEngine } from "@dhis2/app-runtime";
-import { useState } from 'react'
 import useShowAlerts from "../commons/useShowAlert";
 
 const EVENT_QUERY = (queryProps: EventQueryProps) => ({
@@ -11,6 +10,7 @@ const EVENT_QUERY = (queryProps: EventQueryProps) => ({
         }
     }
 })
+
 export function useGetEvents() {
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()

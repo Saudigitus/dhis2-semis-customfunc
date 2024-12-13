@@ -142,7 +142,9 @@ export function generateFile({ unavailableDays }: { unavailableDays: (date: Date
         metadata.map((row: any) => sheet.addRow(row))
         sheet.protect(password, lock)
 
+        console.log('generating')
         const buf = await workbook.xlsx.writeBuffer()
+        console.log(buf)
         saveAs(new Blob([buf]), fileName + ".xlsx")
     }
 
