@@ -3,7 +3,7 @@ import { useFormatProgramRules } from "../hooks/useFormatProgramRules"
 import { ProgramRulesFormatedState } from "../../../schema/programRulesFormated"
 import { FormattedPRulesType } from "../../../types/programRules/FormattedPRules"
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables"
-import { getFunctionExpression, removeSpecialCharacters, replaceConditionVariables } from "./RulesEngine"
+import { getFunctionExpression, removeSpecialCharacters, replaceConditionVariables } from "../../../utils/programRules/functions"
 
 /**
  * The program rules values formatter.

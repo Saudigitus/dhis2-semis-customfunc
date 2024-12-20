@@ -1,0 +1,32 @@
+import React, { Fragment, useEffect } from 'react';
+import FetchEngineVariables from './FetchEngineVariables';
+import { Center, CircularLoader, NoticeBox } from "@dhis2/ui";
+import { initializeRulesEngine } from '../rules-engine/InitializeRulesEngine';
+/**
+ * A component to initialize all required variables to run program rules.
+ * @param {RulesEngineWrapperProps} props - The wrapper properties.
+ * @returns {*} A JSX component which renders circular loader, error messages or wrapper children based whith the initializer status.
+ */
+export default function RulesEngineWrapper(props) {
+    const { programs } = props;
+    const { initialize } = initializeRulesEngine();
+    const { loading, error } = FetchEngineVariables(programs);
+    useEffect(() => {
+        initialize();
+    }, [loading, error]);
+    if (loading) {
+        return (<Center>
+                <CircularLoader />
+            </Center>);
+    }
+    if (error) {
+        return (<Center>
+                <NoticeBox error title="Error loading Program Rules">
+                    Something went wrong loading the app program rules. Check if your app is already configured.
+                </NoticeBox>
+            </Center>);
+    }
+    return (<Fragment>
+            {props.children}
+        </Fragment>);
+}

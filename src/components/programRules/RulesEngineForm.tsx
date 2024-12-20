@@ -8,8 +8,8 @@ import { RulesEngine } from '../../hooks/programRules/rules-engine/RulesEngine';
 export const RulesEngineForm = (props: any) => {
     const { } = props;
     const [values, setValues] = useState<Record<string, string>>({})
-    const formRef: React.MutableRefObject<FormApi<IForm, Partial<IForm>>> = useRef(null);
-    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection })
+    const formRef: React.RefObject<FormApi<IForm, Partial<IForm>>> = useRef(null);
+    const { runRulesEngine, updatedVariables } = RulesEngine({ variables: fields, values, type: RulesType.ProgramStageSection, onError: (error) => console.log(error) })
 
     useEffect(() => {
         runRulesEngine(fields)

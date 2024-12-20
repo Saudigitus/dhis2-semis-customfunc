@@ -1,5 +1,5 @@
-import { FormattedPRulesType, PRulesTypes } from "../../types/programRules/FormattedPRules";
-import { ProgramRuleConfig, ProgramRuleVariableConfig } from "../../types/programRules/ProgramRulesTypes";
+import { FormattedPRulesType, PRulesTypes } from "../../../types/programRules/FormattedPRules";
+import { ProgramRuleConfig, ProgramRuleVariableConfig } from "../../../types/programRules/ProgramRulesTypes";
 
 
 export function formatProgramRules(programRules: ProgramRuleConfig[]): FormattedPRulesType[] {
