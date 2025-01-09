@@ -16,7 +16,7 @@ const useUrlParams = () => {
         return React.useMemo(() => new URLSearchParams(searchParams), [searchParams])
     }
 
-    const urlParamiters = () => {
+    const urlParameters = () => {
         return {
             school: useQuery().get('school'),
             schoolName: useQuery().get('schoolName'),
@@ -29,6 +29,6 @@ const useUrlParams = () => {
             programStage: useQuery().get('programStage'),
         }
     }
-    return { add, remove, useQuery, urlParamiters }
+    return { add, remove, useQuery, urlParameters }
 }
 export { useUrlParams }
