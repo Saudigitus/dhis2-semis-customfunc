@@ -42,6 +42,7 @@ interface FormatResponseRowsProps {
         isRegistrationEvent?: boolean
     }[]
     additionalInstances?: any[]
+    options: any
 }
 
 type RowsDataProps = Record<string, string | number | boolean | any>;

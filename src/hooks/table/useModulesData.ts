@@ -6,6 +6,9 @@ import { GetTableDataProps } from "../../types/table/tableDataProps";
 import { formatRowsData } from "../../utils/table/rows/formatRowsData";
 import { FormatResponseRowsProps } from "src/types/common/FormatRowsDataProps";
 import useShowAlerts from "../commons/useShowAlert";
+import { useGetOptions } from "../options/useGetOptions";
+
+
 
 export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
     results: {
@@ -30,8 +33,9 @@ export const TEI_QUERY = (queryProps: TeiQueryProps) => ({
 export function useModulesData() {
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
+    const { getOptions } = useGetOptions()
 
-    async function getRegistrationData( tableDataProps: GetTableDataProps) {
+    async function getRegistrationData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
 
         const eventsResults = await engine.query(EVENT_QUERY({
@@ -44,20 +48,20 @@ export function useModulesData() {
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get events")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as EventQueryResults;
+        })).catch((error) => {
+            show({
+                message: `${("Could not get events")}: ${error.message}`,
+                type: { critical: true }
+            });
+            setTimeout(hide, 5000);
+        }) as unknown as EventQueryResults;
 
-            const registrationTrackedEntities = eventsResults?.results?.instances?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
+        const registrationTrackedEntities = eventsResults?.results?.instances?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
 
         return { registrationEvents: eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'], registrationTrackedEntities };
     }
 
-    async function getTEIData( tableDataProps: GetTableDataProps, trackedEntity: string) {
+    async function getTEIData(tableDataProps: GetTableDataProps, trackedEntity: string) {
         const { pageSize, program, orgUnit } = tableDataProps;
 
         const teiResults = trackedEntity?.length
@@ -74,13 +78,14 @@ export function useModulesData() {
                 setTimeout(hide, 5000);
             }) as unknown as TeiQueryResults
             : { results: { instances: [] } } as unknown as TeiQueryResults
-            
+
 
         return teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances']
     }
 
-    async function getBasicData( tableDataProps: GetTableDataProps) {
+    async function getBasicData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+        const options = await getOptions()
 
         const eventsResults = await engine.query(EVENT_QUERY({
             ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
@@ -92,13 +97,13 @@ export function useModulesData() {
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get events")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as EventQueryResults;
+        })).catch((error) => {
+            show({
+                message: `${("Could not get events")}: ${error.message}`,
+                type: { critical: true }
+            });
+            setTimeout(hide, 5000);
+        }) as unknown as EventQueryResults;
 
         const registrationTrackedEntities = eventsResults?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
@@ -116,14 +121,14 @@ export function useModulesData() {
                 setTimeout(hide, 5000);
             }) as unknown as TeiQueryResults
             : { results: { instances: [] } } as unknown as TeiQueryResults
-            
+
         const registrationInstances = eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'];
         const teiInstances = teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances'];
 
-        return { 
+        return {
             registrationInstances,
             teiInstances,
-            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances })
+            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances, options })
         }
     }
 
