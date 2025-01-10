@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom'
 import React from 'react'
 
-const useParams = () => {
+const useUrlParams = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const add = (key: string, value: string) => {
@@ -16,7 +16,7 @@ const useParams = () => {
         return React.useMemo(() => new URLSearchParams(searchParams), [searchParams])
     }
 
-    const urlParamiters = () => {
+    const urlParameters = () => {
         return {
             school: useQuery().get('school'),
             schoolName: useQuery().get('schoolName'),
@@ -29,6 +29,6 @@ const useParams = () => {
             programStage: useQuery().get('programStage'),
         }
     }
-    return { add, remove, useQuery, urlParamiters }
+    return { add, remove, useQuery, urlParameters }
 }
-export { useParams }
+export { useUrlParams }
