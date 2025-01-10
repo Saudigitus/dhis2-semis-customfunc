@@ -1,8 +1,3 @@
-export const fieldsType = {
-    programStage: "executionDateLabel,programStageDataElements[displayInReports,compulsory,dataElement[id,displayName,valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]],programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]",
-    programStageSection: "executionDateLabel,programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]"
-}
-
 interface EventQueryProps {
     page?: number
     pageSize?: number
@@ -19,11 +14,6 @@ interface EventQueryProps {
     fields?: string
     skipPaging?: boolean
 
-}
-
-interface GeTDataElementsProps {
-    programStageId: string
-    type?: keyof typeof fieldsType
 }
 
 interface DataValuesProps {
@@ -67,4 +57,4 @@ interface CreateEventProps {
 }
 
 
-export type { EventQueryProps, GeTDataElementsProps, EventQueryResults, DataValuesProps, TransferQueryResults, AttendanceQueryResults, CreateEventProps }
+export type { EventQueryProps, EventQueryResults, DataValuesProps, TransferQueryResults, AttendanceQueryResults, CreateEventProps }
