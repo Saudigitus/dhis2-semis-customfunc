@@ -5,7 +5,7 @@ import { DataStoreRecord } from 'src/types/dataStore/DataStoreConfig';
 import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
 import { formatResponseAttributes, formatResponseDataElements } from 'src/utils/form';
 
-export default function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: ProgramConfig, module: modules) {
+export function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: ProgramConfig, module: modules) {
     const [formData, setFormData] = useState<any[]>([])
 
     const buildForm = () => {
