@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { modules } from 'src/types/common/moduleTypes';
-import { ProgramConfig } from 'src/types/programConfig/ProgramConfig';
-import { DataStoreRecord } from 'src/types/dataStore/DataStoreConfig';
+import { modules } from '../../types/common/moduleTypes';
+import { ProgramConfig } from '../../types/programConfig/ProgramConfig';
+import { DataStoreRecord } from '../../types/dataStore/DataStoreConfig';
 import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
-import { formatResponseAttributes } from 'src/utils/attributes/formatResponseAttributes';
-import { formatResponseDataElements } from 'src/utils/dataElements/formatResponseDataElements';
+import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
+import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 
 export function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: ProgramConfig, module: modules) {
     const [formData, setFormData] = useState<any[]>([])

@@ -1,6 +1,6 @@
 import { useDataQuery } from "@dhis2/app-runtime";
-import { DataElementFieldType, GetDataElementsProps } from "src/types/events/eventsProps";
-import { formatResponseDataElements } from "src/utils/dataElements/formatResponseDataElements";
+import { DataElementFieldType, GetDataElementsProps } from "../../types/events/eventsProps";
+import { formatResponseDataElements } from "../../utils/dataElements/formatResponseDataElements";
 
 const DATA_ELEMENTS_QUERY = (id: string, type: keyof typeof DataElementFieldType) => ({
   result: {

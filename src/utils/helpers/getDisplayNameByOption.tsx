@@ -1,4 +1,4 @@
-import { ProgramConfig } from "src/types/programConfig/ProgramConfig";
+import { ProgramConfig } from "../../types/programConfig/ProgramConfig";
 
 interface defaultProps {
     value: string
