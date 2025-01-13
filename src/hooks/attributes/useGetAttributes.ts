@@ -1,5 +1,5 @@
-import { ProgramConfig } from "src/types/programConfig/ProgramConfig";
-import { formatResponseAttributes } from "src/utils/attributes/formatResponseAttributes";
+import { ProgramConfig } from "../../types/programConfig/ProgramConfig";
+import { formatResponseAttributes } from "../../utils/attributes/formatResponseAttributes";
 
 function useGetAttributes(programConfigState: ProgramConfig) {
     const formattedAttributes = formatResponseAttributes(programConfigState) || [];

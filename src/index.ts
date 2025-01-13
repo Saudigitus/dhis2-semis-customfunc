@@ -13,6 +13,7 @@ import { useGetPatternCode } from "./hooks/tei/useGetPatternCode"
 import { useGetAttributes } from "./hooks/attributes/useGetAttributes"
 import { useGetDataElements } from "./hooks/dataElements/useGetDataElements"
 import { removeFalseKeys } from "./utils/form/removeFalseKeys"
+import { useSearchTei } from "./hooks/tei/useSearchTei"
 
 
 export {
@@ -30,5 +31,6 @@ export {
     useGetAttributes,
     useGetDataElements,
     useGetPatternCode,
-    RulesEngineWrapper
+    RulesEngineWrapper,
+    useSearchTei
 }
