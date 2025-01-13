@@ -4,7 +4,7 @@ import { EventQueryProps, EventQueryResults } from "../../types/events/eventsPro
 import { TeiQueryProps, TeiQueryResults } from "../../types/tei/teiProps";
 import { GetTableDataProps } from "../../types/table/tableDataProps";
 import { formatRowsData } from "../../utils/table/rows/formatRowsData";
-import { FormatResponseRowsProps } from "src/types/common/FormatRowsDataProps";
+import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
 import useShowAlerts from "../commons/useShowAlert";
 
 export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
