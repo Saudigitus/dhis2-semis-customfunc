@@ -19,7 +19,7 @@ export function formatResponseDataElements(programStageObject: ProgramStageConfi
             pattern: "",
             visible: true,
             description: programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement.displayName,
-            searchable: programStageDataElement.dataElement.displayInReports,
+            searchable: programStageDataElement.dataElement.displayInReports as unknown as boolean,
             error: false,
             programStage: programStageObject.id,
             content: "",

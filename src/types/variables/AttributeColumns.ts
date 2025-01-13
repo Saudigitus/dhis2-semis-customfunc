@@ -9,7 +9,7 @@ export enum VariablesTypes {
 
 export interface CustomAttributeProps {
     id: string
-    rawId?:string
+    rawId?: string
     displayName: string
     header: string
     required: boolean
@@ -28,7 +28,7 @@ export interface CustomAttributeProps {
         }
     }
     error?: boolean
-    warning?:boolean
+    warning?: boolean
     key?: any
     description?: string
     displayInFilters?: boolean
@@ -45,6 +45,7 @@ export interface CustomAttributeProps {
     }
     content?: string
     pattern?: string
+    searchable: boolean
 }
 
 export interface OptionsProps {
