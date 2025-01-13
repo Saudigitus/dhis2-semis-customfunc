@@ -3,7 +3,8 @@ import { modules } from 'src/types/common/moduleTypes';
 import { ProgramConfig } from 'src/types/programConfig/ProgramConfig';
 import { DataStoreRecord } from 'src/types/dataStore/DataStoreConfig';
 import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
-import { formatResponseAttributes, formatResponseDataElements } from 'src/utils/form';
+import { formatResponseAttributes } from 'src/utils/attributes/formatResponseAttributes';
+import { formatResponseDataElements } from 'src/utils/dataElements/formatResponseDataElements';
 
 export function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: ProgramConfig, module: modules) {
     const [formData, setFormData] = useState<any[]>([])
