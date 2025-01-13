@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { modules } from '../../types/common/moduleTypes';
 import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
-import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
 import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 import { BuildFormType } from 'src/types/form/BuildForm';
+import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
 
 export function useBuildForm({dataStoreData, programData, module}: BuildFormType) {
     const [formData, setFormData] = useState<any[]>([])
