@@ -35,6 +35,7 @@ export interface CustomAttributeProps {
     type: VariablesTypes
     trackedEntity?: string
     placeholder?: string
+    searchable?: boolean
     unique?: boolean
     initialOptions: {
         optionSet: {
