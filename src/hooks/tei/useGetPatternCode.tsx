@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDataEngine } from "@dhis2/app-runtime"
-import { CustomAttributeProps } from "../../types/variables/AttributeColumns";
+import { CustomAttributeProps } from "dhis2-semis-components";
 import { GeneratedCodeType, PatternCodeQueryResults } from "../../types/api/GeneratedCodeTypes";
 
 const TEI_ATTRIBUTES: any = {

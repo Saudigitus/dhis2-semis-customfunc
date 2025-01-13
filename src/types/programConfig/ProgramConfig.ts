@@ -1,5 +1,5 @@
+import { OptionsProps } from "dhis2-semis-components"
 import { ProgramStageConfig } from "../programStageConfig/ProgramStageConfig"
-import { OptionsProps } from "../variables/AttributeColumns"
 
 interface ProgramConfig {
     displayName: string
