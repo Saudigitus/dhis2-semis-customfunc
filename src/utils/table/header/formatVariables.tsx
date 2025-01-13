@@ -3,22 +3,22 @@ import { Attribute } from "../../../types/generated/models";
 import { VariablesTypes } from "../../../types/variables/AttributeColumns";
 
 interface FormatVariablesProps {
-    variables: ProgramConfig[0]["programTrackedEntityAttributes"][]  | string[]
+    variables: ProgramConfig[0]["programTrackedEntityAttributes"][] | string[]
     type: VariablesTypes
     selectedDate?: any
 }
-export function formatVariables({ variables, type } : FormatVariablesProps) {
-    if(variables?.length) {
+export function formatVariables({ variables, type }: FormatVariablesProps) {
+    if (variables?.length) {
         switch (type) {
             case VariablesTypes.Attribute:
                 return formatAttributeVariables(variables);
 
             case VariablesTypes.DataElement:
                 return formatDataElementVariables(variables, VariablesTypes.DataElement);
-            
+
             case VariablesTypes.Default:
                 return formatDefaultColumns(variables as string[]);
-        
+
             default:
                 return [];
         }
@@ -40,12 +40,11 @@ export const formatAttributeVariables = (programTrackedEntityAttributes: any[]) 
             visible: item.displayInList,
             disabled: false,
             pattern: '',
-            searchable: false,
+            searchable: item.searchable,
             error: false,
             content: '',
             key: item.trackedEntityAttribute.id,
             unique: item.trackedEntityAttribute.unique,
-            displayInFilters: true,
             type: VariablesTypes.Attribute
         }
     })
@@ -71,7 +70,6 @@ export const formatDataElementVariables = (programStageDataElements: any[], type
             error: false,
             content: '',
             key: programStageDataElement.dataElement.id,
-            displayInFilters: false,
             type
         }
     }) as []
@@ -97,7 +95,6 @@ export const formatDefaultColumns = (defaultColumns: string[]) => {
             error: false,
             content: '',
             key: '',
-            displayInFilters: false,
             type: VariablesTypes.Custom
         }
     }) as []
