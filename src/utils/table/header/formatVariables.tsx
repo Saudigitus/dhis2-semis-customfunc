@@ -2,7 +2,7 @@ import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis
 import { Attribute } from "../../../types/generated/models";
 
 interface FormatVariablesProps {
-    variables: ProgramConfig[0]["programTrackedEntityAttributes"][] | string[]
+    variables: ProgramConfig["programTrackedEntityAttributes"][] | string[]
     type: VariablesTypes
     selectedDate?: any
 }

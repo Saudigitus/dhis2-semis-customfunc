@@ -5,7 +5,7 @@ import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis
 
 interface UseHeaderProps {
     tableColumns: CustomAttributeProps[]
-    programConfigData: ProgramConfig[0]
+    programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0]
     module: modules
 }

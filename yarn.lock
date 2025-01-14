@@ -4770,11 +4770,11 @@ cross-domain-utils@^2, cross-domain-utils@^2.0.0:
     zalgo-promise "^1.0.11"
 
 cross-fetch@^3.1.5:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.8.tgz#0327eba65fd68a7d119f8fb2bf9334a1a7956f82"
-  integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.2.0.tgz#34e9192f53bc757d6614304d9e5e6fb4edb782e3"
+  integrity sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==
   dependencies:
-    node-fetch "^2.6.12"
+    node-fetch "^2.7.0"
 
 cross-spawn@^5.0.1:
   version "5.1.0"
@@ -5147,10 +5147,10 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "4"
 
-dhis2-semis-components@^0.6.2-alpha.65:
-  version "0.6.2-alpha.65"
-  resolved "https://registry.yarnpkg.com/dhis2-semis-components/-/dhis2-semis-components-0.6.2-alpha.65.tgz#85095fca09f1c2e4f3d2c793051ca9485ea6ea40"
-  integrity sha512-jCm5dSuqfdIXjuBYIKPir2s2RebK1EJO/ScUR1QuKkjXDTWUE2bYmSxT101vBemA15ddCKCsI7Fos/hQtPHYZA==
+dhis2-semis-components@^0.6.2-alpha.67:
+  version "0.6.2-alpha.67"
+  resolved "https://registry.yarnpkg.com/dhis2-semis-components/-/dhis2-semis-components-0.6.2-alpha.67.tgz#dfed727577b0fb16f57ecb46081bd02fc4f03c36"
+  integrity sha512-JzDtjLZhrCeKsaWDFKQg6Ub34ooRUlcPa4w+YVdnN8hwG6UMf44U/DlS91UeT1/+yj60MI3Jbp5nGae/YwNF2A==
   dependencies:
     "@date-io/date-fns" "1.3.13"
     "@dhis2/app-runtime" "^3.12.0"
@@ -8416,7 +8416,7 @@ no-case@^3.0.4:
     lower-case "^2.0.2"
     tslib "^2.0.3"
 
-node-fetch@^2.6.12:
+node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -9507,9 +9507,9 @@ react-select@1.3.0:
     react-input-autosize "^2.1.2"
 
 react-textarea-autosize@^8.3.2:
-  version "8.5.6"
-  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.5.6.tgz#e9205fb215eea7cbb6cba8f57dd874ab5d44a241"
-  integrity sha512-aT3ioKXMa8f6zHYGebhbdMD2L00tKeRX1zuVuDx9YQK/JLLRSaSxq3ugECEmUB9z2kvk6bFSIoRHLkkUv0RJiw==
+  version "8.5.7"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.5.7.tgz#b2bf1913383a05ffef7fbc89c2ea21ba8133b023"
+  integrity sha512-2MqJ3p0Jh69yt9ktFIaZmORHXw4c4bxSIhCeWiFwmJ9EYKgLmuNII3e9c9b2UO+ijl4StnpZdqpxNIhTdHvqtQ==
   dependencies:
     "@babel/runtime" "^7.20.13"
     use-composed-ref "^1.3.0"
@@ -11047,9 +11047,9 @@ typescript@^5.6.3, typescript@^5.7.2:
   integrity sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==
 
 ua-parser-js@^1.0.35:
-  version "1.0.39"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.39.tgz#bfc07f361549bf249bd8f4589a4cccec18fd2018"
-  integrity sha512-k24RCVWlEcjkdOxYmVJgeD/0a1TiSpqLg+ZalVGV9lsnr4yqu0w7tX/x2xX6G4zpkgQnRf89lxuZ1wsbjXM8lw==
+  version "1.0.40"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.40.tgz#ac6aff4fd8ea3e794a6aa743ec9c2fc29e75b675"
+  integrity sha512-z6PJ8Lml+v3ichVojCiB8toQJBuwR42ySM4ezjXIqXK3M0HczmKQ3LF4rhU55PfD99KEEXQG6yb7iOMyvYuHew==
 
 uglify-js@^3.1.4:
   version "3.19.3"

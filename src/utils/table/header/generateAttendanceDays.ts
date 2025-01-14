@@ -1,9 +1,11 @@
 import { format } from "date-fns";
 import { unavailableSchoolDays } from "../../../utils/constants/unavailableSchoolDays";
-import { schoolCalendarData } from "../../drafts/schoolCalendar";
+/// Data Store for School Calendar
+// @TODO: Implement school calendar data store
+// import { schoolCalendarData } from "../../drafts/schoolCalendar";
 
 export function generateAttendanceDays() {
-    const { unavailableDays } = unavailableSchoolDays(schoolCalendarData)
+    const { unavailableDays } = unavailableSchoolDays({})
 
     const getValidDays = (date: Date) => {
         let validDays: any[5] = []
