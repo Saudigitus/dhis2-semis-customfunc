@@ -1,6 +1,6 @@
 {
   "name": "dhis2-semis-functions",
-  "version": "0.0.4-alpha.21",
+  "version": "0.0.4-alpha.20",
   "description": "",
   "license": "BSD-3-Clause",
   "private": false,
@@ -41,7 +41,7 @@
     "bootstrap": "^5.3.3",
     "classnames": "^2.5.1",
     "date-fns": "2.29.3",
-    "dhis2-semis-components": "^0.6.2-alpha.27",
+    "dhis2-semis-components": "^0.6.2-alpha.65",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "lottie-react": "^2.4.0",

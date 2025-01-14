@@ -1,8 +1,8 @@
-import { ProgramConfig } from "../../types/programConfig/ProgramConfig";
+import { ProgramConfig } from "dhis2-semis-components";
 import { formatResponseAttributes } from "../../utils/attributes/formatResponseAttributes";
 
-function useGetAttributes(programConfigState: ProgramConfig) {
-    const formattedAttributes = formatResponseAttributes(programConfigState) || [];
+function useGetAttributes({programData}: {programData: ProgramConfig}) {
+    const formattedAttributes = formatResponseAttributes(programData) || [];
 
     return {
         attributes: formattedAttributes,

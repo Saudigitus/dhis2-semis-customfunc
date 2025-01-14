@@ -1,11 +1,10 @@
 import { Attribute } from "../../types/generated/models";
-import { ProgramConfig } from "../../types/programConfig/ProgramConfig";
-import { CustomAttributeProps, VariablesTypes } from "../../types/variables/AttributeColumns";
+import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
 
 export function formatResponseAttributes(attributes: ProgramConfig): CustomAttributeProps[] {
     if (!attributes) return [];
 
-    return attributes.programTrackedEntityAttributes.map(trackedEntityAttribute => (
+    return attributes?.programTrackedEntityAttributes?.map((trackedEntityAttribute: any) => (
         {
             required: trackedEntityAttribute?.mandatory,
             name: trackedEntityAttribute?.trackedEntityAttribute?.id,

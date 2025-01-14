@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react'
 import { modules } from '../../types/common/moduleTypes';
-import { ProgramConfig } from '../../types/programConfig/ProgramConfig';
-import { DataStoreRecord } from '../../types/dataStore/DataStoreConfig';
 import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
 import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
+import { BuildFormType } from 'src/types/form/BuildForm';
 import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
 
-export function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: ProgramConfig, module: modules) {
+export function useBuildForm({dataStoreData, programData, module}: BuildFormType) {
     const [formData, setFormData] = useState<any[]>([])
 
     const buildForm = () => {
-        if (Object.keys(getDataStoreData)?.length && getProgram !== undefined) {
-            const { programStages } = getProgram
-            const { registration, 'socio-economics': socioEconomics, "final-result": final_result } = getDataStoreData
+        if (Object.keys(dataStoreData)?.length && programData !== undefined) {
+            const { programStages } = programData
+            const { registration, 'socio-economics': socioEconomics, "final-result": final_result } = dataStoreData
 
             switch (module) {
                 case modules.enrollment:
-                    const registrationProgramStage = programStages.find((element: ProgramStageConfig) => element.id === registration.programStage) as unknown as ProgramStageConfig
-                    const socioEconomicProgramStage = programStages.find((element: ProgramStageConfig) => element.id === socioEconomics?.programStage) as unknown as ProgramStageConfig
+                    const registrationProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === registration.programStage) as unknown as ProgramStageConfig
+                    const socioEconomicProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === socioEconomics?.programStage) as unknown as ProgramStageConfig
 
-                    setFormData([formatResponseDataElements(registrationProgramStage), formatResponseAttributes(getProgram), formatResponseDataElements(socioEconomicProgramStage)])
+                    setFormData([formatResponseDataElements(registrationProgramStage), formatResponseAttributes(programData), formatResponseDataElements(socioEconomicProgramStage)])
                     break;
 
                 case modules.attendance:
@@ -28,7 +27,7 @@ export function useBuildForm(getDataStoreData: DataStoreRecord, getProgram: Prog
                     break;
 
                 case modules.final_result:
-                    const finalResultProgramStage = programStages.find((element: ProgramStageConfig) => element.id === final_result?.programStage) as unknown as ProgramStageConfig
+                    const finalResultProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === final_result?.programStage) as unknown as ProgramStageConfig
 
                     setFormData([formatResponseDataElements(finalResultProgramStage)])
                     break;

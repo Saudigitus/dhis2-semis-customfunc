@@ -1,6 +1,5 @@
-import { CustomAttributeProps, ProgramConfig } from "dhis2-semis-components";
+import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
 import { Attribute } from "../../../types/generated/models";
-import { VariablesTypes } from "../../../types/variables/AttributeColumns";
 
 interface FormatVariablesProps {
     variables: ProgramConfig[0]["programTrackedEntityAttributes"][] | string[]
