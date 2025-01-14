@@ -5147,10 +5147,10 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "4"
 
-dhis2-semis-components@^0.6.2-alpha.66:
-  version "0.6.2-alpha.66"
-  resolved "https://registry.yarnpkg.com/dhis2-semis-components/-/dhis2-semis-components-0.6.2-alpha.66.tgz#b965641b038dab46b9eba8e67615ec8dd9e07b5a"
-  integrity sha512-bAV/yTgf9oL9ID2EakGicoMDpCjzOmy2vM7T/IBT5mGETyI0DESasn2E54kjXl0X2BSuRmMMYHPbOuFhc7QxOg==
+dhis2-semis-components@^0.6.2-alpha.67:
+  version "0.6.2-alpha.67"
+  resolved "https://registry.yarnpkg.com/dhis2-semis-components/-/dhis2-semis-components-0.6.2-alpha.67.tgz#dfed727577b0fb16f57ecb46081bd02fc4f03c36"
+  integrity sha512-JzDtjLZhrCeKsaWDFKQg6Ub34ooRUlcPa4w+YVdnN8hwG6UMf44U/DlS91UeT1/+yj60MI3Jbp5nGae/YwNF2A==
   dependencies:
     "@date-io/date-fns" "1.3.13"
     "@dhis2/app-runtime" "^3.12.0"

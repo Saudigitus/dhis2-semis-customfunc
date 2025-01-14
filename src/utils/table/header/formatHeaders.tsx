@@ -2,7 +2,7 @@ import { CustomAttributeProps, DataStoreProps, ProgramConfig, VariablesTypes } f
 import { formatVariables } from "./formatVariables";
 
 interface FormatHeadersProps {
-    programConfigData: ProgramConfig[0]
+    programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0]
     tableColumns: CustomAttributeProps[]
     otherHeaders?: CustomAttributeProps[]

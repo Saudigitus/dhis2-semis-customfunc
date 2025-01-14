@@ -41,7 +41,7 @@
     "bootstrap": "^5.3.3",
     "classnames": "^2.5.1",
     "date-fns": "2.29.3",
-    "dhis2-semis-components": "^0.6.2-alpha.66",
+    "dhis2-semis-components": "^0.6.2-alpha.67",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "lottie-react": "^2.4.0",
