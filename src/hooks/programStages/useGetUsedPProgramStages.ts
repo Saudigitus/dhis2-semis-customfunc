@@ -7,4 +7,5 @@ const useGetUsedPProgramStages = ({ sectionType }: { sectionType: "student" | "s
 
     return [...performanceProgramStages, finalResult?.programStage]
 }
-export default useGetUsedPProgramStages
+
+export { useGetUsedPProgramStages }

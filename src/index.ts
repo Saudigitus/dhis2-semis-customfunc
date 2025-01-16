@@ -11,7 +11,7 @@ import { useGetAttributes } from "./hooks/attributes/useGetAttributes"
 import { useGetDataElements } from "./hooks/dataElements/useGetDataElements"
 import { removeFalseKeys } from "./utils/form/removeFalseKeys"
 import { useSearchTei } from "./hooks/tei/useSearchTei"
-
+import { useGetUsedPProgramStages } from "./hooks/programStages/useGetUsedPProgramStages"
 
 export {
     modules,
@@ -22,6 +22,7 @@ export {
     useUrlParams,
     RulesEngine,
     useGetSectionTypeLabel,
+    useGetUsedPProgramStages,
     removeFalseKeys,
     useGetAttributes,
     useGetDataElements,
