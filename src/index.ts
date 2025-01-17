@@ -13,6 +13,7 @@ import { removeFalseKeys } from "./utils/form/removeFalseKeys"
 import { useSearchTei } from "./hooks/tei/useSearchTei"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
+import { useGetUsedPProgramStages } from "./hooks/programStages/useGetUsedPProgramStages"
 
 export {
     modules,
@@ -23,6 +24,7 @@ export {
     useUrlParams,
     RulesEngine,
     useGetSectionTypeLabel,
+    useGetUsedPProgramStages,
     removeFalseKeys,
     useGetAttributes,
     useGetDataElements,
