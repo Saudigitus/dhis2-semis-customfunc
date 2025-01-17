@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useGetEvents } from '../events/useGetEvents'
 import useShowAlerts from '../commons/useShowAlert'
 import { useSearchTei } from './useSearchTei'
-
+import { formatResponseData } from '../../utils/tei/formatResponseData'
+import { attributes } from '../../utils/table/rows/formatRowsData'
 
 export default function useSearchEnrollments(props: any) {
     const { show } = useShowAlerts()
@@ -39,9 +40,9 @@ export default function useSearchEnrollments(props: any) {
                         })
 
 
-                    // const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", registrationResponse?.results?.instances)
-                    // const socioEconomicsEvents = formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse?.results?.instances)
-                    // teisWithRegistrationEvents.push({ ...tei, ownershipOu: tei?.programOwners?.[0]?.orgUnit, enrollmentsNumber: registrationEvents?.length, registrationEvents, socioEconomicsEvents, mainAttributesFormatted: attributes(tei?.attributes), ...attributes(tei?.attributes) })
+                    const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", registrationResponse?.results?.instances)
+                    const socioEconomicsEvents = formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse?.results?.instances)
+                    teisWithRegistrationEvents.push({ ...tei, ownershipOu: tei?.programOwners?.[0]?.orgUnit, enrollmentsNumber: registrationEvents?.length, registrationEvents, socioEconomicsEvents, mainAttributesFormatted: attributes(tei?.attributes), ...attributes(tei?.attributes) })
                 }
 
                 setEnrollmentValues(teisWithRegistrationEvents)
