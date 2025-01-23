@@ -1,6 +1,6 @@
-import { useDataStoreKey } from "dhis2-semis-components";
+import useDataStoreKey from "../dataStore/useDataStoreKey";
 
-const useGetUsedPProgramStages = ({ sectionType }: { sectionType: "student" | "staff" }) => {
+const useGetUsedProgramStages = ({ sectionType }: { sectionType: "student" | "staff" }) => {
     const { performance, "final-result": finalResult } = useDataStoreKey({ sectionType });
 
     const performanceProgramStages = performance?.programStages?.map((programStage) => programStage?.programStage) ?? [];
@@ -8,4 +8,4 @@ const useGetUsedPProgramStages = ({ sectionType }: { sectionType: "student" | "s
     return [...performanceProgramStages, finalResult?.programStage]
 }
 
-export { useGetUsedPProgramStages }
+export { useGetUsedProgramStages }
