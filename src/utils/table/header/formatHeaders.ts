@@ -1,4 +1,4 @@
-import { CustomAttributeProps, DataStoreProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
+import { CustomAttributeProps, DataStoreProps, ProgramConfig, VariablesTypes } from "dhis2-semis-types";
 import { formatVariables } from "./formatVariables";
 
 interface FormatHeadersProps {

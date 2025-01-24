@@ -1,4 +1,4 @@
-import { ProgramConfig } from "dhis2-semis-components";
+import { ProgramConfig } from "dhis2-semis-types"
 import { formatResponseAttributes } from "../../utils/attributes/formatResponseAttributes";
 
 function useGetAttributes({programData}: {programData: ProgramConfig}) {

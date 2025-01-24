@@ -1,4 +1,4 @@
-import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
+import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-types";
 import { Attribute } from "../../../types/generated/models";
 
 interface FormatVariablesProps {

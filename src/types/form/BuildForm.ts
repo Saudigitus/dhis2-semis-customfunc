@@ -1,4 +1,4 @@
-import { ProgramConfig } from "dhis2-semis-components"
+import { ProgramConfig } from "dhis2-semis-types"
 import { DataStoreRecord } from "../dataStore/DataStoreConfig"
 import { modules } from "../common/moduleTypes"
 
