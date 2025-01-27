@@ -13,8 +13,8 @@ import { removeFalseKeys } from "./utils/form/removeFalseKeys"
 import { useSearchTei } from "./hooks/tei/useSearchTei"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
-import { useGetUsedProgramStages } from "./hooks/programStages/useGetUsedProgramStages"
 import useDataStoreKey from "./hooks/dataStore/useDataStoreKey"
+import { useGetUsedProgramStages } from "./hooks/programStages/useGetUsedPProgramStages"
 
 export {
     modules,

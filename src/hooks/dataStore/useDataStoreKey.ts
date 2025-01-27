@@ -1,15 +1,12 @@
 import { useRecoilValue } from "recoil"
 import { DataStoreState } from "../../schema/dataStore"
-import { studentDataStoreSchema } from "src/schema/studentSchema"
-import { z } from "zod"
+import {type selectedDataStoreKey } from 'dhis2-semis-types'
 
-type dataStoreKeyResponse = z.infer<typeof studentDataStoreSchema>
-
-const useDataStoreKey = ({ sectionType }: { sectionType: "student" | "staff" }): dataStoreKeyResponse => {
+const useDataStoreKey = ({ sectionType }: { sectionType: "student" | "staff" }): selectedDataStoreKey => {
     const dataStoreValues = useRecoilValue(DataStoreState)
     const dataStoreKeyValues = dataStoreValues?.find((dataStore) => dataStore.key === sectionType)
 
-    return dataStoreKeyValues as unknown as dataStoreKeyResponse
+    return dataStoreKeyValues as unknown as selectedDataStoreKey
 }
 
 export default useDataStoreKey
