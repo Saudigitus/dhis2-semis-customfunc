@@ -1,9 +1,8 @@
-import { ProgramConfig } from "dhis2-semis-components"
-import { DataStoreRecord } from "../dataStore/DataStoreConfig"
+import { ProgramConfig, selectedDataStoreKey } from "dhis2-semis-types"
 import { modules } from "../common/moduleTypes"
 
 type BuildFormType = {
-    dataStoreData: DataStoreRecord
+    dataStoreData: selectedDataStoreKey
     programData: ProgramConfig
     module: modules
 }

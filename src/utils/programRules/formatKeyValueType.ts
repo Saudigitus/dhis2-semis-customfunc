@@ -1,4 +1,4 @@
-import { GroupFormProps } from "dhis2-semis-components"
+import { GroupFormProps } from "dhis2-semis-types"
 
 export function formatKeyValueType(variables: GroupFormProps[] | GroupFormProps['fields']): Record<string, string> {
     const keys: Record<string, any> = {}

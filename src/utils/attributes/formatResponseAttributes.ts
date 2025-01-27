@@ -1,5 +1,5 @@
 import { Attribute } from "../../types/generated/models";
-import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
+import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-types";
 
 export function formatResponseAttributes(attributes: ProgramConfig): CustomAttributeProps[]{
     if (!attributes) return [];

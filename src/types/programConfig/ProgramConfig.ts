@@ -1,4 +1,4 @@
-import { OptionsProps } from "dhis2-semis-components"
+import { OptionsProps } from "dhis2-semis-types"
 import { ProgramStageConfig } from "../programStageConfig/ProgramStageConfig"
 
 interface ProgramConfig {
