@@ -1,5 +1,4 @@
-import { DataStoreRecord } from "../dataStore/DataStoreConfig"
-import { ProgramConfig } from "../programConfig/ProgramConfig"
+import { selectedDataStoreKey, ProgramConfig } from "dhis2-semis-types"
 
 /**
  * Description placeholder
@@ -105,9 +104,9 @@ interface ExportData {
     /**
      * Settings saved at data store
      *
-     * @type {DataStoreRecord}
+     * @type {selectedDataStoreKey}
      */
-    selectedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: selectedDataStoreKey
 
     /**
     * Program configurations
@@ -144,7 +143,7 @@ interface ExportData {
 
 interface GenerateHeaders {
     stagesToExport: string[]
-    selectedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: selectedDataStoreKey
     withSocioEconomics: boolean
     programConfig: ProgramConfig
     sectionType: string
@@ -181,7 +180,7 @@ interface importData {
     importMode: "VALIDATE" | "COMMIT",
     programConfig: ProgramConfig
     sectionType: string
-    selectedSectionDataStore: DataStoreRecord
+    selectedSectionDataStore: selectedDataStoreKey
     orgUnit?: string
 }
 
