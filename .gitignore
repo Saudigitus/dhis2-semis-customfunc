@@ -4,3 +4,4 @@ node_modules
 src/locales
 build
 dist
+package-lock.json

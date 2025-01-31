@@ -1,7 +1,7 @@
 import { formatHeaders } from "../../utils/table/header/formatHeaders"
 // import { generateAttendanceDays } from "../../utils/table/header/generateAttendanceDays"
 import { modules } from "../../types/common/moduleTypes"
-import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis-components"
+import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis-types"
 
 interface UseHeaderProps {
     tableColumns: CustomAttributeProps[]

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { modules } from '../../types/common/moduleTypes';
-import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
-import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 import { BuildFormType } from 'src/types/form/BuildForm';
+import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageConfig';
 import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
+import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 
 export function useBuildForm({dataStoreData, programData, module}: BuildFormType) {
     const [formData, setFormData] = useState<any[]>([])
@@ -15,8 +15,8 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
 
             switch (module) {
                 case modules.enrollment:
-                    const registrationProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === registration.programStage) as unknown as ProgramStageConfig
-                    const socioEconomicProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === socioEconomics?.programStage) as unknown as ProgramStageConfig
+                    const registrationProgramStage = programStages?.find((element) => element?.id === registration.programStage) as unknown as ProgramStageConfig
+                    const socioEconomicProgramStage = programStages?.find((element) => element?.id === socioEconomics?.programStage) as unknown as ProgramStageConfig
 
                     setFormData([formatResponseDataElements(registrationProgramStage), formatResponseAttributes(programData), formatResponseDataElements(socioEconomicProgramStage)])
                     break;
@@ -27,7 +27,7 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
                     break;
 
                 case modules.final_result:
-                    const finalResultProgramStage = programStages?.find((element: ProgramStageConfig) => element.id === final_result?.programStage) as unknown as ProgramStageConfig
+                    const finalResultProgramStage = programStages?.find((element) => element?.id === final_result?.programStage) as unknown as ProgramStageConfig
 
                     setFormData([formatResponseDataElements(finalResultProgramStage)])
                     break;

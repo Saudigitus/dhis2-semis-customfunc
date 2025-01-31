@@ -1,5 +1,5 @@
 import { Attribute } from "../../types/generated/models";
-import { CustomAttributeProps, VariablesTypes } from "dhis2-semis-components";
+import { CustomAttributeProps, VariablesTypes } from "dhis2-semis-types";
 import { ProgramStageConfig } from "../../types/programStageConfig/ProgramStageConfig";
 
 export function formatResponseDataElements(programStageObject: ProgramStageConfig): CustomAttributeProps[] {
