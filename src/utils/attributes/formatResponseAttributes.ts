@@ -1,7 +1,7 @@
 import { Attribute } from "../../types/generated/models";
 import { CustomAttributeProps, ProgramConfig, VariablesTypes } from "dhis2-semis-components";
 
-export function formatResponseAttributes(attributes: ProgramConfig): CustomAttributeProps[] {
+export function formatResponseAttributes(attributes: ProgramConfig): CustomAttributeProps[]{
     if (!attributes) return [];
 
     return attributes?.programTrackedEntityAttributes?.map((trackedEntityAttribute: any) => (
@@ -29,5 +29,5 @@ export function formatResponseAttributes(attributes: ProgramConfig): CustomAttri
             unique: trackedEntityAttribute?.trackedEntityAttribute?.unique,
             assignedValue: undefined
         }
-    ));
+    )) as CustomAttributeProps[];
 }
