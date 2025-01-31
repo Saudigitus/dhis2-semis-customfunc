@@ -30,7 +30,7 @@ export {
     useGetPatternCode,
     RulesEngineWrapper,
     useSearchTei,
-  useFileResource
+    useFileResource,
     useSearchEnrollments,
     formatResponseData,
 }
