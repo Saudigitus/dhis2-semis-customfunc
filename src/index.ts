@@ -11,6 +11,7 @@ import { useGetAttributes } from "./hooks/attributes/useGetAttributes"
 import { useGetDataElements } from "./hooks/dataElements/useGetDataElements"
 import { removeFalseKeys } from "./utils/form/removeFalseKeys"
 import { useSearchTei } from "./hooks/tei/useSearchTei"
+import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
 
@@ -29,6 +30,7 @@ export {
     useGetPatternCode,
     RulesEngineWrapper,
     useSearchTei,
+  useFileResource
     useSearchEnrollments,
     formatResponseData,
 }
