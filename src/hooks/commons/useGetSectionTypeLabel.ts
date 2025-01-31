@@ -1,9 +1,9 @@
 
 import { useUrlParams } from "./useQueryParams";
 
-const useGetSectionTypeLabel = () => {
+const useGetSectionTypeLabel = (): { sectionName: "student" | "staff" } => {
     const { urlParameters } = useUrlParams()
-    const sectionType = urlParameters().sectionType ?? 'student';
+    const sectionType = (urlParameters().sectionType ?? 'student') as "student" | "staff";
 
     return { sectionName: sectionType };
 }
