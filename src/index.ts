@@ -14,10 +14,12 @@ import { useSearchTei } from "./hooks/tei/useSearchTei"
 import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
+import { useDeleteSelectedEnrollment } from "./hooks/enrollment/useDeleteSelectedEnrollment"
 
 export {
     modules,
     useBuildForm,
+    useDeleteSelectedEnrollment,
     useSaveTei,
     useTableData,
     useHeader,
