@@ -15,6 +15,9 @@ import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
 import { useDeleteSelectedEnrollment } from "./hooks/enrollment/useDeleteSelectedEnrollment"
+import { useGetTei } from "./hooks/tei/useGetTei"
+import { useGetEvents } from "./hooks/events/useGetEvents"
+import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
 
 export {
     modules,
@@ -35,4 +38,8 @@ export {
     useFileResource,
     useSearchEnrollments,
     formatResponseData,
+    useGetTei,
+    attributes, 
+    dataValues,
+    useGetEvents
 }
