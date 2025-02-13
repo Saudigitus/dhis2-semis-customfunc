@@ -31,7 +31,7 @@ export function useModulesData() {
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
 
-    async function getRegistrationData( tableDataProps: GetTableDataProps) {
+    async function getRegistrationData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
 
         const eventsResults = await engine.query(EVENT_QUERY({
@@ -44,20 +44,20 @@ export function useModulesData() {
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get events")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as EventQueryResults;
+        })).catch((error) => {
+            show({
+                message: `${("Could not get events")}: ${error.message}`,
+                type: { critical: true }
+            });
+            setTimeout(hide, 5000);
+        }) as unknown as EventQueryResults;
 
-            const registrationTrackedEntities = eventsResults?.results?.instances?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
+        const registrationTrackedEntities = eventsResults?.results?.instances?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
 
         return { registrationEvents: eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'], registrationTrackedEntities };
     }
 
-    async function getTEIData( tableDataProps: GetTableDataProps, trackedEntity: string) {
+    async function getTEIData(tableDataProps: GetTableDataProps, trackedEntity: string) {
         const { pageSize, program, orgUnit } = tableDataProps;
 
         const teiResults = trackedEntity?.length
@@ -74,12 +74,12 @@ export function useModulesData() {
                 setTimeout(hide, 5000);
             }) as unknown as TeiQueryResults
             : { results: { instances: [] } } as unknown as TeiQueryResults
-            
+
 
         return teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances']
     }
 
-    async function getBasicData( tableDataProps: GetTableDataProps) {
+    async function getBasicData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
 
         const eventsResults = await engine.query(EVENT_QUERY({
@@ -92,13 +92,13 @@ export function useModulesData() {
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get events")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as EventQueryResults;
+        })).catch((error) => {
+            show({
+                message: `${("Could not get events")}: ${error.message}`,
+                type: { critical: true }
+            });
+            setTimeout(hide, 5000);
+        }) as unknown as EventQueryResults;
 
         const registrationTrackedEntities = eventsResults?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
@@ -116,14 +116,45 @@ export function useModulesData() {
                 setTimeout(hide, 5000);
             }) as unknown as TeiQueryResults
             : { results: { instances: [] } } as unknown as TeiQueryResults
-            
+
         const registrationInstances = eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'];
         const teiInstances = teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances'];
 
-        return { 
+        return {
             registrationInstances,
             teiInstances,
             formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances })
+        }
+    }
+
+    async function getStageData({ tableDataProps, formattedBasicTableData }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any }) {
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+        let copy = []
+
+        for (let i = 0; i < formattedBasicTableData.length; i++) {
+            const eventsResults = await engine.query(EVENT_QUERY({
+                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                page,
+                pageSize,
+                program: program as unknown as string,
+                order: order || "occurredAt:desc",
+                programStage: baseProgramStage,
+                orgUnit: orgUnit,
+                trackedEntity: formattedBasicTableData[i].trackedEntity
+            })).catch((error) => {
+                show({
+                    message: `${("Could not get events")}: ${error.message}`,
+                    type: { critical: true }
+                });
+                setTimeout(hide, 5000);
+            }) as unknown as EventQueryResults;
+            const registrationInstances = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+
+            copy[i] = { ...formatRowsData({ registrationInstances: registrationInstances ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i] }
+        }
+
+        return {
+            formattedStagedData: copy
         }
     }
 
@@ -131,6 +162,7 @@ export function useModulesData() {
         getRegistrationData,
         getTEIData,
         getBasicData,
+        getStageData
         //getAttendanceData
     }
 }

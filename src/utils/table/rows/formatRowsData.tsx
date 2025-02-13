@@ -8,7 +8,7 @@ export function formatRowsData({ registrationInstances, teiInstances }: FormatRe
     
     for (const event of registrationInstances ?? []) {
         const teiDetails = teiInstances?.find(tei => tei.trackedEntity === event.trackedEntity);
-
+        
         allRows.push({
             ...dataValues(event.dataValues),
             ...(attributes((teiDetails?.attributes) ?? [])),

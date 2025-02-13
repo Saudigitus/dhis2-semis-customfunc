@@ -7,24 +7,24 @@ interface UseHeaderProps {
     tableColumns: CustomAttributeProps[]
     programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0]
-    module: modules
+    module: any
 }
-export function useHeader({ tableColumns, programConfigData, dataStoreData, module } : UseHeaderProps) {
+export function useHeader({ tableColumns, programConfigData, dataStoreData, module }: UseHeaderProps) {
     // const { getValidDays } = generateAttendanceDays()
     //const { attendanceMode } = useAttendanceMode({ AttendanceModeState })
     //const attendanceProgramStage = dataStoreData?.attendance?.programStage
 
-/*     const getModuleAditionalHeaders = () => {
-        switch (module) {
-            case modules.attendance:
-                return getAttendanceDays(getValidDays(selectedDate ?? new Date()), "view", programConfigData, attendanceProgramStage);
-        
-            default:
-                return [];
-        }
-    } */
+    /*     const getModuleAditionalHeaders = () => {
+            switch (module) {
+                case modules.attendance:
+                    return getAttendanceDays(getValidDays(selectedDate ?? new Date()), "view", programConfigData, attendanceProgramStage);
+            
+                default:
+                    return [];
+            }
+        } */
 
     return {
-        columns: formatHeaders({ programConfigData, dataStoreData, tableColumns }),
+        columns: formatHeaders({ programConfigData, dataStoreData, tableColumns, module }),
     }
 }
