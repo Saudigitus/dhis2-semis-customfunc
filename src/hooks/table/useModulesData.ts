@@ -148,9 +148,9 @@ export function useModulesData() {
                 });
                 setTimeout(hide, 5000);
             }) as unknown as EventQueryResults;
-            const registrationInstances = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+            const frEvents = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
-            copy[i] = { ...formatRowsData({ registrationInstances: registrationInstances ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i] }
+            copy[i] = { ...formatRowsData({ registrationInstances: frEvents ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i], frEvent: eventsResults?.results?.instances?.[0] ?? {} }
         }
 
         return {

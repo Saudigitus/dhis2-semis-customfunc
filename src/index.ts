@@ -17,7 +17,9 @@ import { formatResponseData } from "./utils/tei/formatResponseData"
 import { useDeleteSelectedEnrollment } from "./hooks/enrollment/useDeleteSelectedEnrollment"
 import { useGetTei } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
-import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
+import { attributes, dataValues } from "./utils/table/rows/formatRowsData"
+import useUploadEvents from "./hooks/events/useUploadEvents"
+import { useValidation } from "./hooks/template_validation/useValidation"
 
 export {
     modules,
@@ -39,7 +41,9 @@ export {
     useSearchEnrollments,
     formatResponseData,
     useGetTei,
-    attributes, 
+    attributes,
     dataValues,
-    useGetEvents
+    useGetEvents,
+    useUploadEvents,
+    useValidation
 }
