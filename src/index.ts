@@ -18,6 +18,9 @@ import { useDeleteSelectedEnrollment } from "./hooks/enrollment/useDeleteSelecte
 import { useGetTei } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
 import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
+import useShowAlerts from "./hooks/commons/useShowAlert"
+import useViewPortWidth from "./hooks/rwd/useViewPortWidth"
+import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } from "./utils/common/formatStringCase"
 
 export {
     modules,
@@ -41,5 +44,10 @@ export {
     useGetTei,
     attributes, 
     dataValues,
-    useGetEvents
+    useGetEvents,
+    useShowAlerts,
+    useViewPortWidth,
+    formatStringToLowerCase,
+    formatStringToTitleCase,
+    capitalizeString
 }
