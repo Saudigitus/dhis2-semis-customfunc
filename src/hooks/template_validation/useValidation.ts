@@ -1,4 +1,4 @@
-import { modules } from '../../types/commons/moduleTypes';
+import { Modules } from 'dhis2-semis-types';
 import { read, utils, WorkBook } from "xlsx";
 
 const METADATA = "Metadata"
@@ -13,14 +13,14 @@ type Section = {
 type Structure = Record<string, Section>;
 
 export class useValidation {
-    private module?: modules
+    private module?: Modules
     private configData: any[] = [];
     private rawData: any;
     private SheetNames: string[] = []; //	
     private headerSectionSheets: any
     private headerVariablesSheets: Record<string, string>[] = []
 
-    constructor(module?: modules) {
+    constructor(module?: Modules) {
         this.module = module;
     }
 
@@ -28,7 +28,7 @@ export class useValidation {
         return this.module
     }
 
-    setModule(module: modules) {
+    setModule(module: Modules) {
         this.module = module;
     }
 
@@ -89,7 +89,7 @@ export class useValidation {
          * Compare the current working module with the attendance module
          */
 
-        if (this.module === modules.attendance) {
+        if (this.module === Modules.Attendance) {
 
             /**
              * Extract all sheet names from the workbook.

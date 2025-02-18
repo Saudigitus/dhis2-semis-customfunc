@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { GetTableDataProps, TableDataProps } from "../../types/table/tableDataProps";
 import { useModulesData } from "./useModulesData";
-import { modules } from "../../types/common/moduleTypes";
+import { Modules } from "dhis2-semis-types";
 import { selectedDataStoreKey } from "dhis2-semis-types";
 
 
-export function useTableData({ module, selectedDataStore }: { module: modules, selectedDataStore: selectedDataStoreKey }) {
+export function useTableData({ module, selectedDataStore }: { module: Modules, selectedDataStore: selectedDataStoreKey }) {
     const { getBasicData, getStageData } = useModulesData()
     const [loading, setLoading] = useState<boolean>(false)
     const [tableData, setTableData] = useState<TableDataProps[]>([])
@@ -21,30 +21,30 @@ export function useTableData({ module, selectedDataStore }: { module: modules, s
 
             try {
                 switch (module) {
-                    case modules.enrollment: {
+                    case Modules.Enrollment: {
                         setTableData([...formattedBasicTableData]);
                         break;
                     }
-                    case modules.attendance: {
+                    case Modules.Attendance: {
                         // const { formattedBasicTableData } = await getBasicData(tableDataProps);
                         // setTableData([...formattedBasicTableData]);
                         break;
                     }
-                    case modules.performance: {
+                    case Modules.Performance: {
                         // const { formattedBasicTableData } = await getBasicData(tableDataProps);
                         // setTableData([...formattedBasicTableData]);
                         break;
                     }
-                    case modules.transfer: {
+                    case Modules.Transfer: {
                         // const { formattedBasicTableData } = await getBasicData(tableDataProps);
                         // setTableData([...formattedBasicTableData]);
                         break;
                     }
-                    case modules.final_result: {
+                    case Modules.Final_Result: {
                         const { baseProgramStage, ...rest } = tableDataProps
                         const { formattedStagedData } = await getStageData({
                             formattedBasicTableData,
-                            tableDataProps: { ...rest, baseProgramStage: (selectedDataStore[modules.final_result] as unknown as any)?.programStage }
+                            tableDataProps: { ...rest, baseProgramStage: (selectedDataStore[Modules.Final_Result] as unknown as any)?.programStage }
                         });
                         setTableData([...formattedStagedData]);
                         break;

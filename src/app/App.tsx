@@ -3,11 +3,10 @@ import { useHeader } from '../hooks/table/useHeader'
 import { useTableData } from '../hooks/table/useGetTableData'
 import program from '../program.json'
 import dataStore from '../dataStore.json'
-import { modules } from '../types/common/moduleTypes'
 
 function MyApp() {
     const { columns } = useHeader({ dataStoreData: dataStore[0] as unknown as any, module: 'final-result', programConfigData: program as unknown as any, tableColumns: [] })
-    const { getData, tableData } = useTableData({ module: modules.final_result, selectedDataStore: dataStore[0] as unknown as any })
+    const { getData, tableData } = useTableData({ module: "final_result", selectedDataStore: dataStore[0] as unknown as any })
     console.log(columns,tableData)
 
     useEffect(() => {

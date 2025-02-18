@@ -3,7 +3,7 @@ import { useGetTei } from '../tei/useGetTei';
 import { useGetEvents } from '../events/useGetEvents';
 import { ExportData } from '../../types/bulk/bulkOperations';
 import { attributes, dataValues } from '../../utils/format/formatData';
-import { modules } from '../../types/common/moduleTypes';
+import { Modules } from 'dhis2-semis-types';
 import { format } from 'date-fns';
 
 export function useGetEnrollmentData(props: ExportData) {
@@ -37,7 +37,7 @@ export function useGetEnrollmentData(props: ExportData) {
                             orgUnit: orgUnit
                         })
 
-                        if (withSocioEconomics || module === modules.enrollment) {
+                        if (withSocioEconomics || module === Modules.Enrollment) {
                             socioEconomiscData = await getEvents({
                                 program: selectedSectionDataStore?.program as unknown as string,
                                 programStage: selectedSectionDataStore?.['socio-economics'].programStage as unknown as string,

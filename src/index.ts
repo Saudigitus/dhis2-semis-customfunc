@@ -1,7 +1,6 @@
 import { RulesEngine, RulesEngineWrapper } from "./hooks/programRules"
 import { useTableData } from "./hooks/table/useGetTableData"
 import { useHeader } from "./hooks/table/useHeader"
-import { modules } from "./types/common/moduleTypes"
 import { useUrlParams } from "./hooks/commons/useQueryParams"
 import useGetSectionTypeLabel from "./hooks/commons/useGetSectionTypeLabel"
 import { useSaveTei } from "./hooks/tei/useSaveTei"
@@ -23,7 +22,6 @@ import useViewPortWidth from "./hooks/rwd/useViewPortWidth"
 import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } from "./utils/common/formatStringCase"
 
 export {
-    modules,
     useBuildForm,
     useDeleteSelectedEnrollment,
     useSaveTei,

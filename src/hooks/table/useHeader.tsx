@@ -1,6 +1,6 @@
 import { formatHeaders } from "../../utils/table/header/formatHeaders"
 // import { generateAttendanceDays } from "../../utils/table/header/generateAttendanceDays"
-import { modules } from "../../types/common/moduleTypes"
+import { Modules } from "dhis2-semis-types"
 import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis-types"
 
 interface UseHeaderProps {
@@ -16,7 +16,7 @@ export function useHeader({ tableColumns, programConfigData, dataStoreData, modu
 
     /*     const getModuleAditionalHeaders = () => {
             switch (module) {
-                case modules.attendance:
+                case Modules.Attendance:
                     return getAttendanceDays(getValidDays(selectedDate ?? new Date()), "view", programConfigData, attendanceProgramStage);
             
                 default:
