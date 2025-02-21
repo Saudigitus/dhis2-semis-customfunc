@@ -13,17 +13,19 @@ import { useSearchTei } from "./hooks/tei/useSearchTei"
 import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
-import { useDeleteSelectedEnrollment } from "./hooks/enrollment/useDeleteSelectedEnrollment"
 import { useGetTei } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
 import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
+import {useDeleteEnrollment} from "./hooks/enrollment/useDeleteEnrollment"
+import {useGetEnrollment} from "./hooks/enrollment/useGetEnrollment"
+import {useGetTotalEnrollments} from "./hooks/enrollment/useGetTotalEnrollments"
+
 import useShowAlerts from "./hooks/commons/useShowAlert"
 import useViewPortWidth from "./hooks/rwd/useViewPortWidth"
 import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } from "./utils/common/formatStringCase"
 
 export {
     useBuildForm,
-    useDeleteSelectedEnrollment,
     useSaveTei,
     useTableData,
     useHeader,
@@ -43,6 +45,9 @@ export {
     attributes, 
     dataValues,
     useGetEvents,
+    useDeleteEnrollment,
+    useGetEnrollment,
+    useGetTotalEnrollments,
     useShowAlerts,
     useViewPortWidth,
     formatStringToLowerCase,
