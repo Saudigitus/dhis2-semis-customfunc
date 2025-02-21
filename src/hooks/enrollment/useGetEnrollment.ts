@@ -16,22 +16,22 @@ export function useGetEnrollment() {
     const [data, setData] = useState<unknown>(null)
 
     async function getEnrollment(enrollment: string, onComplete?: (data?: unknown) => void, onError?: (error?: unknown) => void) {
-        setLoading(true)
-        return await engine.query(ENROLLMENT_QUERY, { variables: { id: enrollment } })
-            .then((response) => {
-                if (onComplete) {
-                    onComplete(response)
-                }
-                setData(response)
-            }).catch((error) => {
-                setError(error)
-                if (onError) {
-                    onError(error)
-                }
-            })
-            .finally(() => {
-                setLoading(false)
-            })
+        try {
+            setLoading(true)
+            const response = await engine.query(ENROLLMENT_QUERY, { variables: { id: enrollment } });
+            if (onComplete) {
+                onComplete(response)
+            }
+            setData(response)
+            return response;
+        } catch (error) {
+            setError(error)
+            if (onError) {
+                onError(error)
+            }
+        } finally {
+            setLoading(false)
+        }
     }
     return { getEnrollment, loading, data, error }
 }

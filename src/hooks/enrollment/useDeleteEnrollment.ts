@@ -14,21 +14,21 @@ export function useDeleteEnrollment() {
 
 
     async function deleteEnrollment(enrollment: string, onComplete?: () => void, onError?: (error?: unknown) => void) {
-
-        return await engine.mutate(ENROLLMENT_MUTATION, { variables: { id: enrollment } })
-            .then(() => {
-                if (onComplete) {
-                    onComplete()
-                }
-            }).catch((error) => {
-                setError(error)
-                if (onError) {
-                    onError(error)
-                }
-            })
-            .finally(() => {
-                setLoading(false)
-            })
+        try {
+            setLoading(true)
+            const response = await engine.mutate(ENROLLMENT_MUTATION, { variables: { id: enrollment } });
+            if (onComplete) {
+                onComplete()
+            }
+            return response;
+        } catch (error) {
+            setError(error)
+            if (onError) {
+                onError(error)
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return { deleteEnrollment, loading, error }

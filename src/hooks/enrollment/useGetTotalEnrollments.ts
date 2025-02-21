@@ -18,13 +18,15 @@ export function useGetTotalEnrollments() {
 
 
     async function getTotalEnrollment(trackedEntity: string) {
-        setLoading(true)
-        return await engine.query(ENROLLMENT_QUERY, { variables: { id: trackedEntity } })
-            .then((response) => {
-                setData(response)
-            }).finally(() => {
-                setLoading(false)
-            })
+        try {
+            setLoading(true)
+            const response = await engine.query(ENROLLMENT_QUERY, { variables: { id: trackedEntity } });
+            setData(response)
+            return response;
+        } catch (error) {
+        } finally {
+            setLoading(false)
+        }
     }
 
     return { getTotalEnrollment, data, loading }
