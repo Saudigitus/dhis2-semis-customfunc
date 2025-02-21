@@ -13,6 +13,7 @@ import { useSearchTei } from "./hooks/tei/useSearchTei"
 import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
+import { useDeleteTEI } from "./hooks/tei/useDeleteTei"
 import { useGetTei } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
 import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
@@ -52,5 +53,6 @@ export {
     useViewPortWidth,
     formatStringToLowerCase,
     formatStringToTitleCase,
-    capitalizeString
+    capitalizeString,
+    useDeleteTEI
 }
