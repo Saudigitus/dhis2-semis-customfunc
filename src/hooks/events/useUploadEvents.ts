@@ -1,5 +1,4 @@
 import { useDataMutation } from "@dhis2/app-runtime";
-import { useState } from 'react'
 
 const postEvent: any = {
     resource: 'tracker',

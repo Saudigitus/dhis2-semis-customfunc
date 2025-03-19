@@ -16,14 +16,14 @@ import { formatResponseData } from "./utils/tei/formatResponseData"
 import { useDeleteTEI } from "./hooks/tei/useDeleteTei"
 import { useGetTei } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
-import { attributes, dataValues } from "./utils/table/rows/formatRowsData" 
-import {useDeleteEnrollment} from "./hooks/enrollment/useDeleteEnrollment"
-import {useGetEnrollment} from "./hooks/enrollment/useGetEnrollment"
-import {useGetTotalEnrollments} from "./hooks/enrollment/useGetTotalEnrollments"
-
+import { attributes, dataValues } from "./utils/table/rows/formatRowsData"
+import { useDeleteEnrollment } from "./hooks/enrollment/useDeleteEnrollment"
+import { useGetEnrollment } from "./hooks/enrollment/useGetEnrollment"
+import { useGetTotalEnrollments } from "./hooks/enrollment/useGetTotalEnrollments"
 import useShowAlerts from "./hooks/commons/useShowAlert"
 import useViewPortWidth from "./hooks/rwd/useViewPortWidth"
 import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } from "./utils/common/formatStringCase"
+import useUploadEvents from './hooks/events/useUploadEvents'
 
 export {
     useBuildForm,
@@ -43,7 +43,7 @@ export {
     useSearchEnrollments,
     formatResponseData,
     useGetTei,
-    attributes, 
+    attributes,
     dataValues,
     useGetEvents,
     useDeleteEnrollment,
@@ -54,5 +54,6 @@ export {
     formatStringToLowerCase,
     formatStringToTitleCase,
     capitalizeString,
-    useDeleteTEI
+    useDeleteTEI,
+    useUploadEvents
 }
