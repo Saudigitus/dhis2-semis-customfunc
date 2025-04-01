@@ -1,4 +1,3 @@
-
 import { useDataEngine } from "@dhis2/app-runtime";
 import { EventQueryProps, EventQueryResults } from "../../types/events/eventsProps";
 import { TeiQueryProps, TeiQueryResults } from "../../types/tei/teiProps";
@@ -82,7 +81,7 @@ export function useModulesData() {
     async function getBasicData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
 
-        const eventsResults = await engine.query(EVENT_QUERY({
+        const eventsResults: any = await engine.query(EVENT_QUERY({
             ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
             page,
             pageSize,
@@ -91,7 +90,8 @@ export function useModulesData() {
             programStage: baseProgramStage,
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
-            orgUnit: orgUnit
+            orgUnit: orgUnit,
+            totalPages: true,
         })).catch((error) => {
             show({
                 message: `${("Could not get events")}: ${error.message}`,
@@ -105,7 +105,7 @@ export function useModulesData() {
         const teiResults = registrationTrackedEntities?.length > 0
             ? await engine.query(TEI_QUERY({
                 ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                pageSize,
+                skipPaging: true,
                 program: program as unknown as string,
                 trackedEntity: registrationTrackedEntities
             })).catch((error) => {
@@ -123,19 +123,23 @@ export function useModulesData() {
         return {
             registrationInstances,
             teiInstances,
-            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances })
+            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances }),
+            pagination: {
+                page: eventsResults?.results?.page,
+                pageSize: eventsResults?.results?.pageSize,
+                totalPages: eventsResults?.results?.pageCount,
+                totalElements: eventsResults?.results?.total
+            }
         }
     }
 
     async function getStageData({ tableDataProps, formattedBasicTableData }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any }) {
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+        const {order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
         let copy = []
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
             const eventsResults = await engine.query(EVENT_QUERY({
                 ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                page,
-                pageSize,
                 program: program as unknown as string,
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
@@ -148,9 +152,9 @@ export function useModulesData() {
                 });
                 setTimeout(hide, 5000);
             }) as unknown as EventQueryResults;
-            const registrationInstances = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+            const frEvents = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
-            copy[i] = { ...formatRowsData({ registrationInstances: registrationInstances ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i] }
+            copy[i] = { ...formatRowsData({ registrationInstances: frEvents ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i], frEvent: eventsResults?.results?.instances?.[0] ?? {} }
         }
 
         return {

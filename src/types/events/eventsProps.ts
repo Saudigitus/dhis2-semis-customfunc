@@ -18,6 +18,7 @@ interface EventQueryProps {
     trackedEntity?: string
     fields?: string
     enrollment?: string
+    totalPages?:boolean
 }
 
 interface GetDataElementsProps {

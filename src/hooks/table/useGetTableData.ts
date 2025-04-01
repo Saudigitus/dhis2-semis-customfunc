@@ -9,7 +9,7 @@ import { selectedDataStoreKey } from "dhis2-semis-types";
 export function useTableData({ module, selectedDataStore }: { module: Modules, selectedDataStore: selectedDataStoreKey }) {
     const { getBasicData, getStageData } = useModulesData()
     const [loading, setLoading] = useState<boolean>(false)
-    const [tableData, setTableData] = useState<TableDataProps[]>([])
+    const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
 
 
     async function getData(tableDataProps: GetTableDataProps) {
@@ -17,12 +17,12 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
 
         if (orgUnit !== null) {
             setLoading(true);
-            const { formattedBasicTableData } = await getBasicData(tableDataProps)
+            const { formattedBasicTableData, pagination } = await getBasicData(tableDataProps)
 
             try {
                 switch (module) {
                     case Modules.Enrollment: {
-                        setTableData([...formattedBasicTableData]);
+                        setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
                         break;
                     }
                     case Modules.Attendance: {
@@ -46,7 +46,7 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
                             formattedBasicTableData,
                             tableDataProps: { ...rest, baseProgramStage: (selectedDataStore[Modules.Final_Result] as unknown as any)?.programStage }
                         });
-                        setTableData([...formattedStagedData]);
+                        setTableData({ pagination: pagination, data: [...formattedStagedData] });
                         break;
                     }
                     default: {
