@@ -6,25 +6,17 @@ import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis
 interface UseHeaderProps {
     tableColumns: CustomAttributeProps[]
     programConfigData: ProgramConfig
-    dataStoreData: DataStoreProps[0]
-    module: any
+    dataStoreData: DataStoreProps[0],
+    programStage: string
 }
-export function useHeader({ tableColumns, programConfigData, dataStoreData, module }: UseHeaderProps) {
-    // const { getValidDays } = generateAttendanceDays()
-    //const { attendanceMode } = useAttendanceMode({ AttendanceModeState })
-    //const attendanceProgramStage = dataStoreData?.attendance?.programStage
+export function useHeader({ tableColumns, programConfigData, dataStoreData, programStage  }: UseHeaderProps) {
 
-    /*     const getModuleAditionalHeaders = () => {
-            switch (module) {
-                case Modules.Attendance:
-                    return getAttendanceDays(getValidDays(selectedDate ?? new Date()), "view", programConfigData, attendanceProgramStage);
-            
-                default:
-                    return [];
-            }
-        } */
+    function getHeader(ps: string) {
+        return formatHeaders({ programConfigData, dataStoreData, tableColumns, programStage: ps })
+    }
 
     return {
-        columns: formatHeaders({ programConfigData, dataStoreData, tableColumns, module }),
+        columns: getHeader(programStage),
+        getHeader
     }
 }

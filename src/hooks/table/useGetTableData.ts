@@ -31,8 +31,16 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
                         break;
                     }
                     case Modules.Performance: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
+                        const { otherProgramStage, ...rest } = tableDataProps
+                        if (otherProgramStage) {
+                            const { formattedStagedData } = await getStageData({
+                                formattedBasicTableData,
+                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! }
+                            });
+                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
+                        } else {
+                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                        }
                         break;
                     }
                     case Modules.Transfer: {

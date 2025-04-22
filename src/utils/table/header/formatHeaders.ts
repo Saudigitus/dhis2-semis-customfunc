@@ -5,13 +5,13 @@ interface FormatHeadersProps {
     programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0]
     tableColumns: CustomAttributeProps[]
-    module: keyof DataStoreProps[0]
+    programStage?: string
 }
-export function formatHeaders({ programConfigData, dataStoreData, tableColumns = [], module }: FormatHeadersProps): CustomAttributeProps[] {
+export function formatHeaders({ programConfigData, dataStoreData, tableColumns = [], programStage }: FormatHeadersProps): CustomAttributeProps[] {
 
     const headerResponse = () => {
         const originalData = ((programConfigData?.programStages?.find((programStge: any) => programStge.id === dataStoreData?.registration?.programStage)) ?? {} as any)
-        const secondaryData = ((programConfigData?.programStages?.find((programStge: any) => programStge.id === (dataStoreData?.[module] as unknown as any)?.programStage)) ?? {} as any)
+        const secondaryData = ((programConfigData?.programStages?.find((programStge: any) => programStge.id === programStage)) ?? {} as any)
 
         const columnsToDisplay =
             formatVariables({ variables: programConfigData?.programTrackedEntityAttributes as [], type: VariablesTypes.Attribute })

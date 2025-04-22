@@ -7,6 +7,7 @@ interface GetTableDataProps {
     order?: string
     orgUnit: string
     baseProgramStage: string
+    otherProgramStage?: string
     attributeFilters?: string[]
     dataElementFilters?: string[]
 }
