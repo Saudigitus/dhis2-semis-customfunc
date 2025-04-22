@@ -1,3 +1,4 @@
+import { attendanceConfig, AttendanceFormaterProps } from "src/types/table/FormatRowsDataTypes";
 import { FormatResponseRowsProps, RowsDataProps } from "../../../types/common/FormatRowsDataProps";
 import { dataValuesProps } from "../../../types/events/eventsProps";
 import { attributesProps } from "../../../types/tei/teiProps";
@@ -5,10 +6,10 @@ import { attributesProps } from "../../../types/tei/teiProps";
 
 export function formatRowsData({ registrationInstances, teiInstances }: FormatResponseRowsProps): RowsDataProps[] {
     const allRows: RowsDataProps[] = [];
-    
+
     for (const event of registrationInstances ?? []) {
         const teiDetails = teiInstances?.find(tei => tei.trackedEntity === event.trackedEntity);
-        
+
         allRows.push({
             ...dataValues(event.dataValues),
             ...(attributes((teiDetails?.attributes) ?? [])),
@@ -39,4 +40,24 @@ export function attributes(data: attributesProps[]): RowsDataProps {
         localData[attribute.attribute] = attribute.value;
     }
     return localData;
+}
+
+export function attendanceDataValuesFormater(data: AttendanceFormaterProps[], attendanceConfig: attendanceConfig): RowsDataProps {
+    const localData: RowsDataProps = {}
+    let status, absenceOption, eventId
+
+    for (const event of data) {
+        eventId = event.event
+        for (const dataValue of event.dataValues) {
+            if (attendanceConfig?.status === dataValue.dataElement) {
+                status = dataValue.value
+            }
+
+            if (attendanceConfig?.absenceReason === dataValue.dataElement) {
+                absenceOption = dataValue.value
+            }
+        }
+        localData[event.occurredAt?.split("T")?.[0]] = { status, absenceOption, eventId }
+    }
+    return localData
 }

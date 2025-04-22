@@ -3,10 +3,8 @@ import { useState } from "react";
 import { GetTableDataProps, TableDataProps } from "../../types/table/tableDataProps";
 import { useModulesData } from "./useModulesData";
 import { Modules } from "dhis2-semis-types";
-import { selectedDataStoreKey } from "dhis2-semis-types";
 
-
-export function useTableData({ module, selectedDataStore }: { module: Modules, selectedDataStore: selectedDataStoreKey }) {
+export function useTableData({ module }: { module: Modules }) {
     const { getBasicData, getStageData } = useModulesData()
     const [loading, setLoading] = useState<boolean>(false)
     const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
@@ -18,7 +16,6 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
         if (orgUnit !== null) {
             setLoading(true);
             const { formattedBasicTableData, pagination } = await getBasicData(tableDataProps)
-
             try {
                 switch (module) {
                     case Modules.Enrollment: {
@@ -26,8 +23,18 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
                         break;
                     }
                     case Modules.Attendance: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
+                        const { otherProgramStage, ...rest } = tableDataProps
+                        if (otherProgramStage) {
+                            const { formattedStagedData } = await getStageData({
+                                formattedBasicTableData,
+                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
+                                module
+                            });
+
+                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
+                        } else {
+                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                        }
                         break;
                     }
                     case Modules.Performance: {
@@ -35,7 +42,8 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
                         if (otherProgramStage) {
                             const { formattedStagedData } = await getStageData({
                                 formattedBasicTableData,
-                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! }
+                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
+                                module
                             });
                             setTableData({ pagination: pagination, data: [...formattedStagedData] });
                         } else {
@@ -49,10 +57,11 @@ export function useTableData({ module, selectedDataStore }: { module: Modules, s
                         break;
                     }
                     case Modules.Final_Result: {
-                        const { baseProgramStage, ...rest } = tableDataProps
+                        const { otherProgramStage, ...rest } = tableDataProps
                         const { formattedStagedData } = await getStageData({
                             formattedBasicTableData,
-                            tableDataProps: { ...rest, baseProgramStage: (selectedDataStore[Modules.Final_Result] as unknown as any)?.programStage }
+                            tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
+                            module
                         });
                         setTableData({ pagination: pagination, data: [...formattedStagedData] });
                         break;
