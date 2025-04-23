@@ -28,13 +28,13 @@ export const unavailableSchoolDays = () => {
     function isHoliday(date: Date, holidays: Array<{ date: string, event: string }>) {
         const formatDate = format(date, "yyyy-MM-dd")
 
-        if (holidays.findIndex(h => h.date === formatDate) > -1) {
+        if (holidays?.findIndex(h => h.date === formatDate) > -1) {
             return true
         }
     }
 
     function isClassPeriod(date: Date, classPeriods: Array<{ startDate: string, endDate: string }>) {
-        if (classPeriods.findIndex((h) => (new Date(h.startDate) <= date && new Date(h.endDate) >= date)) > -1) {
+        if (classPeriods?.findIndex((h) => (new Date(h.startDate) <= date && new Date(h.endDate) >= date)) > -1) {
             return true
         }
     }
