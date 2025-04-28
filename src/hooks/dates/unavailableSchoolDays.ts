@@ -20,7 +20,7 @@ export const unavailableSchoolDays = () => {
     }
 
     function isweekDayDisabled(date: Date, weekdays: Record<string, boolean>) {
-        if (!weekdays[WeekDays[date.getDay()]]) {
+        if (!weekdays?.[WeekDays?.[date?.getDay()]]) {
             return true
         }
     }
