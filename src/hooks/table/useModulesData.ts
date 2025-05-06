@@ -160,7 +160,8 @@ export function useModulesData() {
 
             copy[i] = {
                 ...(Modules.Attendance == module ?
-                    attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any) : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [] })[0]),
+                    attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any)
+                    : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [] })[0]),
                 ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: eventsResults?.results?.instances?.[0] ?? {} } : {})
             }
         }

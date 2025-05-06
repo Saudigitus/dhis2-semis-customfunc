@@ -15,29 +15,25 @@ export function useTableData({ module }: { module: Modules }) {
 
         if (orgUnit !== null) {
             setLoading(true);
-            const { formattedBasicTableData, pagination } = await getBasicData(tableDataProps)
+            const updatedProps = {
+                ...tableDataProps,
+                ...(module == Modules.Transfer ?
+                    {
+                        baseProgramStage: tableDataProps.otherProgramStage,
+                        otherProgramStage: tableDataProps.baseProgramStage
+                    } :
+                    {})
+            };
+
+            const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
+
             try {
                 switch (module) {
                     case Modules.Enrollment: {
                         setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
                         break;
                     }
-                    case Modules.Attendance: {
-                        const { otherProgramStage, ...rest } = tableDataProps
-                        if (otherProgramStage) {
-                            const { formattedStagedData } = await getStageData({
-                                formattedBasicTableData,
-                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
-                                module
-                            });
-
-                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
-                        } else {
-                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        }
-                        break;
-                    }
-                    case Modules.Performance: {
+                    case Modules.Performance: case Modules.Final_Result: case Modules.Attendance: case Modules.Transfer: {
                         const { otherProgramStage, ...rest } = tableDataProps
                         if (otherProgramStage) {
                             const { formattedStagedData } = await getStageData({
@@ -49,21 +45,6 @@ export function useTableData({ module }: { module: Modules }) {
                         } else {
                             setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
                         }
-                        break;
-                    }
-                    case Modules.Transfer: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
-                        break;
-                    }
-                    case Modules.Final_Result: {
-                        const { otherProgramStage, ...rest } = tableDataProps
-                        const { formattedStagedData } = await getStageData({
-                            formattedBasicTableData,
-                            tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
-                            module
-                        });
-                        setTableData({ pagination: pagination, data: [...formattedStagedData] });
                         break;
                     }
                     default: {
