@@ -2,9 +2,10 @@ import { useDataEngine } from "@dhis2/app-runtime";
 import { EventQueryProps, EventQueryResults } from "../../types/events/eventsProps";
 import { TeiQueryProps, TeiQueryResults } from "../../types/tei/teiProps";
 import { GetTableDataProps } from "../../types/table/tableDataProps";
-import { formatRowsData } from "../../utils/table/rows/formatRowsData";
+import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
 import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
 import useShowAlerts from "../commons/useShowAlert";
+import { Modules } from "dhis2-semis-types";
 
 export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
     results: {
@@ -91,7 +92,7 @@ export function useModulesData() {
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit,
-            totalPages: true,
+            totalPages: true
         })).catch((error) => {
             show({
                 message: `${("Could not get events")}: ${error.message}`,
@@ -133,8 +134,8 @@ export function useModulesData() {
         }
     }
 
-    async function getStageData({ tableDataProps, formattedBasicTableData }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any }) {
-        const {order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+    async function getStageData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
+        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig } = tableDataProps;
         let copy = []
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
@@ -144,7 +145,9 @@ export function useModulesData() {
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
                 orgUnit: orgUnit,
-                trackedEntity: formattedBasicTableData[i].trackedEntity
+                trackedEntity: formattedBasicTableData[i].trackedEntity,
+                ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
+                ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
             })).catch((error) => {
                 show({
                     message: `${("Could not get events")}: ${error.message}`,
@@ -152,9 +155,14 @@ export function useModulesData() {
                 });
                 setTimeout(hide, 5000);
             }) as unknown as EventQueryResults;
-            const frEvents = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
-            copy[i] = { ...formatRowsData({ registrationInstances: frEvents ?? [], teiInstances: [] })[0], ...formattedBasicTableData[i], frEvent: eventsResults?.results?.instances?.[0] ?? {} }
+            const filteredEventes = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+
+            copy[i] = {
+                ...(Modules.Attendance == module ?
+                    attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any) : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [] })[0]),
+                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: eventsResults?.results?.instances?.[0] ?? {} } : {})
+            }
         }
 
         return {
