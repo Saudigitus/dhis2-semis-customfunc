@@ -25,10 +25,11 @@ export function formatProgramRules(programRules: ProgramRuleConfig[]): Formatted
     return programRulesResponses;
 }
 
-export function formatProgramRuleVariables(programRuleVariables: ProgramRuleVariableConfig[]) {
+export function formatProgramRuleVariables(programRuleVariables: ProgramRuleVariableConfig [], program: string | null) {
     const programRuleVariablesResponses: Record<string, string | undefined> = {};
 
     for (const pRulesVariable of programRuleVariables || []) {
+        if(pRulesVariable.program.id === program)
         programRuleVariablesResponses[pRulesVariable?.name.trim()] = pRulesVariable?.dataElement?.id || pRulesVariable?.trackedEntityAttribute?.id
     }
 
