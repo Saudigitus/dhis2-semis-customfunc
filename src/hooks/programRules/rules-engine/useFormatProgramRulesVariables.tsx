@@ -3,7 +3,7 @@ import { ProgramRulesVariablesConfigState } from "src/schema/programRulesVariabl
 import { formatProgramRuleVariables } from "src/utils/programRules/formatProgramRules";
 
 
-export function useFormatProgramRulesVariables(program: string | null) {
+export function useFormatProgramRulesVariables(program: string) {
     const programRulesVariablesConfigState = useRecoilValue(ProgramRulesVariablesConfigState);
 
     return {

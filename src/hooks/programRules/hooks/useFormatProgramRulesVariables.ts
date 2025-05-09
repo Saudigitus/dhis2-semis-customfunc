@@ -1,11 +1,12 @@
 import { useRecoilValue } from "recoil";
-import { formatProgramRuleVariables } from "../../../utils/programRules/formatProgramRules";
-import { ProgramRulesVariablesConfigState } from "../../../schema/programRulesVariablesSchema";
+import { ProgramRulesVariablesConfigState } from "src/schema/programRulesVariablesSchema";
+import { formatProgramRuleVariables } from "src/utils/programRules/formatProgramRules";
 
-export function useFormatProgramRulesVariables() {
+
+export function useFormatProgramRulesVariables(program: string) {
     const programRulesVariablesConfigState = useRecoilValue(ProgramRulesVariablesConfigState);
 
     return {
-        programRulesVariables: formatProgramRuleVariables(programRulesVariablesConfigState),
+        programRulesVariables: formatProgramRuleVariables(programRulesVariablesConfigState, program),
     }
 }

@@ -25,7 +25,7 @@ export function formatProgramRules(programRules: ProgramRuleConfig[]): Formatted
     return programRulesResponses;
 }
 
-export function formatProgramRuleVariables(programRuleVariables: ProgramRuleVariableConfig [], program: string | null) {
+export function formatProgramRuleVariables(programRuleVariables: ProgramRuleVariableConfig [], program: string) {
     const programRuleVariablesResponses: Record<string, string | undefined> = {};
 
     for (const pRulesVariable of programRuleVariables || []) {
