@@ -37,6 +37,7 @@ export class useValidation {
             const reader: FileReader = new FileReader();
             const mappedData: any = [];
 
+
             reader.onload = (event) => {
                 try {
                     // Parse the uploaded file
@@ -48,6 +49,16 @@ export class useValidation {
                         dateNF: "YYYY-MM-DD",
                         cellText: true
                     });
+
+                    // const sheetName = workbook.SheetNames[0];
+                    // const worksheet = workbook.Sheets[sheetName];
+                    // const rawData = utils.sheet_to_json(worksheet,
+                    //     { header: 1, raw: false, dateNF: 'yyyy-mm-dd', defval: "" });
+                    // const configSheet = workbook.SheetNames[1];
+                    // const configWorksheet = workbook.Sheets[configSheet];
+                    // const configData = utils.sheet_to_json(configWorksheet);
+
+                    // console.log(configData, "SHEET NAME")
 
                     // Convert Excel to JSON and validate the sheet structure
                     this.converterXlstoJson(workbook);
