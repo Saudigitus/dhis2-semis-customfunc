@@ -24,6 +24,8 @@ import useShowAlerts from "./hooks/commons/useShowAlert"
 import useViewPortWidth from "./hooks/rwd/useViewPortWidth"
 import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } from "./utils/common/formatStringCase"
 import useUploadEvents from './hooks/events/useUploadEvents'
+import { unavailableSchoolDays } from './hooks/dates/unavailableSchoolDays'
+import { useValidation } from './hooks/template_validation/useValidation'
 
 export {
     useBuildForm,
@@ -55,5 +57,7 @@ export {
     formatStringToTitleCase,
     capitalizeString,
     useDeleteTEI,
-    useUploadEvents
+    useUploadEvents,
+    unavailableSchoolDays,
+    useValidation,
 }

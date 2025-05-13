@@ -27,6 +27,8 @@ const useUrlParams = () => {
             position: useQuery().get('position'),
             employmentType: useQuery().get('employmentType'),
             programStage: useQuery().get('programStage'),
+            attendanceMode: useQuery().get('attendanceMode'),
+            selectedDate: useQuery().get('selectedDate')
         }
     }
     return { add, remove, useQuery, urlParameters }
