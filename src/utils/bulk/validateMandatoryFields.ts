@@ -11,11 +11,13 @@ const madatoryFieldsValidator = (program: any, fileRowData: any) => {
         } else {
             invalidData.push({
                 ...student,
-                errors: [...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => field.name).map((field: any) => { return { key: field, error: "Empty required field" } }), ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field, error: "Empty required field" } })]
+                errors: [
+                    ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
+                    ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } })]
             })
         }
     });
-    return {validData,invalidData,madatoryFieldsAttributes}
+    return { validData, invalidData, madatoryFieldsAttributes }
 }
 
 const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any): [] => {

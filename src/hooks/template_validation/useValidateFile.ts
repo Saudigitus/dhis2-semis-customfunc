@@ -21,7 +21,7 @@ const checkTEI = async (engine: any, programId: string, ouID: string, filterPara
 }
 
 const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
-    const [loader, setLoader] = useState<boolean>(true)
+    const [loader, setLoader] = useState<boolean>(false)
     const engine = useDataEngine()
     const [validRecords, setValidRecords] = useState<any[]>([])
     const [invalidRecords, setInvalidRecords] = useState<any[]>([])
@@ -68,7 +68,7 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
             }
             setLoader(false)
         }
+        return { validador, loader, validRecords, invalidRecords }
     }
-    return { validador, loader, validRecords, invalidRecords }
 }
 export { useValidateFile }
