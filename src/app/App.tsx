@@ -1,4 +1,4 @@
-import { DropZone, ModalComponent } from 'dhis2-semis-components'
+// import { DropZone, ModalComponent } from 'dhis2-semis-components'
 import React, { useState } from 'react'
 import { useValidation } from '../hooks/template_validation/useValidation'
 import { useValidateFile } from '../hooks/template_validation/useValidateFile'
@@ -472,12 +472,11 @@ import { useValidateFile } from '../hooks/template_validation/useValidateFile'
 // }
 
 // const ImportProcess = () => {
-//     // const UseValidation =  useValidateFile()
 //     const [open, setOpen] = useState(false)
-//     const module = "attendance"
+//     const module = "enrollment"
 //     const [openPogress, setOpenProgress] = useState(false)
 //     const UseValidation = new useValidation()
-//     const { validador, invalidRecords, loader, validRecords } = useValidateFile(program, 'POST')
+//     const { validador, invalidRecords, loader, validRecords } = useValidateFile(program, 'UPDATE')
 
 //     const onValidation = async (file: File) => {
 //         UseValidation.setModule(module as unknown as any)
