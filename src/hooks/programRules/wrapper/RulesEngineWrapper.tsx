@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from 'react'
 import FetchEngineVariables from './FetchEngineVariables';
 import { Center, CircularLoader, NoticeBox } from "@dhis2/ui";
-import { initializeRulesEngine } from '../rules-engine/InitializeRulesEngine';
 import { RulesEngineWrapperProps } from '../../../types/programRules/RulesEngineProps';
 
 /**
@@ -11,12 +10,7 @@ import { RulesEngineWrapperProps } from '../../../types/programRules/RulesEngine
  */
 export default function RulesEngineWrapper(props: RulesEngineWrapperProps) {
     const { programs } = props;
-    const { initialize } = initializeRulesEngine()
     const { loading, error } = FetchEngineVariables(programs)
-
-    useEffect(() => {
-        initialize()
-    }, [loading, error])
 
     if (loading) {
         return (
