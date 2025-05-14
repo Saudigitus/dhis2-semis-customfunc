@@ -11,17 +11,18 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
                     return { key: validateAttendanceField, error: "No attendance to this date" }
-                }), ...(validateOptionalFields(student, module, program) || []).map((field: any) => {
-                    return {
-                        key: `${field?.displayName ?? field?.name}`,
-                        error: "Empty optional field"
-                    }
                 })],
             })
         } else {
             invalidData.push({
                 ...student,
                 errors: [
+                    ...(validateOptionalFields(student, module, program) || []).map((field: any) => {
+                        return {
+                            key: `${field?.displayName ?? field?.name}`,
+                            error: "Empty required field"
+                        }
+                    }),
                     ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
                     ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field, error: "Empty required field" } })]
             })
@@ -100,7 +101,7 @@ const validateOptionalFields = (student: any, module: string, program: any) => {
         allEmpty.forEach((key: any) => {
             warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
         })
-    }else if (module === "performance") {
+    } else if (module === "performance") {
         // const allEmpty = Object.keys(student?.['Performance']).filter(key => student?.['Final result'][key] === ""
         //     || student?.['Final result'][key] === null || student?.['Final result'][key] === undefined
         // );
