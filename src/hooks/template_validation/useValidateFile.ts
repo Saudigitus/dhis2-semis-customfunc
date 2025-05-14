@@ -27,7 +27,7 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const [invalidRecords, setInvalidRecords] = useState<any[]>([])
 
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
-        const { invalidData, madatoryFieldsAttributes, validData } = madatoryFieldsValidator(program, data)
+        const { invalidData, madatoryFieldsAttributes, validData } = madatoryFieldsValidator(program, data, module)
 
         setInvalidRecords(invalidData)
         setValidRecords(mutateType === "UPDATE" ? validData : [])
