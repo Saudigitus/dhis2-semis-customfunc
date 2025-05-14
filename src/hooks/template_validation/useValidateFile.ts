@@ -68,7 +68,7 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
             }
             setLoader(false)
         }
-        return { validador, loader, validRecords, invalidRecords }
     }
+    return { validador, loader, validRecords, invalidRecords }
 }
 export { useValidateFile }

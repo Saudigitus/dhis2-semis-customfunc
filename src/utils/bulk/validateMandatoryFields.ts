@@ -22,7 +22,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any) => {
 
 const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any): [] => {
     //FILTER ALL NULL, UNDEFINED AND EMPTY ATTRIBUTES
-    return madatoryFieldsAttributes.filter(({ trackedEntityAttribute: { id } }) => {
+    return madatoryFieldsAttributes.filter(({ trackedEntityAttribute: { id } }: any) => {
         const value = student?.['Student profile']?.[id];
         return value === undefined || value === null || value === '';
     });
@@ -50,11 +50,11 @@ const validateMandatoryDataElements = (student: any, program: any): [] => {
     return madatoryFieldsProgramStages
         .map((stage: any) =>
             //FILTER ALL NULL, UNDEFINED AND EMPTY DATA ELEMENTS
-            stage.programStageDataElements.filter(({ dataElement }) => {
+            stage.programStageDataElements.filter(({ dataElement }: any) => {
                 const fullId = `${stage.id}.${dataElement.id}`;
                 const value = merged[fullId];
                 return value === undefined || value === null || value === '';
-            }).map(({ dataElement }) => dataElement?.displayName)
+            }).map(({ dataElement }: any) => dataElement?.displayName)
         ).flat();
 }
 export { madatoryFieldsValidator }
