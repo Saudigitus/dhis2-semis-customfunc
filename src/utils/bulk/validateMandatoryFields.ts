@@ -13,7 +13,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any) => {
                 ...student,
                 errors: [
                     ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
-                    ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } })]
+                    ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field, error: "Empty required field" } })]
             })
         }
     });
@@ -40,6 +40,8 @@ const validateMandatoryDataElements = (student: any, program: any): [] => {
         };
     }).filter(Boolean)
 
+    console.log(madatoryFieldsProgramStages, "madatoryFieldsProgramStages")
+
 
     // FILTER ALL STUDENT FILE PROGRAM STAGES AND MERGE ON ONE OBJECT
     const filteredObjects = Object.entries(student)
@@ -54,7 +56,7 @@ const validateMandatoryDataElements = (student: any, program: any): [] => {
                 const fullId = `${stage.id}.${dataElement.id}`;
                 const value = merged[fullId];
                 return value === undefined || value === null || value === '';
-            }).map(({ dataElement }: any) => dataElement?.displayName)
+            }).map(({ dataElement }: any) => dataElement?.displayName ?? dataElement?.name)
         ).flat();
 }
 export { madatoryFieldsValidator }
