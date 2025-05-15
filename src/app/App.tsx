@@ -7,10 +7,9 @@ import program from "../utils/constants/programConfig.json"
 
 // const ImportProcess = () => {
 //     const [open, setOpen] = useState(false)
-//     const module = "final-result"
-//     const [openPogress, setOpenProgress] = useState(false)
+//     const module = "enrollment"
 //     const UseValidation = new useValidation()
-//     const { validador, invalidRecords, loader, validRecords } = useValidateFile(program, 'UPDATE')
+//     const { validador, invalidRecords, loader, validRecords } = useValidateFile(program, 'POST')
 
 //     const onValidation = async (file: File) => {
 //         UseValidation.setModule(module as unknown as any)
@@ -24,9 +23,9 @@ import program from "../utils/constants/programConfig.json"
 //             })
 //     }
 
-//     if(!loader){
-//         console.log(invalidRecords, validRecords)
-//     }
+//     // if(!loader){
+//     //     console.log(invalidRecords, validRecords)
+//     // }
 
 //     return (
 //         <>

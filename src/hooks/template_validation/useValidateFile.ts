@@ -20,6 +20,14 @@ const checkTEI = async (engine: any, programId: string, ouID: string, filterPara
     return []
 }
 
+const getUniqueAttributes = (attributes: any, student: any): [] => {
+    //FILTER ALL NULL, UNDEFINED AND EMPTY ATTRIBUTES
+    return attributes.filter(({ trackedEntityAttribute: { id } }: any) => {
+        const value = student?.['Student profile']?.[id];
+        return value === undefined || value === null || value === '';
+    });
+}
+
 const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const [loader, setLoader] = useState<boolean>(false)
     const engine = useDataEngine()
@@ -27,43 +35,47 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const [invalidRecords, setInvalidRecords] = useState<any[]>([])
 
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
-        const { invalidData, madatoryFieldsAttributes, validData } = madatoryFieldsValidator(program, data, module)
+        const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module)
 
         setInvalidRecords(invalidData)
         setValidRecords(mutateType === "UPDATE" ? validData : [])
 
         if (mutateType === "POST") {
             const filterParams = validData.map((student: any) => {
-                const params = madatoryFieldsAttributes.flatMap((attributes: any) => {
+                const params = uniqueAttributes.flatMap((attributes: any) => {
                     const value = student?.['Student profile']?.[attributes.trackedEntityAttribute.id]
                     return [`${attributes.trackedEntityAttribute.id}:EQ:${value}`]
                 })
                 return { student, params }
             })
 
+
             setLoader(true)
             for (const params of filterParams) {
-                const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit, params.params)
-                if (instances.length > 0) {
-                    setInvalidRecords(prevState => [
-                        ...prevState,
-                        {
-                            ...params.student,
-                            errors: [
-                                {
-                                    key: "TEI",
-                                    error: `TEI already exists in the system`
-                                }
-                            ]
-                        }
-                    ])
-                } else {
-                    setValidRecords(prevState => [
-                        ...prevState,
-                        {
-                            ...params.student,
-                        }
-                    ])
+                for (const param of params?.params) {
+                    const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit, [param])
+                    if (instances.length > 0) {
+                        setInvalidRecords(prevState => [
+                            ...prevState,
+                            {
+                                ...params.student,
+                                errors: [
+                                    {
+                                        key: "TEI",
+                                        error: `TEI already exists in the system`
+                                    }
+                                ]
+                            }
+                        ])
+                        break
+                    } else {
+                        setValidRecords(prevState => [
+                            ...prevState,
+                            {
+                                ...params.student,
+                            }
+                        ])
+                    }
                 }
             }
             setLoader(false)

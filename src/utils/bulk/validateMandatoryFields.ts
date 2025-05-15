@@ -3,6 +3,9 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
     const invalidData: any[] = []
     const students = fileRowData
     const madatoryFieldsAttributes = program.programTrackedEntityAttributes.filter((field: any) => field.mandatory)
+    const uniqueAttributes: any[] = program.programTrackedEntityAttributes.filter((attribute: any) => {
+        return attribute.trackedEntityAttribute?.unique
+    })
 
 
     students.forEach((student: any) => {
@@ -29,7 +32,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
         }
     });
     // console.log(validData, "ds")
-    return { validData, invalidData, madatoryFieldsAttributes }
+    return { validData, invalidData, uniqueAttributes }
 }
 
 const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any): [] => {
