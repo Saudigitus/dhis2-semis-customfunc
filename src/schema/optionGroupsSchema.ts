@@ -9,6 +9,6 @@ export interface OptionGroupsConfig {
 }
 
 export const OptionGroupsConfigState = atom<OptionGroupsConfig[]>({
-    key: "optionGroupsConfig-get-state",
+    key: "optionGroupsConfig-get",
     default: []
 })

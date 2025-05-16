@@ -2,9 +2,9 @@ import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
 import { OptionGroupsConfigState } from "../../../schema/optionGroupsSchema";
 import { OrgUnitsGroupsConfigState } from "../../../schema/orgUnitsGroupSchema";
-import { ProgramRulesFormatedState } from "../../../schema/programRulesFormated";
 import { compareStringByLabel } from "../../../utils/programRules/sortStringsByLabel";
-import { useFormatProgramRulesVariables } from "./useFormatProgramRulesVariables";
+import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables";
+import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
 
 interface RulesEngineProps {
     variables: any[]
@@ -16,10 +16,10 @@ interface RulesEngineProps {
 export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const { variables, values, type, program } = props
     const getOptionGroups = useRecoilValue(OptionGroupsConfigState)
-    const newProgramRules = useRecoilValue(ProgramRulesFormatedState)
     const [updatedVariables, setUpdatedVariables] = useState([...variables])
     const orgUnitsGroups = useRecoilValue(OrgUnitsGroupsConfigState)
     const { programRulesVariables } = useFormatProgramRulesVariables(program)
+    const { newProgramRules } = useFormatProgramRules(program)
 
     useEffect(() => {
         if (updatedVariables.length === 0) {
@@ -80,7 +80,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
 
         // Replace #{variable} with values['variable']
         expression = expression.replace(/#\{([^}]+)\}/g, (match: any, key: any) => {
-            console.log(key,  "# key")
+            console.log(key, "# key")
             console.log(programRulesVariables, "programRulesVariables", programRulesVariables[key])
             console.log(values, "values")
             const value = values[programRulesVariables[key]];
@@ -181,6 +181,11 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
 
     // apply rules to variables
     function applyRulesToVariable(variable: any) {
+        console.log(variable, "variable")
+        console.log(programRulesVariables, "programRulesVariables")
+        console.log(newProgramRules, "newProgramRules")
+
+
         for (const programRule of newProgramRules.filter(x => x.variable === variable.name) || []) {
             const firstCondition = evaluateExpression(programRule.condition, variable, values, programRulesVariables);
             switch (programRule.programRuleActionType) {
@@ -189,7 +194,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                         const value = evaluateExpression(programRule.data, variable, values, programRulesVariables);
                         console.log(firstCondition)
                         if (firstCondition) {
-                            if ( value !== undefined) {
+                            if (value !== undefined) {
                                 console.log(value, "valueTo Assign")
                                 values[variable.name] = value
                             } else {
