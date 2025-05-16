@@ -26,6 +26,7 @@ import { formatStringToLowerCase, formatStringToTitleCase, capitalizeString } fr
 import useUploadEvents from './hooks/events/useUploadEvents'
 import { unavailableSchoolDays } from './hooks/dates/unavailableSchoolDays'
 import { useValidation } from './hooks/template_validation/useValidation'
+import { useValidateFile } from './hooks/template_validation/useValidateFile'
 
 export {
     useBuildForm,
@@ -42,7 +43,7 @@ export {
     RulesEngineWrapper,
     useSearchTei,
     useFileResource,
-    useSearchEnrollments,
+    useSearchEnrollments,   
     formatResponseData,
     useGetTei,
     attributes,
@@ -60,4 +61,5 @@ export {
     useUploadEvents,
     unavailableSchoolDays,
     useValidation,
+    useValidateFile
 }

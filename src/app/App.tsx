@@ -1,9 +1,51 @@
-import React, { useEffect } from 'react'
-import { useHeader } from '../hooks/table/useHeader'
-import { useTableData } from '../hooks/table/useGetTableData'
-import program from '../program.json'
-import dataStore from '../dataStore.json'
-import { Modules } from 'dhis2-semis-types'
+// import { DropZone, ModalComponent } from 'dhis2-semis-components'
+import React, { useState } from 'react'
+import { useValidation } from '../hooks/template_validation/useValidation'
+import { useValidateFile } from '../hooks/template_validation/useValidateFile'
+import program from "../utils/constants/programConfig.json"
+// import { DropZone, ModalComponent } from 'dhis2-semis-components'
+
+// const ImportProcess = () => {
+//     const [open, setOpen] = useState(false)
+//     const module = "enrollment"
+//     const UseValidation = new useValidation()
+//     const { validador, invalidRecords, loader, validRecords } = useValidateFile(program, 'POST')
+
+//     const onValidation = async (file: File) => {
+//         UseValidation.setModule(module as unknown as any)
+//         await UseValidation.validation(file[0])
+//             .then((resp) => {
+//                 const { mapping, module } = resp
+//                 validador({ module, data: mapping })
+//             })
+//             .catch((error) => {
+//                 console.log(error, "ERROR")
+//             })
+//     }
+
+//     if(!loader){
+//         console.log(invalidRecords, validRecords)
+//     }
+
+//     return (
+//         <>
+//             <a style={{ width: "100%", cursor: "pointer", padding: "5px" }} onClick={(e) => {
+//                 e.preventDefault()
+//                 setOpen(true)
+//             }}>
+//                 <button>Open mport</button>
+//             </a>
+
+//             <ModalComponent
+//                 children={<DropZone accept='.csv,.xlsx' onSave={(file) => onValidation(file)} />}
+//                 handleClose={() => { setOpen(false) }}
+//                 loading={loader}
+//                 open={open}
+//                 title={"Bulk Data"}
+//             />
+//         </>
+//     )
+// }
 
 function MyApp() {
     // const { getData, tableData } = useTableData({ module: Modules.Transfer })
@@ -29,6 +71,8 @@ function MyApp() {
     // console.log(tableData)
     return (
         <div>
+            "WELLCOME"
+            {/* <ImportProcess/> */}
         </div>
     )
 
