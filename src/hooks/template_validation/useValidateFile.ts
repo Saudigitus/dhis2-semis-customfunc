@@ -32,7 +32,6 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
 
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
         const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module)
-
         setInvalidRecords(invalidData)
         setValidRecords(mutateType === "UPDATE" ? validData : [])
 
@@ -48,6 +47,8 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
 
             setLoader(true)
             for (const params of filterParams) {
+                console.log("ou in id", params?.student?.Ids?.orgUnit, "ou in params", school)
+                let isValid = true;
                 for (const param of params?.params) {
                     const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit ?? school, [param])
                     if (instances.length > 0) {
@@ -63,15 +64,17 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
                                 ]
                             }
                         ])
+                        isValid = false
                         break
-                    } else {
-                        setValidRecords(prevState => [
-                            ...prevState,
-                            {
-                                ...params.student,
-                            }
-                        ])
                     }
+                }
+                if (isValid) {
+                    setValidRecords(prevState => [
+                        ...prevState,
+                        {
+                            ...params.student,
+                        }
+                    ])
                 }
             }
             setLoader(false)

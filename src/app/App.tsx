@@ -23,9 +23,9 @@ import program from "../utils/constants/programConfig.json"
 //             })
 //     }
 
-//     // if(!loader){
-//     //     console.log(invalidRecords, validRecords)
-//     // }
+//     if(!loader){
+//         console.log(invalidRecords, validRecords)
+//     }
 
 //     return (
 //         <>

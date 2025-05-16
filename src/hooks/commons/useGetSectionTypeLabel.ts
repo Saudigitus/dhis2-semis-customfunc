@@ -1,9 +1,17 @@
 
+import { useEffect, useState } from "react";
 import { useUrlParams } from "./useQueryParams";
 
-const useGetSectionTypeLabel = (): { sectionName: "student" | "staff" } => {
+const useGetSectionTypeLabel = ():string => {
+    const [sectionTypeLabel, setSectionTypeLabel] = useState<string|null>(null);
     const { urlParameters } = useUrlParams()
-    const sectionType = (urlParameters().sectionType ?? 'student') as "student" | "staff";
+    const {sectionType} = urlParameters()
+
+    useEffect(() => {
+        if(sectionType){
+
+        }
+    },[sectionType])
 
     return { sectionName: sectionType };
 }

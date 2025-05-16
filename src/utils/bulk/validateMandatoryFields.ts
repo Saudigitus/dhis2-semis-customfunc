@@ -31,7 +31,6 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
             })
         }
     });
-    // console.log(validData, "ds")
     return { validData, invalidData, uniqueAttributes }
 }
 
