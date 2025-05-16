@@ -14,7 +14,14 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
                     return { key: validateAttendanceField, error: "No attendance to this date" }
-                })],
+                }),
+                ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
+                    return {
+                        key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
+                        error: "Empty required field"
+                    }
+                })
+                ],
             })
         } else {
             invalidData.push({
@@ -103,12 +110,49 @@ const validateOptionalFields = (student: any, module: string, program: any) => {
         allEmpty.forEach((key: any) => {
             warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
         })
-    } else if (module === "performance") {
-        // const allEmpty = Object.keys(student?.['Performance']).filter(key => student?.['Final result'][key] === ""
-        //     || student?.['Final result'][key] === null || student?.['Final result'][key] === undefined
-        // );
     }
+    return warningRecords
+}
 
+const validatePerformanceFields = (student: any, module: string, program: any) => {
+    const warningRecords: any = []
+    //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
+    const nonMandatoryFieldsDataElements = program?.programStages.flatMap((programStage: any) =>
+        programStage.programStageDataElements
+            .filter((el: any) => !el.compulsory)
+            .map((el: any) => ({
+                ...el.dataElement,
+                compulsory: el.compulsory,
+                programStageId: programStage?.id,
+                programStageName: programStage?.name ?? programStage?.displayName
+            }))
+    );
+
+    if (module === "performance") {
+        const emptyTerm1 = Object.keys(student?.['Term 1']).filter(key => student?.['Term 1'][key] === ""
+            || student?.['Term 1'][key] === null || student?.['Term 1'][key] === undefined
+        );
+
+        const emptyTerm2 = Object.keys(student?.['Term 2']).filter(key => student?.['Term 2'][key] === ""
+            || student?.['Term 2'][key] === null || student?.['Term 2'][key] === undefined
+        );
+
+        const emptyTerm3 = Object.keys(student?.['Term 3']).filter(key => student?.['Term 3'][key] === ""
+            || student?.['Term 3'][key] === null || student?.['Term 3'][key] === undefined
+        );
+
+        emptyTerm1.forEach((key: any) => {
+            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
+        })
+
+        emptyTerm2.forEach((key: any) => {
+            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
+        })
+
+        emptyTerm3.forEach((key: any) => {
+            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
+        })
+    }
     return warningRecords
 }
 

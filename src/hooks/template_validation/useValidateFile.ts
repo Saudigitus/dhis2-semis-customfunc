@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { madatoryFieldsValidator } from "../../utils/bulk/validateMandatoryFields"
 import { useDataEngine } from "@dhis2/app-runtime"
+import { set } from "date-fns";
 import { useUrlParams } from "../commons/useQueryParams";
 
 const checkTEI = async (engine: any, programId: string, ouID: string, filterParams: string[]): Promise<any[]> => {
@@ -33,9 +34,14 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
         const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module)
         setInvalidRecords(invalidData)
-        setValidRecords(mutateType === "UPDATE" ? validData : [])
 
-        if (mutateType === "POST") {
+        if (module !== "enrollment") {
+            setValidRecords(validData)
+        } else {
+            setValidRecords(mutateType === "UPDATE" ? validData : [])
+        }
+
+        if (mutateType === "POST" && module === "enrollment") {
             const filterParams = validData.map((student: any) => {
                 const params = uniqueAttributes.flatMap((attributes: any) => {
                     const value = student?.['Student profile']?.[attributes.trackedEntityAttribute.id]
@@ -58,8 +64,8 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
                                 ...params.student,
                                 errors: [
                                     {
-                                        key: "TEI",
-                                        error: `${displayName ?? sectionType} already exists in the system`
+                                        key: `${displayName ?? sectionType}`,
+                                        error: `already exists in the system`
                                     }
                                 ]
                             }
