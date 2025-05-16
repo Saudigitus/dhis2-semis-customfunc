@@ -30,7 +30,7 @@ export function useGetProgramRulesVariables(programs: string[]) {
 
     const { data, loading: loadingPRulesVariables, refetch } = useDataQuery<ProgramRulesVariablesQueryResponse>(PROGRAM_RULES_VARIABLES_QUERY, {
         variables: {
-            programFilter: programs?.map((program) => `program.id:eq:${program}`)
+            programFilter: `program.id:in:[${programs.join(",")}]`
         },
         onError(error: { message: string }) {
             show({
