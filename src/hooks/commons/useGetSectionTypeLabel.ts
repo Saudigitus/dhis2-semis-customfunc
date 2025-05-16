@@ -1,9 +1,7 @@
-
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUrlParams } from "./useQueryParams";
 
-const useGetSectionTypeLabel = ():string => {
-    const [sectionTypeLabel, setSectionTypeLabel] = useState<string|null>(null);
+const useGetSectionTypeLabel = ():any => {
     const { urlParameters } = useUrlParams()
     const {sectionType} = urlParameters()
 
