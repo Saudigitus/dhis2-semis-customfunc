@@ -186,28 +186,28 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
         console.log(newProgramRules, "newProgramRules")
 
 
-        for (const programRule of newProgramRules.filter(x => x.variable === variable.name) || []) {
+        for (const programRule of newProgramRules.filter(x => x.variable === variable.id) || []) {
             const firstCondition = evaluateExpression(programRule.condition, variable, values, programRulesVariables);
             switch (programRule.programRuleActionType) {
                 case "ASSIGN":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         const value = evaluateExpression(programRule.data, variable, values, programRulesVariables);
                         console.log(firstCondition)
                         if (firstCondition) {
                             if (value !== undefined) {
                                 console.log(value, "valueTo Assign")
-                                values[variable.name] = value
+                                values[variable.id] = value
                             } else {
                                 console.log(value, "valueTo Assign, else")
 
-                                values[variable.name] = ""
+                                values[variable.id] = ""
                             }
                             variable.disabled = true
                         }
                     }
                     break;
                 case "SHOWOPTIONGROUP":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         if (firstCondition) {
                             const options = getOptionGroups?.filter((op) => op.id === programRule.optionGroup)?.[0]?.options || []
                             variable.options = { optionSet: { options: options } }
@@ -215,7 +215,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     }
                     break;
                 case "SHOWWARNING":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         if (firstCondition) {
                             variable.content = programRule.content
                             variable.warning = true
@@ -226,7 +226,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     }
                     break;
                 case "SHOWERROR":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         if (firstCondition) {
                             variable.error = true;
                             variable.content = programRule.content
@@ -239,7 +239,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     }
                     break;
                 case "HIDEFIELD":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         if (firstCondition) {
                             variable.visible = false;
                         } else {
@@ -251,7 +251,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     break;
 
                 case "HIDEOPTIONGROUP":
-                    if (variable.name === programRule.variable) {
+                    if (variable.id === programRule.variable) {
                         // const orgUnitGroup = programRule?.condition?.replace(/[^a-zA-Z]/g, '')
                         if (firstCondition) {
                             console.log(variable)
