@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { formatHeaders } from "../../utils/table/header/formatHeaders"
 import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis-types"
 
@@ -9,10 +10,14 @@ interface UseHeaderProps {
 }
 export function useHeader({ tableColumns, programConfigData, dataStoreData, programStage }: UseHeaderProps) {
 
-    function getHeader(ps: string) {
+    const getHeader = (ps: string) => {
         return formatHeaders({ programConfigData, dataStoreData, tableColumns, programStage: ps })
     }
 
+
+    useEffect(())
+
+    
     return {
         columns: getHeader(programStage),
         getHeader
