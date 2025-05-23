@@ -14,11 +14,9 @@ export default function RulesEngineWrapper(props: RulesEngineWrapperProps) {
 
     if (loading) {
         return (
-            <div style={{ height: "100%", width: "100%", display: "grid", placeItems: "center" }}>
-                <Center>
-                    <CircularLoader />
-                </Center>
-            </div>
+            <Center>
+                <CircularLoader />
+            </Center>
         )
     }
 
