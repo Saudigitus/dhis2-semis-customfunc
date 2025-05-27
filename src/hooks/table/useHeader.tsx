@@ -3,17 +3,16 @@ import { formatHeaders } from "../../utils/table/header/formatHeaders"
 import { CustomAttributeProps, DataStoreProps, ProgramConfig } from "dhis2-semis-types"
 
 interface UseHeaderProps {
-    tableColumns: CustomAttributeProps[]
     programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0],
     programStage?: string
 }
 
-export function useHeader({ tableColumns, programConfigData, dataStoreData, programStage }: UseHeaderProps) {
+export function useHeader({  programConfigData, dataStoreData, programStage }: UseHeaderProps) {
     const [header, setHeader] = useState<CustomAttributeProps[]>()
 
     const getHeader = (programStage?: string) => {
-        const localHeader = formatHeaders({ programConfigData, dataStoreData, tableColumns, programStage })
+        const localHeader = formatHeaders({ programConfigData, dataStoreData, programStage })
         setHeader(localHeader)
         return localHeader
     }

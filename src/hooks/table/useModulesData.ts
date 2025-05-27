@@ -6,6 +6,8 @@ import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/
 import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
 import useShowAlerts from "../commons/useShowAlert";
 import { Modules } from "dhis2-semis-types";
+import { useRef } from "react";
+import { RequestBroker } from "../requestBroker/requestBroker";
 
 export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
     results: {
@@ -30,6 +32,8 @@ export const TEI_QUERY = (queryProps: TeiQueryProps) => ({
 export function useModulesData() {
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
+    const requestRef = useRef<any[]>([]);
+    const { cancelAllOperations, makeCancellablePromise } = RequestBroker({ requestRef })
 
     async function getRegistrationData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
@@ -57,79 +61,68 @@ export function useModulesData() {
         return { registrationEvents: eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'], registrationTrackedEntities };
     }
 
-    async function getTEIData(tableDataProps: GetTableDataProps, trackedEntity: string) {
-        const { pageSize, program, orgUnit } = tableDataProps;
-
-        const teiResults = trackedEntity?.length
-            ? await engine.query(TEI_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                pageSize,
-                program: program as unknown as string,
-                trackedEntity
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get traked entities")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as TeiQueryResults
-            : { results: { instances: [] } } as unknown as TeiQueryResults
-
-
-        return teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances']
-    }
-
     async function getBasicData(tableDataProps: GetTableDataProps) {
+        cancelAllOperations()
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
 
-        const eventsResults: any = await engine.query(EVENT_QUERY({
-            ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-            page,
-            pageSize,
-            program: program as unknown as string,
-            order: order || "occurredAt:desc",
-            programStage: baseProgramStage,
-            filter: dataElementFilters,
-            filterAttributes: attributeFilters,
-            orgUnit: orgUnit,
-            totalPages: true
-        })).catch((error) => {
-            show({
-                message: `${("Could not get events")}: ${error.message}`,
-                type: { critical: true }
-            });
-            setTimeout(hide, 5000);
-        }) as unknown as EventQueryResults;
+        const eventsResults = makeCancellablePromise(
+            engine.query(EVENT_QUERY({
+                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                page,
+                pageSize,
+                program: program as unknown as string,
+                order: order || "occurredAt:desc",
+                programStage: baseProgramStage,
+                filter: dataElementFilters,
+                filterAttributes: attributeFilters,
+                orgUnit: orgUnit,
+                totalPages: true
+            }))
+                .catch((error) => {
+                    show({
+                        message: `${("Could not get events")}: ${error.message}`,
+                        type: { critical: true }
+                    });
+                    setTimeout(hide, 5000);
+                })
+        )
 
-        const registrationTrackedEntities = eventsResults?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
+        requestRef.current.push(eventsResults);
+        const eventsResultsResponse = await eventsResults
+        console.log(eventsResultsResponse)
+        const registrationTrackedEntities = eventsResultsResponse?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
         const teiResults = registrationTrackedEntities?.length > 0
-            ? await engine.query(TEI_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                skipPaging: true,
-                program: program as unknown as string,
-                trackedEntity: registrationTrackedEntities
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get traked entities")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as TeiQueryResults
-            : { results: { instances: [] } } as unknown as TeiQueryResults
+            && makeCancellablePromise(
+                engine.query(TEI_QUERY({
+                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    skipPaging: true,
+                    program: program as unknown as string,
+                    trackedEntity: registrationTrackedEntities
+                })).catch((error) => {
+                    show({
+                        message: `${("Could not get traked entities")}: ${error.message}`,
+                        type: { critical: true }
+                    });
+                    setTimeout(hide, 5000);
+                })
+            )
 
-        const registrationInstances = eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'];
-        const teiInstances = teiResults?.results?.instances as unknown as FormatResponseRowsProps['teiInstances'];
+        requestRef.current.push(teiResults);
+        const teiResultsResponse = registrationTrackedEntities?.length > 0 ? await teiResults : { results: { instances: [] } } as unknown as TeiQueryResults
+
+        const registrationInstances = eventsResultsResponse?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'];
+        const teiInstances = teiResultsResponse?.results?.instances as unknown as FormatResponseRowsProps['teiInstances'];
 
         return {
             registrationInstances,
             teiInstances,
             formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances }),
             pagination: {
-                page: eventsResults?.results?.page,
-                pageSize: eventsResults?.results?.pageSize,
-                totalPages: eventsResults?.results?.pageCount,
-                totalElements: eventsResults?.results?.total
+                page: eventsResultsResponse?.results?.page,
+                pageSize: eventsResultsResponse?.results?.pageSize,
+                totalPages: eventsResultsResponse?.results?.pageCount,
+                totalElements: eventsResultsResponse?.results?.total
             }
         }
     }
@@ -139,22 +132,27 @@ export function useModulesData() {
         let copy = []
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
-            const eventsResults = await engine.query(EVENT_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                program: program as unknown as string,
-                order: order || "occurredAt:desc",
-                programStage: baseProgramStage,
-                orgUnit: orgUnit,
-                trackedEntity: formattedBasicTableData[i].trackedEntity,
-                ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
-                ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
-            })).catch((error) => {
-                show({
-                    message: `${("Could not get events")}: ${error.message}`,
-                    type: { critical: true }
-                });
-                setTimeout(hide, 5000);
-            }) as unknown as EventQueryResults;
+            const cancelable = makeCancellablePromise(
+                engine.query(EVENT_QUERY({
+                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    program: program as unknown as string,
+                    order: order || "occurredAt:desc",
+                    programStage: baseProgramStage,
+                    orgUnit: orgUnit,
+                    trackedEntity: formattedBasicTableData[i].trackedEntity,
+                    ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
+                    ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
+                })).catch((error) => {
+                    show({
+                        message: `${("Could not get events")}: ${error.message}`,
+                        type: { critical: true }
+                    });
+                    setTimeout(hide, 5000);
+                })
+            )
+
+            const eventsResults = await cancelable as unknown as EventQueryResults;
+            requestRef.current.push(cancelable);
 
             const filteredEventes = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
@@ -173,9 +171,7 @@ export function useModulesData() {
 
     return {
         getRegistrationData,
-        getTEIData,
         getBasicData,
         getStageData
-        //getAttendanceData
     }
 }
