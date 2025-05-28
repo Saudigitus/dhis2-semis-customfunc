@@ -181,10 +181,6 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
 
     // apply rules to variables
     function applyRulesToVariable(variable: any) {
-        console.log(variable, "variable")
-        console.log(programRulesVariables, "programRulesVariables")
-        console.log(newProgramRules, "newProgramRules")
-
 
         for (const programRule of newProgramRules.filter(x => x.variable === variable.id) || []) {
             const firstCondition = evaluateExpression(programRule.condition, variable, values, programRulesVariables);
