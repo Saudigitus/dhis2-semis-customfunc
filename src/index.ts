@@ -28,6 +28,7 @@ import { unavailableSchoolDays } from './hooks/dates/unavailableSchoolDays'
 import { useValidation } from './hooks/template_validation/useValidation'
 import { useValidateFile } from './hooks/template_validation/useValidateFile'
 import { formatResponseAttributes } from "./utils/attributes/formatResponseAttributes"
+import { RequestBroker } from "./hooks/requestBroker/requestBroker"
 
 export {
     useBuildForm,
@@ -44,7 +45,7 @@ export {
     RulesEngineWrapper,
     useSearchTei,
     useFileResource,
-    useSearchEnrollments,   
+    useSearchEnrollments,
     formatResponseData,
     useGetTei,
     attributes,
@@ -63,5 +64,6 @@ export {
     unavailableSchoolDays,
     useValidation,
     useValidateFile,
-    formatResponseAttributes
+    formatResponseAttributes,
+    RequestBroker
 }
