@@ -15,7 +15,10 @@ export function formatRowsData({ registrationInstances, teiInstances }: FormatRe
             ...(attributes((teiDetails?.attributes) ?? [])),
             trackedEntity: event.trackedEntity,
             enrollmentId: event?.enrollment,
-            registrationEvent: event?.event,
+            // If `teiInstances` is empty, the function is being called by `getStageData`, 
+            // so the event ID needed comes from the other stage. 
+            // To avoid overwriting data, a second key is required.
+            ...(teiInstances?.length ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
             registrationEventOccurredAt: event?.occurredAt ?? "",
             orgUnitId: teiDetails?.enrollments?.[0]?.orgUnit,
             programId: teiDetails?.enrollments?.[0]?.program,

@@ -27,6 +27,7 @@ import useUploadEvents from './hooks/events/useUploadEvents'
 import { unavailableSchoolDays } from './hooks/dates/unavailableSchoolDays'
 import { useValidation } from './hooks/template_validation/useValidation'
 import { useValidateFile } from './hooks/template_validation/useValidateFile'
+import { formatResponseAttributes } from "./utils/attributes/formatResponseAttributes"
 
 export {
     useBuildForm,
@@ -61,5 +62,6 @@ export {
     useUploadEvents,
     unavailableSchoolDays,
     useValidation,
-    useValidateFile
+    useValidateFile,
+    formatResponseAttributes
 }
