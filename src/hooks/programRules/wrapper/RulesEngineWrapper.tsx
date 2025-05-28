@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import FetchEngineVariables from './FetchEngineVariables';
-import { Center, CircularLoader, NoticeBox, Box } from "@dhis2/ui";
+import { Center, CircularLoader, NoticeBox } from "@dhis2/ui";
 import { RulesEngineWrapperProps } from '../../../types/programRules/RulesEngineProps';
 
 /**
@@ -14,11 +14,9 @@ export default function RulesEngineWrapper(props: RulesEngineWrapperProps) {
 
     if (loading) {
         return (
-            <Box height="100%" width="100%">
-                <Center>
-                    <CircularLoader />
-                </Center>
-            </Box>
+            <Center>
+                <CircularLoader />
+            </Center>
         )
     }
 

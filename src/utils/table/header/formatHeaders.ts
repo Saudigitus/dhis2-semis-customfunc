@@ -4,10 +4,9 @@ import { formatVariables } from "./formatVariables";
 interface FormatHeadersProps {
     programConfigData: ProgramConfig
     dataStoreData: DataStoreProps[0]
-    tableColumns: CustomAttributeProps[]
     programStage?: string
 }
-export function formatHeaders({ programConfigData, dataStoreData, tableColumns = [], programStage }: FormatHeadersProps): CustomAttributeProps[] {
+export function formatHeaders({ programConfigData, dataStoreData, programStage }: FormatHeadersProps): CustomAttributeProps[] {
 
     const headerResponse = () => {
         const originalData = ((programConfigData?.programStages?.find((programStge: any) => programStge.id === dataStoreData?.registration?.programStage)) ?? {} as any)
@@ -25,7 +24,7 @@ export function formatHeaders({ programConfigData, dataStoreData, tableColumns =
                     : [])
             || []
 
-        return tableColumns?.length > 0 ? tableColumns : columnsToDisplay
+        return columnsToDisplay
     };
 
     return headerResponse();
