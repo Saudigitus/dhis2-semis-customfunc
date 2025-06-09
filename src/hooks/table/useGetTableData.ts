@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { GetTableDataProps, TableDataProps } from "../../types/table/tableDataProps";
 import { useModulesData } from "./useModulesData";
@@ -9,11 +8,11 @@ export function useTableData({ module }: { module: Modules }) {
     const [loading, setLoading] = useState<boolean>(false)
     const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
 
-
     async function getData(tableDataProps: GetTableDataProps) {
         const { orgUnit } = tableDataProps;
 
         if (orgUnit !== null) {
+
             setLoading(true);
             const updatedProps = {
                 ...tableDataProps,
@@ -21,8 +20,7 @@ export function useTableData({ module }: { module: Modules }) {
                     {
                         baseProgramStage: tableDataProps.otherProgramStage,
                         otherProgramStage: tableDataProps.baseProgramStage
-                    } :
-                    {})
+                    } : {})
             };
 
             const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
@@ -48,8 +46,6 @@ export function useTableData({ module }: { module: Modules }) {
                         break;
                     }
                     default: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
                         console.error("Invalid module key provided");
                         break;
                     }
