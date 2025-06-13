@@ -89,7 +89,6 @@ export function useModulesData() {
 
         requestRef.current.push(eventsResults);
         const eventsResultsResponse = await eventsResults
-        console.log(eventsResultsResponse)
         const registrationTrackedEntities = eventsResultsResponse?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
         const teiResults = registrationTrackedEntities?.length > 0
@@ -117,7 +116,7 @@ export function useModulesData() {
         return {
             registrationInstances,
             teiInstances,
-            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances }),
+            formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances, isBasicStage: true }),
             pagination: {
                 page: eventsResultsResponse?.results?.page,
                 pageSize: eventsResultsResponse?.results?.pageSize,
@@ -137,7 +136,7 @@ export function useModulesData() {
                     ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     program: program as unknown as string,
                     order: order || "occurredAt:desc",
-                    programStage: baseProgramStage,
+                    programStage: baseProgramStage!,
                     orgUnit: orgUnit,
                     trackedEntity: formattedBasicTableData[i].trackedEntity,
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
@@ -159,7 +158,7 @@ export function useModulesData() {
             copy[i] = {
                 ...(Modules.Attendance == module ?
                     attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any)
-                    : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [] })[0]),
+                    : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [], isBasicStage: false })[0]),
                 ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: eventsResults?.results?.instances?.[0] ?? {} } : {})
             }
         }
