@@ -3,6 +3,7 @@ import { dataValuesProps } from "../events/eventsProps"
 import { attributesProps } from "../tei/teiProps"
 
 interface FormatResponseRowsProps {
+    isBasicStage?: boolean
     registrationInstances?: {
         trackedEntity: string
         dataValues: dataValuesProps[]

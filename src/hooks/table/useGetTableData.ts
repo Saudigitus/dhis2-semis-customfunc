@@ -9,53 +9,50 @@ export function useTableData({ module }: { module: Modules }) {
     const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
 
     async function getData(tableDataProps: GetTableDataProps) {
-        const { orgUnit } = tableDataProps;
+        setLoading(true);
+        const updatedProps = {
+            ...tableDataProps,
+            ...(module == Modules.Transfer ?
+                {
+                    baseProgramStage: tableDataProps.otherProgramStage,
+                    otherProgramStage: tableDataProps.baseProgramStage
+                } : {})
+        };
 
-        if (orgUnit !== null) {
+        const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
 
-            setLoading(true);
-            const updatedProps = {
-                ...tableDataProps,
-                ...(module == Modules.Transfer ?
-                    {
-                        baseProgramStage: tableDataProps.otherProgramStage,
-                        otherProgramStage: tableDataProps.baseProgramStage
-                    } : {})
-            };
-
-            const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
-
-            try {
-                switch (module) {
-                    case Modules.Enrollment: {
+        try {
+            switch (module) {
+                case Modules.Enrollment: {
+                    setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                    break;
+                }
+                case Modules.Performance: case Modules.Final_Result: case Modules.Attendance: case Modules.Transfer: {
+                    const { otherProgramStage, ...rest } = updatedProps;
+                    if (otherProgramStage) {
+                        const { formattedStagedData } = await getStageData({
+                            formattedBasicTableData,
+                            tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
+                            module
+                        });
+                        setTableData({ pagination: pagination, data: [...formattedStagedData] });
+                        return { data: [...formattedStagedData], pagination }
+                    } else {
                         setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        break;
-                    }
-                    case Modules.Performance: case Modules.Final_Result: case Modules.Attendance: case Modules.Transfer: {
-                        const { otherProgramStage, ...rest } = tableDataProps
-                        if (otherProgramStage) {
-                            const { formattedStagedData } = await getStageData({
-                                formattedBasicTableData,
-                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
-                                module
-                            });
-                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
-                        } else {
-                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        }
-                        break;
-                    }
-                    default: {
-                        console.error("Invalid module key provided");
-                        break;
+                        return { data: [...formattedBasicTableData], pagination }
                     }
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
+                default: {
+                    console.error("Invalid module key provided");
+                    break;
+                }
             }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
         }
+
     }
 
 
