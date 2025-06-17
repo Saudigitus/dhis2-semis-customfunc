@@ -1,8 +1,8 @@
 import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
+import isEqual from "lodash.isequal";
 import { OptionGroupsConfigState } from "../../../schema/optionGroupsSchema";
 import { OrgUnitsGroupsConfigState } from "../../../schema/orgUnitsGroupSchema";
-import { compareStringByLabel } from "../../../utils/programRules/sortStringsByLabel";
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables";
 import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
 
@@ -24,16 +24,24 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const [currentValues, setCurrentValues] = useState({ ...props.values });
 
     useEffect(() => {
-        setUpdatedVariables([...props.variables]);
-        setCurrentValues({ ...props.values });
-    }, [props.variables, props.values]);
+        if (!isEqual(updatedVariables, props.variables)) {
+            setUpdatedVariables([...props.variables]);
+        }
+        // if (!isEqual(currentValues, props.values)) {
+        //     setCurrentValues({ ...props.values });
+        // }
+    }, [props.variables]);
 
-    function runRulesEngine(overrideVariables?: any[], overrideValues?: Record<string, any>) {
-        const variablesToUse = overrideVariables ?? updatedVariables;
-        const valuesToUse = overrideValues ?? currentValues;
+    function runRulesEngine({ overrideValues, overrideVariables }: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
+        const variablesToUse = overrideVariables ?? props.variables;
+        const valuesToUse = overrideValues ?? props.values;
 
-        setCurrentValues({ ...valuesToUse });
-        setUpdatedVariables([...variablesToUse]);
+        if (!isEqual(currentValues, valuesToUse)) {
+            setCurrentValues({ ...valuesToUse });
+        }
+        if (!isEqual(updatedVariables, variablesToUse)) {
+            setUpdatedVariables([...variablesToUse]);
+        }
 
         if (type === "programStageSection") rulesEngineSections(variablesToUse, valuesToUse);
         else if (type === "programStage") rulesEngineDataElements(variablesToUse, valuesToUse);
