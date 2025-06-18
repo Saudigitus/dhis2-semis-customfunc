@@ -4,7 +4,7 @@ import { dataValuesProps } from "../../../types/events/eventsProps";
 import { attributesProps } from "../../../types/tei/teiProps";
 
 
-export function formatRowsData({ registrationInstances, teiInstances }: FormatResponseRowsProps): RowsDataProps[] {
+export function formatRowsData({ registrationInstances, teiInstances, isBasicStage = false }: FormatResponseRowsProps): RowsDataProps[] {
     const allRows: RowsDataProps[] = [];
 
     for (const event of registrationInstances ?? []) {
@@ -15,11 +15,11 @@ export function formatRowsData({ registrationInstances, teiInstances }: FormatRe
             ...(attributes((teiDetails?.attributes) ?? [])),
             trackedEntity: event.trackedEntity,
             enrollmentId: event?.enrollment,
-            // If `teiInstances` is empty, the function is being called by `getStageData`, 
+            // If isBasicStage is false, the function is being called by `getStageData`, 
             // so the event ID needed comes from the other stage. 
             // To avoid overwriting data, a second key is required.
-            ...(teiInstances?.length ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
-            registrationEventOccurredAt: event?.occurredAt ?? "",
+            ...(isBasicStage ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
+            ...(isBasicStage ? { registrationEventOccurredAt: event?.occurredAt } : {}),
             orgUnitId: teiDetails?.enrollments?.[0]?.orgUnit,
             programId: teiDetails?.enrollments?.[0]?.program,
             status: teiDetails?.enrollments?.[0]?.status,
