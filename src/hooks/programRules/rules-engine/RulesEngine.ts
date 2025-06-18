@@ -1,8 +1,8 @@
 import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
+import isEqual from "lodash.isequal";
 import { OptionGroupsConfigState } from "../../../schema/optionGroupsSchema";
 import { OrgUnitsGroupsConfigState } from "../../../schema/orgUnitsGroupSchema";
-import { compareStringByLabel } from "../../../utils/programRules/sortStringsByLabel";
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables";
 import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
 
@@ -20,20 +20,28 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const { programRulesVariables } = useFormatProgramRulesVariables(program);
     const { newProgramRules } = useFormatProgramRules(program);
 
-    const [updatedVariables, setUpdatedVariables] = useState([...props.variables]);
+    const [updatedVariables, setUpdatedVariables] = useState<any[]>(Array.isArray(props.variables) ? [...props.variables] : []);
     const [currentValues, setCurrentValues] = useState({ ...props.values });
 
     useEffect(() => {
-        setUpdatedVariables([...props.variables]);
-        setCurrentValues({ ...props.values });
-    }, [props.variables, props.values]);
+        if (!isEqual(updatedVariables, props.variables)) {
+            setUpdatedVariables([...props.variables]);
+        }
+        // if (!isEqual(currentValues, props.values)) {
+        //     setCurrentValues({ ...props.values });
+        // }
+    }, [props.variables]);
 
-    function runRulesEngine(overrideVariables?: any[], overrideValues?: Record<string, any>) {
+    function runRulesEngine({ overrideValues, overrideVariables }: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
         const variablesToUse = overrideVariables ?? updatedVariables;
-        const valuesToUse = overrideValues ?? currentValues;
+        const valuesToUse = overrideValues ?? props.values;
 
-        setCurrentValues({ ...valuesToUse });
-        setUpdatedVariables([...variablesToUse]);
+        if (!isEqual(currentValues, valuesToUse)) {
+            setCurrentValues({ ...valuesToUse });
+        }
+        if (!isEqual(updatedVariables, variablesToUse)) {
+            setUpdatedVariables([...variablesToUse]);
+        }
 
         if (type === "programStageSection") rulesEngineSections(variablesToUse, valuesToUse);
         else if (type === "programStage") rulesEngineDataElements(variablesToUse, valuesToUse);
@@ -43,7 +51,10 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     function rulesEngineAttributesSections(variables: any[], values: Record<string, any>) {
         const updated = variables.map(section => ({
             ...section,
-            variable: section.variable.map((variable: any) => applyRulesToVariable(variable, values))
+            variable: section.variable.map((variable: any) => {
+                const copy = { ...variable };
+                return applyRulesToVariable(copy, values);
+            })
         }));
         setUpdatedVariables(updated);
     }
@@ -51,13 +62,19 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     function rulesEngineSections(variables: any[], values: Record<string, any>) {
         const updated = variables.map(section => ({
             ...section,
-            fields: section.fields.map((variable: any) => applyRulesToVariable(variable, values))
+            fields: section.fields.map((variable: any) => {
+                const copy = { ...variable };
+                return applyRulesToVariable(copy, values);
+            })
         }));
         setUpdatedVariables(updated);
     }
 
     function rulesEngineDataElements(variables: any[], values: Record<string, any>) {
-        const updated = variables.map(variable => applyRulesToVariable(variable, values));
+        const updated = variables.map(variable => {
+            const copy = { ...variable };
+            return applyRulesToVariable(copy, values);
+        });
         setUpdatedVariables(updated);
     }
 
@@ -181,7 +198,8 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                                 )
                             }
                         };
-                    } else {
+
+                    } else if (!conditionResult && variable.initialOptions?.optionSet?.options) {
                         variable.options = { optionSet: { options: variable.initialOptions?.optionSet?.options || [] } };
                     }
                     break;
