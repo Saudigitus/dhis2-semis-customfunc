@@ -20,7 +20,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const { programRulesVariables } = useFormatProgramRulesVariables(program);
     const { newProgramRules } = useFormatProgramRules(program);
 
-    const [updatedVariables, setUpdatedVariables] = useState([...props.variables]);
+    const [updatedVariables, setUpdatedVariables] = useState<any[]>(Array.isArray(props.variables) ? [...props.variables] : []);
     const [currentValues, setCurrentValues] = useState({ ...props.values });
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     }, [props.variables]);
 
     function runRulesEngine({ overrideValues, overrideVariables }: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
-        const variablesToUse = overrideVariables ?? props.variables;
+        const variablesToUse = overrideVariables ?? updatedVariables;
         const valuesToUse = overrideValues ?? props.values;
 
         if (!isEqual(currentValues, valuesToUse)) {
@@ -51,7 +51,10 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     function rulesEngineAttributesSections(variables: any[], values: Record<string, any>) {
         const updated = variables.map(section => ({
             ...section,
-            variable: section.variable.map((variable: any) => applyRulesToVariable(variable, values))
+            variable: section.variable.map((variable: any) => {
+                const copy = { ...variable };
+                return applyRulesToVariable(copy, values);
+            })
         }));
         setUpdatedVariables(updated);
     }
@@ -59,13 +62,19 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     function rulesEngineSections(variables: any[], values: Record<string, any>) {
         const updated = variables.map(section => ({
             ...section,
-            fields: section.fields.map((variable: any) => applyRulesToVariable(variable, values))
+            fields: section.fields.map((variable: any) => {
+                const copy = { ...variable };
+                return applyRulesToVariable(copy, values);
+            })
         }));
         setUpdatedVariables(updated);
     }
 
     function rulesEngineDataElements(variables: any[], values: Record<string, any>) {
-        const updated = variables.map(variable => applyRulesToVariable(variable, values));
+        const updated = variables.map(variable => {
+            const copy = { ...variable };
+            return applyRulesToVariable(copy, values);
+        });
         setUpdatedVariables(updated);
     }
 
@@ -189,7 +198,8 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                                 )
                             }
                         };
-                    } else {
+
+                    } else if (!conditionResult && variable.initialOptions?.optionSet?.options) {
                         variable.options = { optionSet: { options: variable.initialOptions?.optionSet?.options || [] } };
                     }
                     break;
