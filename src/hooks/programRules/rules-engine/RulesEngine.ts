@@ -32,10 +32,11 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
         // }
     }, [props.variables]);
 
-    function runRulesEngine({ overrideValues, overrideVariables }: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
-        const variablesToUse = overrideVariables ?? updatedVariables;
-        const valuesToUse = overrideValues ?? props.values;
-
+    function runRulesEngine(arg?: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
+        const { overrideVariables = [], overrideValues = {} } = arg || {};
+        const variablesToUse = overrideVariables.length ? overrideVariables : props.variables;
+        const valuesToUse = Object.keys(overrideValues).length ? overrideValues : props.values;
+        
         if (!isEqual(currentValues, valuesToUse)) {
             setCurrentValues({ ...valuesToUse });
         }
