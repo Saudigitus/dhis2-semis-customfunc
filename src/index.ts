@@ -29,6 +29,7 @@ import { useValidation } from './hooks/template_validation/useValidation'
 import { useValidateFile } from './hooks/template_validation/useValidateFile'
 import { formatResponseAttributes } from "./utils/attributes/formatResponseAttributes"
 import { RequestBroker } from "./hooks/requestBroker/requestBroker"
+import { useCheckFilters } from "./hooks/dataElements/checkFilters"
 
 export {
     useBuildForm,
@@ -65,5 +66,6 @@ export {
     useValidation,
     useValidateFile,
     formatResponseAttributes,
-    RequestBroker
+    RequestBroker,
+    useCheckFilters
 }
