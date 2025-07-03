@@ -5,11 +5,9 @@ export function useCheckFilters({ filters }: { filters: { code: string, ulrParam
 
     function areAllSelected(): boolean {
         for (const filter of filters) {
-            const query = useQuery().get(filter?.ulrParam || filter?.code)
+            const query = useQuery.get(filter?.ulrParam || filter?.code)
 
-            if (!query || query.length === 0) {
-                return false
-            }
+            if (!query || query.length === 0) return false
         }
 
         return true
