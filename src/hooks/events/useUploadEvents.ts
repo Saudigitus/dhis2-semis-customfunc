@@ -1,4 +1,4 @@
-import { useDataMutation } from "@dhis2/app-runtime";
+import { useDataEngine } from "@dhis2/app-runtime";
 
 const postEvent: any = {
     resource: 'tracker',
@@ -8,16 +8,26 @@ const postEvent: any = {
 }
 
 const useUploadEvents = () => {
+    const engine = useDataEngine();
+
     const params = {
         async: false,
         atomicMode: "OBJECT",
         reportMode: "FULL"
     }
 
-    const [mutate,] = useDataMutation(postEvent)
-
     async function uploadValues(postData: any, importMode: string, importStrategy: string) {
-        return await mutate({ data: postData, params: { ...params, importStrategy, importMode } })
+        try {
+            const response = await engine.mutate(postEvent, {
+                variables: {
+                    data: postData,
+                    params: { ...params, importStrategy, importMode }
+                }
+            });
+            return response;
+        } catch (error) {
+            throw error
+        }
     }
 
     return { uploadValues }

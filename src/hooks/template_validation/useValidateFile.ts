@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { madatoryFieldsValidator } from "../../utils/bulk/validateMandatoryFields"
 import { useDataEngine } from "@dhis2/app-runtime"
-import { set } from "date-fns";
 import { useUrlParams } from "../commons/useQueryParams";
 
 const checkTEI = async (engine: any, programId: string, ouID: string, filterParams: string[]): Promise<any[]> => {
