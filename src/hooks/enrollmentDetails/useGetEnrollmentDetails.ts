@@ -18,10 +18,11 @@ export function useGetEnrollmentData(props: ExportData) {
         try {
             return getTei(selectedSectionDataStore?.program as unknown as string, trackedEntityIds)
                 .then(async (trackedEntityInstance: any) => {
+                    const data = trackedEntityInstance?.results?.instances ? trackedEntityInstance?.results?.instances : trackedEntityInstance?.results?.trackedEntities
                     let rows: any = []
                     let counter = 0
-
-                    for (const tei of trackedEntityInstance?.results?.instances) {
+                    
+                    for (const tei of data) {
                         counter++
                         let enrollment = events.find((x: any) => x.trackedEntity == tei?.trackedEntity)?.enrollment
                         let socioEconomiscData: any = []

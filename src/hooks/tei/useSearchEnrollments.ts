@@ -19,10 +19,12 @@ export default function useSearchEnrollments(props: any) {
         const teisWithRegistrationEvents: any[] = [];
         const fields: string = "event,trackedEntity,enrollment,occurredAt,dataValues[dataElement,value],orgUnitName,orgUnit"
         setLoading(true)
+
         getTeiSearch(program, filters)
             .then(async (teiResponse: any) => {
+                const data = teiResponse?.results?.instances ? teiResponse?.results?.instances : teiResponse?.results?.trackedEntities
 
-                for (const tei of teiResponse?.results?.instances) {
+                for (const tei of data) {
                     let socioEconomicsResponse: any = {}
 
                     const registrationResponse = await getEvents({
@@ -31,6 +33,7 @@ export default function useSearchEnrollments(props: any) {
                         filter: [`${tei.trackedEntity}`],
                         fields
                     })
+                    const events = registrationResponse?.results?.instances ? registrationResponse?.results?.instances : registrationResponse?.results?.events
                     if (socioEconomics)
                         socioEconomicsResponse = await getEvents({
                             program,
@@ -39,9 +42,8 @@ export default function useSearchEnrollments(props: any) {
                             fields
                         })
 
-
-                    const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", registrationResponse?.results?.instances)
-                    const socioEconomicsEvents = formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse?.results?.instances)
+                    const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", events)
+                    const socioEconomicsEvents = formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse?.results?.instances ? socioEconomicsResponse?.results?.instances : socioEconomicsResponse?.results?.events)
                     teisWithRegistrationEvents.push({ ...tei, ownershipOu: tei?.programOwners?.[0]?.orgUnit, enrollmentsNumber: registrationEvents?.length, registrationEvents, socioEconomicsEvents, mainAttributesFormatted: attributes(tei?.attributes), ...attributes(tei?.attributes) })
                 }
 

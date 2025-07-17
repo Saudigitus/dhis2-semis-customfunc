@@ -55,10 +55,10 @@ export function useModulesData() {
             });
             setTimeout(hide, 5000);
         }) as unknown as EventQueryResults;
+        const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events
+        const registrationTrackedEntities = data?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
 
-        const registrationTrackedEntities = eventsResults?.results?.instances?.map((x: { trackedEntity: string }) => x.trackedEntity) ?? []
-
-        return { registrationEvents: eventsResults?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'], registrationTrackedEntities };
+        return { registrationEvents: data as unknown as FormatResponseRowsProps['registrationInstances'], registrationTrackedEntities };
     }
 
     async function getBasicData(tableDataProps: GetTableDataProps) {
@@ -89,7 +89,9 @@ export function useModulesData() {
 
         requestRef.current.push(eventsResults);
         const eventsResultsResponse = await eventsResults
-        const registrationTrackedEntities = eventsResultsResponse?.results?.instances.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
+        const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
+
+        const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
@@ -108,10 +110,11 @@ export function useModulesData() {
             )
 
         requestRef.current.push(teiResults);
-        const teiResultsResponse = registrationTrackedEntities?.length > 0 ? await teiResults : { results: { instances: [] } } as unknown as TeiQueryResults
+        const teiResultsResponse = registrationTrackedEntities?.length > 0 ? await teiResults : { results: { instances: [], trackedEntities: [] } } as unknown as TeiQueryResults
+        const teis = teiResultsResponse?.results?.instances ? teiResultsResponse?.results?.instances : teiResultsResponse?.results?.trackedEntities
 
-        const registrationInstances = eventsResultsResponse?.results?.instances as unknown as FormatResponseRowsProps['registrationInstances'];
-        const teiInstances = teiResultsResponse?.results?.instances as unknown as FormatResponseRowsProps['teiInstances'];
+        const registrationInstances = data as unknown as FormatResponseRowsProps['registrationInstances'];
+        const teiInstances = data as unknown as FormatResponseRowsProps['teiInstances'];
 
         return {
             registrationInstances,
@@ -152,14 +155,14 @@ export function useModulesData() {
 
             const eventsResults = await cancelable as unknown as EventQueryResults;
             requestRef.current.push(cancelable);
-
-            const filteredEventes = eventsResults?.results?.instances.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+            const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
+            const filteredEventes = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
             copy[i] = {
                 ...(Modules.Attendance == module ?
                     attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any)
                     : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [], isBasicStage: false })[0]),
-                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: eventsResults?.results?.instances?.[0] ?? {} } : {})
+                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: data?.[0] ?? {} } : {})
             }
         }
 

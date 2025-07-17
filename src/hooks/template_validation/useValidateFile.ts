@@ -15,8 +15,8 @@ const checkTEI = async (engine: any, programId: string, ouID: string, filterPara
             fields: ['trackedEntity', 'attributes', 'enrollments']
         }
     });
-    if (queryResult?.trackedEntities?.instances.length > 0) {
-        return queryResult.trackedEntities.instances
+    if (queryResult?.trackedEntities?.instances?.length > 0 || queryResult?.trackedEntities?.trackedEntities.length > 0) {
+        return queryResult.trackedEntities.instances ? queryResult.trackedEntities.instances : queryResult.trackedEntities.trackedEntities
     }
     return []
 }
