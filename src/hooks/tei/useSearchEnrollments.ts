@@ -4,8 +4,11 @@ import useShowAlerts from '../commons/useShowAlert'
 import { useSearchTei } from './useSearchTei'
 import { formatResponseData } from '../../utils/tei/formatResponseData'
 import { attributes } from '../../utils/table/rows/formatRowsData'
+import { useUrlParams } from '../commons/useQueryParams'
 
 export default function useSearchEnrollments(props: any) {
+    const { urlParameters } = useUrlParams()
+    const { school } = urlParameters()
     const { show } = useShowAlerts()
     const { getEvents } = useGetEvents()
     const { getTeiSearch } = useSearchTei()
@@ -20,7 +23,7 @@ export default function useSearchEnrollments(props: any) {
         const fields: string = "event,trackedEntity,enrollment,occurredAt,dataValues[dataElement,value],orgUnitName,orgUnit"
         setLoading(true)
 
-        getTeiSearch(program, filters)
+        getTeiSearch(program, filters, school!)
             .then(async (teiResponse: any) => {
                 const data = teiResponse?.results?.instances ? teiResponse?.results?.instances : teiResponse?.results?.trackedEntities
 

@@ -1,7 +1,7 @@
 import { useDataEngine } from "@dhis2/app-runtime";
 import { TeiSearchQueryProps } from "../../types/api/WithRegistrationTypes";
 
-  const SEARCH_TEI_QUERY = ({program, filter, ouMode = "ACCESSIBLE", page, pageSize }: TeiSearchQueryProps) => ({
+const SEARCH_TEI_QUERY = ({ program, filter, ouMode = "ACCESSIBLE", page, pageSize }: TeiSearchQueryProps) => ({
     results: {
         resource: "tracker/trackedEntities",
         params: {
@@ -19,15 +19,16 @@ import { TeiSearchQueryProps } from "../../types/api/WithRegistrationTypes";
 export function useSearchTei() {
     const engine = useDataEngine();
 
-    async function getTeiSearch(program: string, filters: string) {
+    async function getTeiSearch(program: string, filters: string, orgUnit?: string) {
         return await engine.query(SEARCH_TEI_QUERY({
             pageSize: 5,
             page: 1,
             program,
+            orgUnit,
             filter: filters.slice(0, -1)
-            }),
+        }),
         );
-          
+
     }
 
     return { getTeiSearch }

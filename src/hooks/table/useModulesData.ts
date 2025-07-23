@@ -99,7 +99,8 @@ export function useModulesData() {
                     ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     skipPaging: true,
                     program: program as unknown as string,
-                    trackedEntity: registrationTrackedEntities
+                    trackedEntity: registrationTrackedEntities,
+                    orgUnit
                 })).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
@@ -114,7 +115,7 @@ export function useModulesData() {
         const teis = teiResultsResponse?.results?.instances ? teiResultsResponse?.results?.instances : teiResultsResponse?.results?.trackedEntities
 
         const registrationInstances = data as unknown as FormatResponseRowsProps['registrationInstances'];
-        const teiInstances = data as unknown as FormatResponseRowsProps['teiInstances'];
+        const teiInstances = teis as unknown as FormatResponseRowsProps['teiInstances'];
 
         return {
             registrationInstances,

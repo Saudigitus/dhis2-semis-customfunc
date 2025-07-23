@@ -14,11 +14,12 @@ const TEI_QUERY = (queryProps: TeiQueryProps) => ({
 export function useGetTei() {
     const engine = useDataEngine();
 
-    async function getTei(program: string, trackedEntity: string[]) {
+    async function getTei(program: string, trackedEntity: string[], orgUnit?: string) {
         return await engine.query(TEI_QUERY({
             paging: false,
             program: program,
-            trackedEntity: trackedEntity
+            trackedEntity: trackedEntity,
+            orgUnit
         })) as unknown as TeiQueryResults
     }
 
