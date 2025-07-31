@@ -1,9 +1,11 @@
 import { format } from "date-fns";
-import { SchoolCalendar } from "../../types/attendance/attendaceFormaterProps";
+import { HolidayType, type schoolCalendar } from "../../types/attendance/attendaceFormaterProps";
+import useGetSectionTypeLabel from "../commons/useGetSectionTypeLabel";
 
 export const unavailableSchoolDays = () => {
+    const { sectionName } = useGetSectionTypeLabel()
 
-    function unavailableDays(date: Date, config: SchoolCalendar) {
+    function unavailableDays(date: Date, config: schoolCalendar) {
         if (isHoliday(date, config?.holidays)) {
             return true
         }
@@ -12,9 +14,16 @@ export const unavailableSchoolDays = () => {
             return true
         }
 
-        if (isClassPeriod(date, config?.classPeriods)) {
+        if (sectionName == 'student')
+            if (isClassPeriod(date, config?.classPeriods) && isClassPeriod(date, [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
+                return false
+            } else return true
+
+        if (isClassPeriod(date, [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
             return false
         }
+
+
 
         return true
     }
@@ -25,10 +34,10 @@ export const unavailableSchoolDays = () => {
         }
     }
 
-    function isHoliday(date: Date, holidays: Array<{ date: string, event: string }>) {
+    function isHoliday(date: Date, holidays: HolidayType[]) {
         const formatDate = format(date, "yyyy-MM-dd")
 
-        if (holidays?.findIndex(h => h.date === formatDate) > -1) {
+        if (holidays?.findIndex((h: any) => h.date === formatDate) > -1) {
             return true
         }
     }
