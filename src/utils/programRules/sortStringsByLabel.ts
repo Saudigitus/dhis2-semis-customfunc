@@ -1,4 +1,4 @@
-import { OptionsProps } from "../../types/variables/AttributeColumns";
+import { OptionsProps } from "dhis2-semis-types";
 
 export function compareStringByLabel(a: OptionsProps, b: OptionsProps) {
     try {

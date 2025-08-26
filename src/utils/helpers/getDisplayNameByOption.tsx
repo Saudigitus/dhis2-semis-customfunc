@@ -1,0 +1,34 @@
+import { ProgramConfig } from "../../types/programConfig/ProgramConfig";
+
+interface defaultProps {
+    value: string
+    metaData: string
+    program: ProgramConfig
+}
+
+export function getDisplayName({ metaData, value, program }: defaultProps): string {
+    const dataElementsWithOptions = program?.programStages?.flatMap(stage => stage?.programStageDataElements?.map(dataElement => dataElement?.dataElement?.optionSet ? dataElement.dataElement : null))?.filter(Boolean);
+    const attributesWithOptions = program?.programTrackedEntityAttributes?.flatMap(programAttributes => programAttributes?.trackedEntityAttribute?.optionSet ? programAttributes.trackedEntityAttribute : null)?.filter(Boolean)
+
+    var metaDataOptionSet: any = attributesWithOptions?.filter(x => x?.id === metaData)[0]?.optionSet
+    if (metaDataOptionSet === undefined) {
+        metaDataOptionSet = dataElementsWithOptions?.filter(x => x?.id === metaData)[0]?.optionSet
+    }
+
+    if (metaDataOptionSet) {
+        for (const op of metaDataOptionSet?.options || []) {
+            if (op?.value === value) return op?.label
+        }
+    }
+    return value
+}
+
+export function formatDataToDisplayName({ rowData, columns, program }: any): any {
+    const newData = rowData?.map((data: any) => {
+        columns?.map((column: any) => {
+            return getDisplayName({ metaData: column.id, value: data[column.id], program })
+        })
+    })
+
+    return newData
+}

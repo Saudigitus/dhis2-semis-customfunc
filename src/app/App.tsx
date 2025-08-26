@@ -1,14 +1,13 @@
-import React from 'react'
-import classes from './App.module.css'
-import { Router } from '../routes'
+import React, { useState } from 'react'
+import { useCheckFilters } from '../hooks/dataElements/checkFilters'
 
+function MyApp() {
 
+    return (
+        <div>
+            "WELLCOME"
+        </div>
+    )
 
-const MyApp = () => (
-    <div className={classes.container}>
-        [ADD YOUR ROUTE AND TEST YOUR COMPONENT HERE]
-        <Router />
-    </div>
-)
-
+}
 export default MyApp

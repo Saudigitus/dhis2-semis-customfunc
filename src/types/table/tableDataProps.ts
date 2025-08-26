@@ -1,3 +1,5 @@
+import { attendanceConfig } from "./FormatRowsDataTypes";
+
 type TableDataProps = Record<string, string>;
 
 interface GetTableDataProps {
@@ -7,11 +9,17 @@ interface GetTableDataProps {
     order?: string
     orgUnit: string
     baseProgramStage: string
-    secondaryProgramStages?: string[]
+    otherProgramStage?: string
     attributeFilters?: string[]
     dataElementFilters?: string[]
-    showAlert: (arg: any) => void
-    hideAlert: () => void
+    occurredAfter?: string
+    occurredBefore?: string
+    attendanceConfig?: attendanceConfig
 }
 
-export type { TableDataProps, GetTableDataProps }
+interface GetAttendanceDataProps {
+    tei: string
+    selectedDate: any
+}
+
+export type { TableDataProps, GetTableDataProps, GetAttendanceDataProps }

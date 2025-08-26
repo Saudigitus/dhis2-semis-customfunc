@@ -1,4 +1,4 @@
-import { CustomAttributeProps, GroupFormProps } from "dhis2-semis-components"
+import { CustomAttributeProps, GroupFormProps } from "dhis2-semis-types"
 
 /** A group of valid program rules types to specify the implementation. */
 export enum RulesType {

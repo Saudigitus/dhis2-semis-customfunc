@@ -1,4 +1,4 @@
-export const fieldsType = {
+export const DataElementFieldType = {
     programStage: "executionDateLabel,programStageDataElements[displayInReports,compulsory,dataElement[id,displayName,valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]],programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]",
     programStageSection: "executionDateLabel,programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]"
 }
@@ -17,11 +17,13 @@ interface EventQueryProps {
     filterAttributes?: string[]
     trackedEntity?: string
     fields?: string
+    enrollment?: string
+    totalPages?: boolean
 }
 
-interface GeTDataElementsProps {
+interface GetDataElementsProps {
     programStageId: string
-    type?: keyof typeof fieldsType
+    type?: keyof typeof DataElementFieldType
 }
 
 interface dataValuesProps {
@@ -31,11 +33,15 @@ interface dataValuesProps {
 
 interface EventQueryResults {
     results: {
-        instances: [{
+        instances?: [{
+            trackedEntity: string
+            dataValues: dataValuesProps[]
+        }],
+        events?: [{
             trackedEntity: string
             dataValues: dataValuesProps[]
         }]
     }
 }
 
-export type { EventQueryProps, GeTDataElementsProps, EventQueryResults, dataValuesProps }
+export type { EventQueryProps, GetDataElementsProps, EventQueryResults, dataValuesProps }
