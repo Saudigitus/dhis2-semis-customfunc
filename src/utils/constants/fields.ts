@@ -1,6 +1,6 @@
-import { GroupFormProps } from "dhis2-semis-components";
+import { Attribute, GroupFormProps, VariablesTypes } from "dhis2-semis-types";
 
-export const fields : GroupFormProps[] = [
+export const fields: GroupFormProps[] = [
     {
         name: "Attributes",
         description: "All attributes",
@@ -20,14 +20,17 @@ export const fields : GroupFormProps[] = [
                 "labelName": "Learner Internal ID",
                 "name": "Learner Internal ID",
                 "options": {
-                    "optionSet": {}
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": true,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -44,15 +47,18 @@ export const fields : GroupFormProps[] = [
                 "key": "gz8w04YBSS0",
                 "labelName": "First name",
                 "name": "gz8w04YBSS0",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -69,15 +75,18 @@ export const fields : GroupFormProps[] = [
                 "key": "ZIDlK6BaAU2",
                 "labelName": "Surname",
                 "name": "Surname",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -94,15 +103,18 @@ export const fields : GroupFormProps[] = [
                 "key": "X0vzx18XWqu",
                 "labelName": "Gender ",
                 "name": "Gender ",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "LIST",
+                "valueType": Attribute.valueType.LIST as any,
                 "visible": true
             },
             {
@@ -119,13 +131,16 @@ export const fields : GroupFormProps[] = [
                 "key": "EPYqXuM0M2u",
                 "labelName": "Date of birth",
                 "name": "Date of birth",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
                 "valueType": "DATE",
                 "visible": true
@@ -144,15 +159,18 @@ export const fields : GroupFormProps[] = [
                 "key": "wGiRDfHT0hj",
                 "labelName": "Nationality",
                 "name": "Nationality",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "LIST",
+                "valueType": Attribute.valueType.LIST as any,
                 "visible": true
             },
             {
@@ -169,15 +187,18 @@ export const fields : GroupFormProps[] = [
                 "key": "SwfMi3g9k4s",
                 "labelName": "Address",
                 "name": "Address",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -194,15 +215,18 @@ export const fields : GroupFormProps[] = [
                 "key": "d2SES7i0fzb",
                 "labelName": "Guardian's Name",
                 "name": "Guardian's Name",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -219,15 +243,18 @@ export const fields : GroupFormProps[] = [
                 "key": "tWYfZZjmYgm",
                 "labelName": "Guardian's Phone Number",
                 "name": "Guardian's Phone Number",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
-                "valueType": "TEXT",
+                "valueType": Attribute.valueType.TEXT as any,
                 "visible": true
             },
             {
@@ -244,13 +271,16 @@ export const fields : GroupFormProps[] = [
                 "key": "cFYnzcqZyZ9",
                 "labelName": "Photo",
                 "name": "Photo",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": false,
                 "searchable": false,
-                "type": "attribute",
+                "type": VariablesTypes.Attribute,
                 "unique": false,
                 "valueType": "IMAGE,",
                 "visible": true
@@ -276,14 +306,17 @@ export const fields : GroupFormProps[] = [
                 "key": "iDSrFrrVgmX",
                 "labelName": "Academic Year ",
                 "name": "Academic Year ",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "dataElement",
-                "valueType": "LIST",
+                "type": VariablesTypes.DataElement,
+                "valueType": Attribute.valueType.LIST as any,
                 "visible": true
             },
             {
@@ -300,14 +333,17 @@ export const fields : GroupFormProps[] = [
                 "key": "kNNoif9gASf",
                 "labelName": "Grade",
                 "name": "Grade",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "dataElement",
-                "valueType": "LIST",
+                "type": VariablesTypes.DataElement,
+                "valueType": Attribute.valueType.LIST as any,
                 "visible": true
             },
             {
@@ -324,14 +360,17 @@ export const fields : GroupFormProps[] = [
                 "key": "RhABRLO2Fae",
                 "labelName": "Class/Section",
                 "name": "Class/Section",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "dataElement",
-                "valueType": "LIST",
+                "type": VariablesTypes.DataElement,
+                "valueType": Attribute.valueType.LIST as any,
                 "visible": true
             },
             {
@@ -348,15 +387,17 @@ export const fields : GroupFormProps[] = [
                 "key": "qPwGZal50yH_aDmsN3qemOA",
                 "labelName": "Mathematics",
                 "name": "qPwGZal50yH",
-                "options": {
-                    "optionSet": {}
+                 "options": {
+                    "optionSet": {
+                        id: "", 
+                        options: [{ label: "", value: "" }]
+                    }
                 },
-                "rawId": "qPwGZal50yH",
                 "pattern": "",
                 "required": true,
                 "searchable": false,
-                "type": "Performance",
-                "valueType": "NUMBER",
+                "type": VariablesTypes.Custom,
+                "valueType": Attribute.valueType.NUMBER as any,
                 "visible": true
             },
         ]

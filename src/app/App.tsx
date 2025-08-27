@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { useCheckFilters } from '../hooks/dataElements/checkFilters'
+import { Router } from '../routes'
 
 function MyApp() {
 
     return (
-        <div>
-            "WELLCOME"
-        </div>
+        <div><Router /></div>
     )
 
 }
+
 export default MyApp

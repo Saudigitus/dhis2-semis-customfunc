@@ -20,12 +20,20 @@
     "deploy": "d2-app-scripts deploy",
     "lib": "rimraf ./dist && npx tsc -b"
   },
+  "peerDependencies": {
+    "@mui/material": "*",
+    "dhis2-semis-components": "*",
+    "dhis2-semis-types": "*"
+  },
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.0.0-alpha.23",
+    "@mui/material": "7.3.1",
     "@types/lodash.isequal": "^4.5.8",
     "@types/node": "^22.10.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "dhis2-semis-components": "0.6.7-alpha.31",
+    "dhis2-semis-types": "^1.3.16",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "*"
@@ -33,8 +41,11 @@
   "dependencies": {
     "@dhis2/app-runtime": "^3.11.2",
     "@dhis2/ui": "^9.15.0",
+    "@mui/material": "*",
     "date-fns": "2.29.3",
-    "dhis2-semis-types": "^1.3.16",
+    "dhis2-semis-components": "*",
+    "dhis2-semis-functions": "^0.0.7-alpha.7",
+    "dhis2-semis-types": "*",
     "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "react-router-dom": "^6.28.0",
