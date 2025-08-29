@@ -43,9 +43,11 @@ export const unavailableSchoolDays = () => {
     }
 
     function isClassPeriod(date: Date, classPeriods: Array<{ startDate: string, endDate: string }>) {
-        if (classPeriods?.findIndex((h) => (new Date(h.startDate) <= date && new Date(h.endDate) >= date)) > -1) {
-            return true
-        }
+        return classPeriods.some(h => {
+            const start = new Date(h.startDate);
+            const end = new Date(h.endDate);
+            return start <= date && date <= end;
+        })
     }
 
     return {
