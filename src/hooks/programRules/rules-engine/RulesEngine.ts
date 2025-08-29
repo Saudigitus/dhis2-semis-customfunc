@@ -36,7 +36,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
         const { overrideVariables = [], overrideValues = {} } = arg || {};
         const variablesToUse = overrideVariables.length ? overrideVariables : props.variables;
         const valuesToUse = Object.keys(overrideValues).length ? overrideValues : props.values;
-        
+
         if (!isEqual(currentValues, valuesToUse)) {
             setCurrentValues({ ...valuesToUse });
         }
@@ -162,8 +162,8 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     if (conditionResult) {
                         const newValue = evaluateExpression(rule.data, variable, values, programRulesVariables);
                         values[variable.id] = newValue ?? "";
-                        variable.disabled = true;
                     }
+                    variable.disabled = true;
                     break;
 
                 case "SHOWOPTIONGROUP":
