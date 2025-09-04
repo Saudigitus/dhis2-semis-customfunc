@@ -14,16 +14,15 @@ export const unavailableSchoolDays = () => {
             return true
         }
 
-        if (sectionName == 'student')
-            if (isClassPeriod(date, config?.classPeriods) && isClassPeriod(date, [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
+        if (sectionName == 'student') {
+            if (isClassPeriod(new Date(date), config?.classPeriods) && isClassPeriod(new Date(date), [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
                 return false
             } else return true
+        }
 
         if (isClassPeriod(date, [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
             return false
         }
-
-
 
         return true
     }
@@ -43,9 +42,13 @@ export const unavailableSchoolDays = () => {
     }
 
     function isClassPeriod(date: Date, classPeriods: Array<{ startDate: string, endDate: string }>) {
-        if (classPeriods?.findIndex((h) => (new Date(h.startDate) <= date && new Date(h.endDate) >= date)) > -1) {
-            return true
-        }
+        const response = classPeriods.some(h => {
+            const start = new Date(h.startDate);
+            const end = new Date(h.endDate);
+            return start <= date && date <= end;
+        })
+
+        return response
     }
 
     return {

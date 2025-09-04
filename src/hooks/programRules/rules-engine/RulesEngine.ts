@@ -185,7 +185,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     break;
 
                 case "HIDEFIELD":
-                    variable.visible = !conditionResult;
+                    variable.visible = conditionResult;
                     break;
 
                 case "HIDEOPTIONGROUP":
