@@ -8,7 +8,7 @@ import { useUrlParams } from '../commons/useQueryParams'
 
 export default function useSearchEnrollments(props: any) {
     const { urlParameters } = useUrlParams()
-    const { school } = urlParameters()
+    const { school } = urlParameters
     const { show } = useShowAlerts()
     const { getEvents } = useGetEvents()
     const { getTeiSearch } = useSearchTei()
