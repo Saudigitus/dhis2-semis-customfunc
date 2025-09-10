@@ -1,19 +1,23 @@
 import { useDataEngine } from "@dhis2/app-runtime";
+import { useState } from "react";
 
-export const useUserInfo = () => {
-    const engine = useDataEngine()
-    const QUERY = {
-        userInfo: {
-            resource: "me",
-            fields: "*"
-        }
+const QUERY = {
+    userInfo: {
+        resource: "me",
+        fields: "*"
     }
+}
+export const useUserInfo = () => {
+    const [loading, setloading] = useState(false)
+    const engine = useDataEngine()
 
     async function getUserInfo() {
-       const userInfo = await engine.query(QUERY)
-       return userInfo?.userInfo
+        setloading(true)
+        const userInfo = await engine.query(QUERY)
+        setloading(false)
+        return userInfo?.userInfo
     }
 
 
-    return { userInfo: getUserInfo() };
+    return { userInfo: getUserInfo(), loading };
 }

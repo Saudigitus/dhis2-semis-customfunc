@@ -31,6 +31,7 @@ import { formatResponseAttributes } from "./utils/attributes/formatResponseAttri
 import { RequestBroker } from "./hooks/requestBroker/requestBroker"
 import { useCheckFilters } from "./hooks/dataElements/checkFilters"
 import { useUserInfo } from "./hooks/user/useUserInfo"
+import { UserInfoState } from "./schema/userInfoSchema"
 
 export {
     useBuildForm,
@@ -69,5 +70,6 @@ export {
     formatResponseAttributes,
     RequestBroker,
     useCheckFilters,
-    useUserInfo
+    useUserInfo,
+    UserInfoState
 }
