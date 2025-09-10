@@ -11,7 +11,7 @@
             "read": true
         }
     },
-    "version": 31,
+    "version": 34,
     "programType": "WITH_REGISTRATION",
     "trackedEntityType": {
         "trackedEntityTypeAttributes": [
@@ -45,6 +45,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "Academic Year ",
                         "valueType": "TEXT",
                         "optionSet": {
                             "options": [
@@ -63,6 +64,10 @@
                                 {
                                     "value": "2021",
                                     "label": "2021"
+                                },
+                                {
+                                    "value": "2025",
+                                    "label": "2025"
                                 }
                             ]
                         },
@@ -74,6 +79,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Grade",
                         "formName": "Grade",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -136,6 +142,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Class/Section",
                         "formName": "Class/Section",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -186,6 +193,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "Electricity in students house",
                         "formName": "Do you have electricity in your house ?",
                         "valueType": "TRUE_ONLY",
                         "displayName": "Electricity in students house",
@@ -196,6 +204,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Talents",
                         "formName": "Talents?",
                         "valueType": "TEXT",
                         "displayName": "Talents",
@@ -206,6 +215,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Floor of the room in which students sleep",
                         "formName": "What material are the floor of the room in which you sleep?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -244,6 +254,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have Sickle Cell Anaemia?",
                         "valueType": "BOOLEAN",
                         "displayName": "Do you have Sickle Cell Anaemia?",
                         "id": "pCZgMl3RgiC"
@@ -253,6 +264,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have any other health issue?",
                         "valueType": "TEXT",
                         "displayName": "Do you have any other health issue?",
                         "id": "vpAkX5dHhx8"
@@ -262,6 +274,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have difficulty (with self-care such as) washing all over or dressing?",
                         "formName": "Do you have difficulty (with self-care such as) washing all over or dressing?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -292,6 +305,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Living with parents",
                         "formName": "Are you living with your parents?",
                         "valueType": "BOOLEAN",
                         "displayName": "Living with parents",
@@ -302,6 +316,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have difficulty hearing, even if using a hearing aid?",
                         "formName": "Do you have difficulty hearing, even if using a hearing aid?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -332,36 +347,7 @@
                 },
                 {
                     "dataElement": {
-                        "formName": "Do you have difficulty remembering or concentrating?",
-                        "valueType": "TEXT",
-                        "optionSet": {
-                            "options": [
-                                {
-                                    "value": "Yes, a lot of difficulty ",
-                                    "label": "Yes, a lot of difficulty "
-                                },
-                                {
-                                    "value": "Cannot do it at all ",
-                                    "label": "Cannot do it at all "
-                                },
-                                {
-                                    "value": "No, no difficulty",
-                                    "label": "No, no difficulty"
-                                },
-                                {
-                                    "value": "Yes, some difficulty",
-                                    "label": "Yes, some difficulty"
-                                }
-                            ]
-                        },
-                        "displayName": "Do you have difficulty remembering or concentrating?",
-                        "id": "oLxYfrjR6B5"
-                    },
-                    "compulsory": false,
-                    "displayInReports": false
-                },
-                {
-                    "dataElement": {
+                        "name": "Means of travel to school",
                         "formName": "How did you travel to school?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -396,6 +382,49 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have difficulty remembering or concentrating?",
+                        "formName": "Do you have difficulty remembering or concentrating?",
+                        "valueType": "TEXT",
+                        "optionSet": {
+                            "options": [
+                                {
+                                    "value": "Yes, a lot of difficulty ",
+                                    "label": "Yes, a lot of difficulty "
+                                },
+                                {
+                                    "value": "Cannot do it at all ",
+                                    "label": "Cannot do it at all "
+                                },
+                                {
+                                    "value": "No, no difficulty",
+                                    "label": "No, no difficulty"
+                                },
+                                {
+                                    "value": "Yes, some difficulty",
+                                    "label": "Yes, some difficulty"
+                                }
+                            ]
+                        },
+                        "displayName": "Do you have difficulty remembering or concentrating?",
+                        "id": "oLxYfrjR6B5"
+                    },
+                    "compulsory": false,
+                    "displayInReports": false
+                },
+                {
+                    "dataElement": {
+                        "name": "LI6a - General bursary information: Receives bursary",
+                        "formName": "General bursary information: Receives bursary",
+                        "valueType": "BOOLEAN",
+                        "displayName": "LI6a - General bursary information: Receives bursary",
+                        "id": "SjMxl9Cwha8"
+                    },
+                    "compulsory": false,
+                    "displayInReports": false
+                },
+                {
+                    "dataElement": {
+                        "name": "Do you have difficulty seeing, even if wearing glasses?",
                         "formName": "Do you have difficulty seeing, even if wearing glasses?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -426,16 +455,7 @@
                 },
                 {
                     "dataElement": {
-                        "formName": "General bursary information: Receives bursary",
-                        "valueType": "BOOLEAN",
-                        "displayName": "LI6a - General bursary information: Receives bursary",
-                        "id": "SjMxl9Cwha8"
-                    },
-                    "compulsory": false,
-                    "displayInReports": false
-                },
-                {
-                    "dataElement": {
+                        "name": "LI6b - General bursary information: Source(s) of bursary",
                         "valueType": "TEXT",
                         "optionSet": {
                             "options": [
@@ -473,6 +493,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Do you have difficulty walking or climbing steps?",
                         "formName": "Do you have difficulty walking or climbing steps?",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -503,6 +524,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "LI6c - General bursary information: Amount in SZL of bursary per year",
                         "formName": "Amount in SZL of bursary per year",
                         "valueType": "NUMBER",
                         "displayName": "LI6c - General bursary information: Amount in SZL of bursary per year",
@@ -513,6 +535,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "LI6d - Amount in SZL of bursary for School fees",
                         "valueType": "INTEGER_ZERO_OR_POSITIVE",
                         "displayName": "LI6d - Amount in SZL of bursary for School fees",
                         "id": "DXg4BfI9BQx"
@@ -522,6 +545,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "LI6e - Amount in SZL of bursary for Examination fees",
                         "valueType": "INTEGER_ZERO_OR_POSITIVE",
                         "displayName": "LI6e - Amount in SZL of bursary for Examination fees",
                         "id": "woYJkG3KMga"
@@ -531,6 +555,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "LI6f - Amount in SZL of bursary for others (Others)",
                         "valueType": "INTEGER_ZERO_OR_POSITIVE",
                         "displayName": "LI6f - Amount in SZL of bursary for others (Others)",
                         "id": "QRl2YSQXsYr"
@@ -540,6 +565,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Health Issues?",
                         "formName": "Health Issues?",
                         "valueType": "TEXT",
                         "displayName": "Health Issues?",
@@ -550,6 +576,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Special needs?",
                         "formName": "Special needs?",
                         "valueType": "TEXT",
                         "displayName": "Special needs?",
@@ -560,10 +587,22 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Practical skills",
                         "formName": "Practical skills?",
                         "valueType": "TEXT",
                         "displayName": "Practical skills",
                         "id": "sImY1RsfcWN"
+                    },
+                    "compulsory": false,
+                    "displayInReports": false
+                },
+                {
+                    "dataElement": {
+                        "name": "Student Levy",
+                        "formName": "Student Levy",
+                        "valueType": "NUMBER",
+                        "displayName": "Student Levy",
+                        "id": "OsXzFxuvQqy"
                     },
                     "compulsory": false,
                     "displayInReports": false
@@ -578,6 +617,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "Attendance",
                         "formName": "Attendance status",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -604,6 +644,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Reason of absence",
                         "formName": "Reason of absence",
                         "valueType": "TEXT",
                         "optionSet": {
@@ -634,6 +675,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "English language",
                         "formName": "English language",
                         "valueType": "NUMBER",
                         "displayName": "English language",
@@ -644,6 +686,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Mathematics",
                         "formName": "Mathematics",
                         "valueType": "NUMBER",
                         "displayName": "Mathematics",
@@ -654,6 +697,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Science",
                         "formName": "Science",
                         "valueType": "NUMBER",
                         "displayName": "Science",
@@ -664,6 +708,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "History",
                         "formName": "History",
                         "valueType": "NUMBER",
                         "displayName": "History",
@@ -674,6 +719,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Visual arts",
                         "formName": "Visual arts",
                         "valueType": "NUMBER",
                         "displayName": "Visual arts",
@@ -692,6 +738,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "English language",
                         "formName": "English language",
                         "valueType": "NUMBER",
                         "displayName": "English language",
@@ -702,6 +749,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Mathematics",
                         "formName": "Mathematics",
                         "valueType": "NUMBER",
                         "displayName": "Mathematics",
@@ -712,6 +760,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Science",
                         "formName": "Science",
                         "valueType": "NUMBER",
                         "displayName": "Science",
@@ -722,6 +771,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "History",
                         "formName": "History",
                         "valueType": "NUMBER",
                         "displayName": "History",
@@ -732,6 +782,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Visual arts",
                         "formName": "Visual arts",
                         "valueType": "NUMBER",
                         "displayName": "Visual arts",
@@ -750,6 +801,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "English language",
                         "formName": "English language",
                         "valueType": "NUMBER",
                         "displayName": "English language",
@@ -760,6 +812,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Mathematics",
                         "formName": "Mathematics",
                         "valueType": "NUMBER",
                         "displayName": "Mathematics",
@@ -770,6 +823,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Science",
                         "formName": "Science",
                         "valueType": "NUMBER",
                         "displayName": "Science",
@@ -780,20 +834,11 @@
                 },
                 {
                     "dataElement": {
+                        "name": "History",
                         "formName": "History",
                         "valueType": "NUMBER",
                         "displayName": "History",
                         "id": "cTTpaVY6m1Q"
-                    },
-                    "compulsory": false,
-                    "displayInReports": true
-                },
-                {
-                    "dataElement": {
-                        "formName": "Visual arts",
-                        "valueType": "NUMBER",
-                        "displayName": "Visual arts",
-                        "id": "HFjLxmmXm7t"
                     },
                     "compulsory": false,
                     "displayInReports": true
@@ -808,6 +853,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "Final decision",
                         "valueType": "TEXT",
                         "optionSet": {
                             "options": [
@@ -841,6 +887,7 @@
             "programStageDataElements": [
                 {
                     "dataElement": {
+                        "name": "Destiny School (Transfer)",
                         "formName": "Destiny School",
                         "valueType": "ORGANISATION_UNIT",
                         "displayName": "Destiny School (Transfer)",
@@ -851,6 +898,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Reason for transfer",
                         "valueType": "TEXT",
                         "optionSet": {
                             "options": [
@@ -884,6 +932,7 @@
                 },
                 {
                     "dataElement": {
+                        "name": "Transfer Status",
                         "valueType": "TEXT",
                         "optionSet": {
                             "options": [
@@ -920,10 +969,13 @@
     ],
     "programTrackedEntityAttributes": [
         {
+            "name": "Student System ID",
             "displayInList": true,
             "mandatory": true,
             "searchable": false,
+            "displayName": "Student System ID",
             "trackedEntityAttribute": {
+                "name": "System ID",
                 "formName": "Unique Student Registration Number",
                 "valueType": "TEXT",
                 "unique": true,
@@ -934,10 +986,13 @@
             }
         },
         {
+            "name": "Student Learner Internal ID",
             "displayInList": false,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Learner Internal ID",
             "trackedEntityAttribute": {
+                "name": "Learner Internal ID",
                 "formName": "Internal ID",
                 "valueType": "TEXT",
                 "unique": true,
@@ -948,10 +1003,13 @@
             }
         },
         {
+            "name": "Student First name",
             "displayInList": true,
             "mandatory": true,
             "searchable": true,
+            "displayName": "Student First name",
             "trackedEntityAttribute": {
+                "name": "First name",
                 "formName": "First name",
                 "valueType": "TEXT",
                 "unique": false,
@@ -962,10 +1020,13 @@
             }
         },
         {
+            "name": "Student Surname",
             "displayInList": true,
             "mandatory": true,
             "searchable": true,
+            "displayName": "Student Surname",
             "trackedEntityAttribute": {
+                "name": "Surname",
                 "formName": "Surname",
                 "valueType": "TEXT",
                 "unique": false,
@@ -976,10 +1037,13 @@
             }
         },
         {
+            "name": "Student Gender ",
             "displayInList": true,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Gender ",
             "trackedEntityAttribute": {
+                "name": "Gender ",
                 "formName": "Gender",
                 "valueType": "TEXT",
                 "optionSet": {
@@ -1002,10 +1066,13 @@
             }
         },
         {
+            "name": "Student Date of birth",
             "displayInList": false,
             "mandatory": true,
             "searchable": true,
+            "displayName": "Student Date of birth",
             "trackedEntityAttribute": {
+                "name": "Date of birth",
                 "formName": "Date of birth",
                 "valueType": "DATE",
                 "unique": false,
@@ -1016,10 +1083,13 @@
             }
         },
         {
+            "name": "Student Nationality",
             "displayInList": false,
             "mandatory": false,
-            "searchable": false,
+            "searchable": true,
+            "displayName": "Student Nationality",
             "trackedEntityAttribute": {
+                "name": "Nationality",
                 "formName": "Nationality",
                 "valueType": "TEXT",
                 "optionSet": {
@@ -1814,10 +1884,13 @@
             }
         },
         {
+            "name": "Student Address",
             "displayInList": false,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Address",
             "trackedEntityAttribute": {
+                "name": "Address",
                 "formName": "Address",
                 "valueType": "TEXT",
                 "unique": false,
@@ -1828,10 +1901,13 @@
             }
         },
         {
+            "name": "Student Guardian's Name",
             "displayInList": false,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Guardian's Name",
             "trackedEntityAttribute": {
+                "name": "Guardian's Name",
                 "formName": "Guardian's Name",
                 "valueType": "TEXT",
                 "unique": false,
@@ -1842,10 +1918,13 @@
             }
         },
         {
+            "name": "Student Guardian's Phone Number",
             "displayInList": false,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Guardian's Phone Number",
             "trackedEntityAttribute": {
+                "name": "Guardian's Phone Number",
                 "formName": "Guardian's Phone Number",
                 "valueType": "TEXT",
                 "unique": false,
@@ -1856,16 +1935,52 @@
             }
         },
         {
+            "name": "Student Photo",
             "displayInList": false,
             "mandatory": false,
             "searchable": false,
+            "displayName": "Student Photo",
             "trackedEntityAttribute": {
+                "name": "Photo",
                 "valueType": "IMAGE",
                 "unique": false,
                 "generated": false,
                 "pattern": "",
                 "displayName": "Photo",
                 "id": "cFYnzcqZyZ9"
+            }
+        },
+        {
+            "name": "Student Age",
+            "displayInList": false,
+            "mandatory": false,
+            "searchable": false,
+            "displayName": "Student Age",
+            "trackedEntityAttribute": {
+                "name": "Age",
+                "valueType": "INTEGER_POSITIVE",
+                "unique": false,
+                "generated": false,
+                "pattern": "",
+                "displayName": "Age",
+                "id": "l1QCV36yuUy"
+            }
+        },
+        {
+            "name": "Student Mobile Number",
+            "displayInList": false,
+            "mandatory": false,
+            "searchable": false,
+            "displayName": "Student Mobile Number",
+            "trackedEntityAttribute": {
+                "name": "Mobile Number",
+                "formName": "Mobile Number",
+                "valueType": "PHONE_NUMBER",
+                "unique": false,
+                "generated": false,
+                "pattern": "",
+                "displayName": "Mobile Number",
+                "id": "YnHuqCmuydE"
             }
         }
     ]

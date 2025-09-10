@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { GetTableDataProps, TableDataProps } from "../../types/table/tableDataProps";
 import { useModulesData } from "./useModulesData";
@@ -9,76 +8,51 @@ export function useTableData({ module }: { module: Modules }) {
     const [loading, setLoading] = useState<boolean>(false)
     const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
 
-
     async function getData(tableDataProps: GetTableDataProps) {
-        const { orgUnit } = tableDataProps;
+        setLoading(true);
+        const updatedProps = {
+            ...tableDataProps,
+            ...(module == Modules.Transfer ?
+                {
+                    baseProgramStage: tableDataProps.otherProgramStage,
+                    otherProgramStage: tableDataProps.baseProgramStage
+                } : {})
+        };
 
-        if (orgUnit !== null) {
-            setLoading(true);
-            const { formattedBasicTableData, pagination } = await getBasicData(tableDataProps)
-            try {
-                switch (module) {
-                    case Modules.Enrollment: {
-                        setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        break;
-                    }
-                    case Modules.Attendance: {
-                        const { otherProgramStage, ...rest } = tableDataProps
-                        if (otherProgramStage) {
-                            const { formattedStagedData } = await getStageData({
-                                formattedBasicTableData,
-                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
-                                module
-                            });
+        const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
 
-                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
-                        } else {
-                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        }
-                        break;
-                    }
-                    case Modules.Performance: {
-                        const { otherProgramStage, ...rest } = tableDataProps
-                        if (otherProgramStage) {
-                            const { formattedStagedData } = await getStageData({
-                                formattedBasicTableData,
-                                tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
-                                module
-                            });
-                            setTableData({ pagination: pagination, data: [...formattedStagedData] });
-                        } else {
-                            setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
-                        }
-                        break;
-                    }
-                    case Modules.Transfer: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
-                        break;
-                    }
-                    case Modules.Final_Result: {
-                        const { otherProgramStage, ...rest } = tableDataProps
+        try {
+            switch (module) {
+                case Modules.Enrollment: {
+                    setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                    break;
+                }
+                case Modules.Performance: case Modules.Final_Result: case Modules.Attendance: case Modules.Transfer: {
+                    const { otherProgramStage, ...rest } = updatedProps;
+                    if (otherProgramStage) {
                         const { formattedStagedData } = await getStageData({
                             formattedBasicTableData,
                             tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
                             module
                         });
                         setTableData({ pagination: pagination, data: [...formattedStagedData] });
-                        break;
-                    }
-                    default: {
-                        // const { formattedBasicTableData } = await getBasicData(tableDataProps);
-                        // setTableData([...formattedBasicTableData]);
-                        console.error("Invalid module key provided");
-                        break;
+                        return { data: [...formattedStagedData], pagination }
+                    } else {
+                        setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                        return { data: [...formattedBasicTableData], pagination }
                     }
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
+                default: {
+                    console.error("Invalid module key provided");
+                    break;
+                }
             }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
         }
+
     }
 
 

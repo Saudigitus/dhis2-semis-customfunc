@@ -20,7 +20,7 @@ export function useGetEvents() {
         return await engine.query(EVENT_QUERY(
             { ...props }
         )).then((resp: any) => {
-            return resp.results?.instances
+            return resp.results?.instances ? resp.results?.instances : resp.results?.events
         }).catch((error: any) => {
             show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
             setTimeout(hide, 5000);

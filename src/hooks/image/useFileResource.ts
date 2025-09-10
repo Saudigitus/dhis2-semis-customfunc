@@ -16,7 +16,7 @@ const DELETEFILERESOURCEMUTATION: any = {
 }
 
 const GETFILERESOURCEQUERY: any = ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => ({
-    results: {
+    results: { 
         resource: `trackedEntityInstances/${trackedEntity}/${attribute}/image`,
         params: {
             dimension: "MEDIUM"
@@ -50,10 +50,12 @@ export const useFileResource = () => {
     }
 
     async function getFileResource({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) {
-        setloading(true)
-        const file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
-        setloading(false)
-        return { file: file.results }
+        if (trackedEntity && attribute) {
+            setloading(true)
+            const file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
+            setloading(false)
+            return { file: file.results }
+        }
     }
 
     async function deleteFileResource(documentId: string): Promise<void> {

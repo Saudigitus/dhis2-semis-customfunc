@@ -18,7 +18,7 @@ interface EventQueryProps {
     trackedEntity?: string
     fields?: string
     enrollment?: string
-    totalPages?:boolean
+    totalPages?: boolean
 }
 
 interface GetDataElementsProps {
@@ -33,7 +33,11 @@ interface dataValuesProps {
 
 interface EventQueryResults {
     results: {
-        instances: [{
+        instances?: [{
+            trackedEntity: string
+            dataValues: dataValuesProps[]
+        }],
+        events?: [{
             trackedEntity: string
             dataValues: dataValuesProps[]
         }]
