@@ -1,5 +1,7 @@
 import { useDataEngine } from "@dhis2/app-runtime";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { UserInfoState } from "src/schema/userInfoSchema";
 
 const QUERY = {
     userInfo: {
@@ -10,12 +12,16 @@ const QUERY = {
 export const useUserInfo = () => {
     const [loading, setloading] = useState(false)
     const engine = useDataEngine()
+    const [userInfoState, setUserInfoState] = useRecoilState(UserInfoState)
 
     async function getUserInfo() {
+        if (userInfoState?.id) {
+            return
+        }
         setloading(true)
-        const userInfo = await engine.query(QUERY)
+        const userInfo: any = await engine.query(QUERY)
         setloading(false)
-        return userInfo?.userInfo
+        setUserInfoState(userInfo?.userInfo)
     }
 
 

@@ -77,7 +77,7 @@ export interface UserInfo {
   };
 }
 
-export const UserInfoState = atom<UserInfo[]>({
+export const UserInfoState = atom<UserInfo>({
     key: "userInfo-store",
-    default: []
+    default: {} as unknown as UserInfo,
 })
