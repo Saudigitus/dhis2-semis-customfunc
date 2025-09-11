@@ -5,6 +5,7 @@ import { OptionGroupsConfigState } from "../../../schema/optionGroupsSchema";
 import { OrgUnitsGroupsConfigState } from "../../../schema/orgUnitsGroupSchema";
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables";
 import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
+import { isUndefined } from "lodash";
 
 interface RulesEngineProps {
     variables: any[]
@@ -20,11 +21,11 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const { programRulesVariables } = useFormatProgramRulesVariables(program);
     const { newProgramRules } = useFormatProgramRules(program);
 
-    const [updatedVariables, setUpdatedVariables] = useState<any[]>(Array.isArray(props.variables) ? [...props.variables] : []);
+    const [updatedVariables, setUpdatedVariables] = useState<any[]>();
     const [currentValues, setCurrentValues] = useState({ ...props.values });
 
     useEffect(() => {
-        if (!isEqual(updatedVariables, props.variables)) {
+        if (!isEqual(updatedVariables, props.variables) && !updatedVariables?.length) {
             setUpdatedVariables([...props.variables]);
         }
         // if (!isEqual(currentValues, props.values)) {
@@ -79,6 +80,25 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
         setUpdatedVariables(updated);
     }
 
+
+    function parseValue(value: any) {
+        if (value === undefined || value === null || value === "") {
+            return "undefined";
+        }
+
+        const lower = value.toLowerCase();
+
+        if (lower === "true") return true;
+        if (lower === "false") return false;
+
+        if (!isNaN(value) && value.trim() !== "") {
+            return Number(value);
+        }
+
+        return `'${value}'`;
+    }
+
+
     function evaluateExpression(expression: any, context: any, values: any, programRulesVariables: any) {
         const d2 = createD2(context);
 
@@ -88,17 +108,17 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
 
         expression = expression.replace(/#\{([^}]+)\}/g, (_: string, key: string) => {
             const value = values[programRulesVariables[key]];
-            return typeof value === 'string' ? `'${value}'` : value ?? 'undefined';
+            return parseValue(value);
         });
 
         expression = expression.replace(/A\{([^}]+)\}/g, (_: string, key: any) => {
             const value = values[programRulesVariables[key]];
-            return typeof value === 'string' ? `'${value}'` : value ?? 'undefined';
+            return parseValue(value);
         });
 
         expression = expression.replace(/V\{([^}]+)\}/g, (_: string, key: any) => {
             const value = values[key];
-            return typeof value === 'string' ? `'${value}'` : value ?? 'undefined';
+            return parseValue(value);
         });
 
         try {
@@ -162,6 +182,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                     if (conditionResult) {
                         const newValue = evaluateExpression(rule.data, variable, values, programRulesVariables);
                         values[variable.id] = newValue ?? "";
+                        variable["value"] = newValue
                     }
                     variable.disabled = true;
                     break;
