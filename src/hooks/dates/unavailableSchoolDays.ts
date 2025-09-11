@@ -4,6 +4,7 @@ import useGetSectionTypeLabel from "../commons/useGetSectionTypeLabel";
 
 export const unavailableSchoolDays = () => {
     const { sectionName } = useGetSectionTypeLabel()
+    const normalize = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
     function unavailableDays(date: Date, config: schoolCalendar) {
         if (isHoliday(date, config?.holidays)) {
@@ -15,7 +16,7 @@ export const unavailableSchoolDays = () => {
         }
 
         if (sectionName == 'student') {
-            if (isClassPeriod(new Date(date), config?.classPeriods) && isClassPeriod(new Date(date), [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
+            if (isClassPeriod(normalize(new Date(date)), config?.classPeriods) && isClassPeriod(normalize(new Date(date)), [{ startDate: config?.academicYear?.startDate, endDate: config?.academicYear?.endDate }])) {
                 return false
             } else return true
         }
@@ -42,9 +43,9 @@ export const unavailableSchoolDays = () => {
     }
 
     function isClassPeriod(date: Date, classPeriods: Array<{ startDate: string, endDate: string }>) {
-        const response = classPeriods.some(h => {
-            const start = new Date(h.startDate);
-            const end = new Date(h.endDate);
+        const response = classPeriods?.some(h => {
+            const start = normalize(new Date(h.startDate));
+            const end = normalize(new Date(h.endDate));
             return start <= date && date <= end;
         })
 
