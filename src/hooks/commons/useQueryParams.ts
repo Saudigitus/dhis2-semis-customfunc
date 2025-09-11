@@ -4,16 +4,14 @@ import React from 'react'
 const useUrlParams = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
-    const add = (key: string, value: string) => {
-        const updatedSearchParams = new URLSearchParams(searchParams) // clone to avoid mutation bugs
-        updatedSearchParams.set(key, value)
-        setSearchParams(updatedSearchParams)
+     const add = (key: string, value: string) => {
+        searchParams.set(key, value)
+        setSearchParams(searchParams)
     }
 
     const remove = (key: string) => {
-        const updatedSearchParams = new URLSearchParams(searchParams)
-        updatedSearchParams.delete(key)
-        setSearchParams(updatedSearchParams)
+        searchParams.delete(key)
+        setSearchParams(searchParams)
     }
 
     const query = React.useMemo(() => new URLSearchParams(searchParams), [searchParams])
