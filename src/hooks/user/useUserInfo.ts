@@ -25,5 +25,5 @@ export const useUserInfo = () => {
     }
 
 
-    return { userInfo: getUserInfo(), loading };
+    return { userInfo: getUserInfo, loading };
 }
