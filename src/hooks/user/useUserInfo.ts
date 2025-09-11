@@ -1,7 +1,7 @@
 import { useDataEngine } from "@dhis2/app-runtime";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { UserInfoState } from "src/schema/userInfoSchema";
+import { UserInfoState } from "../../schema/userInfoSchema";
 
 const QUERY = {
     userInfo: {
