@@ -13,5 +13,16 @@ export function useCheckFilters({ filters }: { filters: { code: string, ulrParam
         return true
     }
 
-    return { areAllSelected }
+    function getFilters(): string[][] {
+        const selectedFilters: string[][] = []
+        for (const filter of filters) {
+            const query = useQuery.get(filter?.ulrParam || filter?.code)
+
+            if (query && query != undefined && query != null) selectedFilters.push([`${filter?.dataElement}:in:${query}`])
+        }
+
+        return selectedFilters
+    }
+
+    return { areAllSelected, getFilters }
 }

@@ -16,7 +16,7 @@ const DELETEFILERESOURCEMUTATION: any = {
 }
 
 const GETFILERESOURCEQUERY: any = ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => ({
-    results: {
+    results: { 
         resource: `trackedEntityInstances/${trackedEntity}/${attribute}/image`,
         params: {
             dimension: "MEDIUM"
