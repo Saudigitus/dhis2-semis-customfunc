@@ -1,17 +1,16 @@
+import isEqual from "lodash.isequal";
 import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
-import isEqual from "lodash.isequal";
+import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
 import { OptionGroupsConfigState } from "../../../schema/optionGroupsSchema";
 import { OrgUnitsGroupsConfigState } from "../../../schema/orgUnitsGroupSchema";
 import { useFormatProgramRulesVariables } from "../hooks/useFormatProgramRulesVariables";
-import { useFormatProgramRules } from "../hooks/useFormatProgramRules";
-import { isUndefined } from "lodash";
 
 interface RulesEngineProps {
     variables: any[]
     values: Record<string, any>
     type: "programStage" | "programStageSection" | "attributesSection"
-    program: string
+    program: string,
 }
 
 export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
@@ -21,16 +20,13 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
     const { programRulesVariables } = useFormatProgramRulesVariables(program);
     const { newProgramRules } = useFormatProgramRules(program);
 
-    const [updatedVariables, setUpdatedVariables] = useState<any[]>();
     const [currentValues, setCurrentValues] = useState({ ...props.values });
+    const [updatedVariables, setUpdatedVariables] = useState<any[]>(Array.isArray(props.variables) ? [...props.variables] : []);
 
     useEffect(() => {
-        if (!isEqual(updatedVariables, props.variables) && !updatedVariables?.length) {
+        if (!isEqual(updatedVariables, props.variables)) {
             setUpdatedVariables([...props.variables]);
         }
-        // if (!isEqual(currentValues, props.values)) {
-        //     setCurrentValues({ ...props.values });
-        // }
     }, [props.variables]);
 
     function runRulesEngine(arg?: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
