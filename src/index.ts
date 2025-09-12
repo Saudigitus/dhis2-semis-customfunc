@@ -30,6 +30,8 @@ import { useValidateFile } from './hooks/template_validation/useValidateFile'
 import { formatResponseAttributes } from "./utils/attributes/formatResponseAttributes"
 import { RequestBroker } from "./hooks/requestBroker/requestBroker"
 import { useCheckFilters } from "./hooks/dataElements/checkFilters"
+import { useUserInfo } from "./hooks/user/useUserInfo"
+import { UserInfoState } from "./schema/userInfoSchema"
 
 export {
     useBuildForm,
@@ -67,5 +69,7 @@ export {
     useValidateFile,
     formatResponseAttributes,
     RequestBroker,
-    useCheckFilters
+    useCheckFilters,
+    useUserInfo,
+    UserInfoState
 }

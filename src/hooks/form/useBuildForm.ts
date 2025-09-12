@@ -5,7 +5,7 @@ import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageC
 import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
 import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 
-export function useBuildForm({dataStoreData, programData, module}: BuildFormType) {
+export function useBuildForm({ dataStoreData, programData, module }: BuildFormType) {
     const [formData, setFormData] = useState<any[]>([])
 
     const buildForm = () => {
@@ -47,7 +47,7 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
 
     useEffect(() => {
         buildForm()
-    }, [])
+    }, [programData, module])
 
     return { formData }
 }
