@@ -4,7 +4,7 @@ import React from 'react'
 const useUrlParams = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
-    const add = (key: string, value: string) => {
+     const add = (key: string, value: string) => {
         searchParams.set(key, value)
         setSearchParams(searchParams)
     }
@@ -16,8 +16,8 @@ const useUrlParams = () => {
 
     const query = React.useMemo(() => new URLSearchParams(searchParams), [searchParams])
 
-    const urlParameters = () => {
-        return {
+    const urlParameters = React.useMemo(
+        () => ({
             school: query.get('school'),
             schoolName: query.get('schoolName'),
             academicYear: query.get('academicYear'),
@@ -29,8 +29,9 @@ const useUrlParams = () => {
             programStage: query.get('programStage'),
             attendanceMode: query.get('attendanceMode'),
             selectedDate: query.get('selectedDate')
-        }
-    }
+        }), [query]
+    )
+
     return { add, remove, useQuery: query, urlParameters }
 }
 export { useUrlParams }

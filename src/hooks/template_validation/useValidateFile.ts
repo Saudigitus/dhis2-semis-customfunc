@@ -28,7 +28,7 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const [invalidRecords, setInvalidRecords] = useState<any[]>([])
     const { displayName } = program
     const { urlParameters } = useUrlParams()
-    const { sectionType, school } = urlParameters()
+    const { sectionType, school } = urlParameters
 
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
         const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module)
