@@ -157,13 +157,13 @@ export function useModulesData() {
             const eventsResults = await cancelable as unknown as EventQueryResults;
             requestRef.current.push(cancelable);
             const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
-            const filteredEventes = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+            const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
             copy[i] = {
                 ...(Modules.Attendance == module ?
-                    attendanceDataValuesFormater(filteredEventes, attendanceConfig as unknown as any)
-                    : formatRowsData({ registrationInstances: filteredEventes ?? [], teiInstances: [], isBasicStage: false })[0]),
-                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: data?.[0] ?? {} } : {})
+                    attendanceDataValuesFormater(filteredEvents, attendanceConfig as unknown as any)
+                    : formatRowsData({ registrationInstances: filteredEvents ?? [], teiInstances: [], isBasicStage: false })[0]),
+                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: filteredEvents[0] ?? {} } : {})
             }
         }
 
