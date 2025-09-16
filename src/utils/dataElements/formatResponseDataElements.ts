@@ -1,8 +1,9 @@
 import { Attribute } from "../../types/generated/models";
+import { returnOptionsByDataElement } from "./getDataElementOptions";
 import { CustomAttributeProps, VariablesTypes } from "dhis2-semis-types";
 import { ProgramStageConfig } from "../../types/programStageConfig/ProgramStageConfig";
 
-export function formatResponseDataElements(programStageObject: ProgramStageConfig): CustomAttributeProps[] {
+export function formatResponseDataElements(programStageObject: ProgramStageConfig, schoolCalendar?: any): CustomAttributeProps[] {
     if (!programStageObject) return [];
 
     return programStageObject.programStageDataElements.map(programStageDataElement => (
@@ -12,9 +13,19 @@ export function formatResponseDataElements(programStageObject: ProgramStageConfi
             labelName: programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement.displayName,
             valueType: programStageDataElement.dataElement?.optionSet
                 ? Attribute.valueType.LIST as unknown as CustomAttributeProps["valueType"]
-                : programStageDataElement.dataElement?.valueType as unknown as  CustomAttributeProps["valueType"],
-            options: { optionSet: programStageDataElement.dataElement?.optionSet },
-            initialOptions: { optionSet: programStageDataElement.dataElement?.optionSet },
+                : programStageDataElement.dataElement?.valueType as unknown as CustomAttributeProps["valueType"],
+            options: {
+                optionSet: {
+                    id: programStageDataElement?.dataElement?.optionSet?.id,
+                    options: returnOptionsByDataElement({ programStageDataElement, schoolCalendar })
+                }
+            },
+            initialOptions: {
+                optionSet: {
+                    id: programStageDataElement?.dataElement?.optionSet?.id,
+                    options: returnOptionsByDataElement({ programStageDataElement, schoolCalendar })
+                }
+            },
             disabled: false,
             pattern: "",
             visible: true,
@@ -24,8 +35,8 @@ export function formatResponseDataElements(programStageObject: ProgramStageConfi
             programStage: programStageObject.id,
             content: "",
             id: programStageDataElement.dataElement?.id,
-            displayName:  programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement?.displayName,
-            header:  programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement?.displayName,
+            displayName: programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement?.displayName,
+            header: programStageDataElement.dataElement.formName ?? programStageDataElement.dataElement?.displayName,
             type: VariablesTypes.DataElement,
             assignedValue: undefined
         }
