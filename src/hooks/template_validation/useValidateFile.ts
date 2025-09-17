@@ -15,8 +15,8 @@ const checkTEI = async (engine: any, programId: string, ouID: string, filterPara
             fields: ['trackedEntity', 'attributes', 'enrollments']
         }
     });
-    if (queryResult?.trackedEntities?.instances?.length > 0 || queryResult?.trackedEntities?.trackedEntities.length > 0) {
-        return queryResult.trackedEntities.instances ? queryResult.trackedEntities.instances : queryResult.trackedEntities.trackedEntities
+    if (queryResult?.trackedEntities?.instances?.length > 0 || queryResult?.trackedEntities?.trackedEntities?.length > 0) {
+        return queryResult?.trackedEntities?.instances ? queryResult?.trackedEntities?.instances : queryResult?.trackedEntities?.trackedEntities
     }
     return []
 }
@@ -44,15 +44,14 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
             const filterParams = validData.map((student: any) => {
                 const params = uniqueAttributes.flatMap((attributes: any) => {
                     const value = student?.['Student profile']?.[attributes.trackedEntityAttribute.id]
-                    return [`${attributes.trackedEntityAttribute.id}:EQ:${value}`]
-                })
+                    return value ? [`${attributes.trackedEntityAttribute.id}:EQ:${value}`] : null
+                })?.filter(x => x !== null)
                 return { student, params }
             })
 
-
             setLoader(true)
             for (const params of filterParams) {
-                console.log("ou in id", params?.student?.Ids?.orgUnit, "ou in params", school)
+
                 let isValid = true;
                 for (const param of params?.params) {
                     const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit ?? school, [param])
