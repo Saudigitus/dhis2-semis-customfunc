@@ -5,7 +5,7 @@ import { ProgramStageConfig } from '../../types/programStageConfig/ProgramStageC
 import { formatResponseAttributes } from '../../utils/attributes/formatResponseAttributes';
 import { formatResponseDataElements } from '../../utils/dataElements/formatResponseDataElements';
 
-export function useBuildForm({dataStoreData, programData, module}: BuildFormType) {
+export function useBuildForm({ dataStoreData, programData, module, schoolCalendar }: BuildFormType) {
     const [formData, setFormData] = useState<any[]>([])
 
     const buildForm = () => {
@@ -18,7 +18,7 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
                     const registrationProgramStage = programStages?.find((element) => element?.id === registration.programStage) as unknown as ProgramStageConfig
                     const socioEconomicProgramStage = programStages?.find((element) => element?.id === socioEconomics?.programStage) as unknown as ProgramStageConfig
 
-                    setFormData([formatResponseDataElements(registrationProgramStage), formatResponseAttributes(programData), formatResponseDataElements(socioEconomicProgramStage)])
+                    setFormData([formatResponseDataElements(registrationProgramStage, schoolCalendar), formatResponseAttributes(programData), formatResponseDataElements(socioEconomicProgramStage)])
                     break;
 
                 case Modules.Attendance:
@@ -29,7 +29,7 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
                 case Modules.Final_Result:
                     const finalResultProgramStage = programStages?.find((element) => element?.id === final_result?.programStage) as unknown as ProgramStageConfig
 
-                    setFormData([formatResponseDataElements(finalResultProgramStage)])
+                    setFormData([formatResponseDataElements(finalResultProgramStage, schoolCalendar)])
                     break;
 
                 case Modules.Performance:
@@ -47,7 +47,7 @@ export function useBuildForm({dataStoreData, programData, module}: BuildFormType
 
     useEffect(() => {
         buildForm()
-    }, [])
+    }, [programData, module])
 
     return { formData }
 }
