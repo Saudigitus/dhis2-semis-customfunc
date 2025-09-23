@@ -32,6 +32,9 @@ import { RequestBroker } from "./hooks/requestBroker/requestBroker"
 import { useCheckFilters } from "./hooks/dataElements/checkFilters"
 import { useUserInfo } from "./hooks/user/useUserInfo"
 import { UserInfoState } from "./schema/userInfoSchema"
+import { useGetSysInfo } from "./hooks/system/info"
+import { getSysInfo } from "./hooks/system/getSysInfo"
+import { useIncrementDays } from "./utils/attendance/getDates"
 
 export {
     useBuildForm,
@@ -71,5 +74,8 @@ export {
     RequestBroker,
     useCheckFilters,
     useUserInfo,
-    UserInfoState
+    UserInfoState,
+    useGetSysInfo,
+    getSysInfo,
+    useIncrementDays
 }

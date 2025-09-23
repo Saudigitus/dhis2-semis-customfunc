@@ -16,7 +16,7 @@ export class useValidation {
     private module?: Modules
     private configData: any[] = [];
     private rawData: any;
-    private SheetNames: string[] = []; //	
+    private SheetNames: string[] = [];
     private headerSectionSheets: any
     private headerVariablesSheets: Record<string, string>[] = []
 
