@@ -1,5 +1,6 @@
 import { useDataEngine } from "@dhis2/app-runtime";
 import { TeiSearchQueryProps } from "../../types/api/WithRegistrationTypes";
+import useShowAlerts from "../commons/useShowAlert";
 
 const SEARCH_TEI_QUERY = ({ program, filter, ouMode = "ACCESSIBLE", page, pageSize }: TeiSearchQueryProps) => ({
     results: {
@@ -18,16 +19,23 @@ const SEARCH_TEI_QUERY = ({ program, filter, ouMode = "ACCESSIBLE", page, pageSi
 
 export function useSearchTei() {
     const engine = useDataEngine();
+    const { hide, show } = useShowAlerts()
 
-    async function getTeiSearch(program: string, filters: string, orgUnit?: string) {
+    async function getTeiSearch({ program, orgUnit, filters }: { program: string, filters: string, orgUnit?: string }) {
         return await engine.query(SEARCH_TEI_QUERY({
             pageSize: 5,
             page: 1,
             program,
             orgUnit,
             filter: filters.slice(0, -1)
-        }),
-        );
+        })).then((resp: any) => {
+            return {
+                results: { instances: resp?.results?.instances ? resp?.results?.instances : resp?.results?.trackedEntities, ...resp?.results }
+            }
+        }).catch((error: any) => {
+            show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
+            setTimeout(hide, 5000);
+        });
 
     }
 
