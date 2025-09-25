@@ -1,3 +1,5 @@
+import { ExpressionJs, ExpressionMode, RuleEngineJs } from "@dhis2/rule-engine";
+
 function parseValue(value: any) {
   if (value === undefined || value === null || value === "") {
     return "undefined";
@@ -114,15 +116,37 @@ export default function applyRulesToVariable(
     orgUnitsGroups,
     getOptionGroups,
   }: {
-    programRulesVariables: any,
-    newProgramRules: any,
-    orgUnitsGroups: any,
-    getOptionGroups: any,
+    programRulesVariables: any;
+    newProgramRules: any;
+    orgUnitsGroups: any;
+    getOptionGroups?: any;
   }
 ) {
+  // !ToDo: move this method to use the KMP Rule Engine
+  // const ruleEngine = new RuleEngineJs(true);
   for (const rule of newProgramRules.filter(
     (x: any) => x.variable === variable.id
   )) {
+    // const inputBuilder = new InputBuilder(
+    //         this.inputConverter,
+    //         dataElements,
+    //         trackedEntityAttributes,
+    //         optionSets,
+    //         selectedOrgUnit,
+    //     );
+
+    // const executionContext = inputBuilder.buildRuleEngineContext({
+    //         programRulesContainer,
+    //         selectedUserRoles: selectedUserRoles || this.userRoles,
+    //     });
+
+    // const conditionResult = ruleEngine.evaluateEvent(
+    //         variable,
+    //         enrollment,
+    //         events,
+    //         executionContext,
+    //     )
+
     const conditionResult = evaluateExpression(
       rule.condition,
       variable,
