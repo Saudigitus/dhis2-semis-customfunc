@@ -1,22 +1,24 @@
+import { expect, describe, it } from "vitest";
 import applyRulesToVariable from "./applyRulesToVariable"
 
 describe('Rule Engine', () => {
-    it.only('should run the engine to calculate Age based on DoB', () => {
+    it('should run the engine to calculate Age based on DoB', () => {
         let calculatedAge = values['l1QCV36yuUy']
         expect(calculatedAge).toBeUndefined() // no age initially
         applyRulesToVariable(ageVariable, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
         calculatedAge = values['l1QCV36yuUy']
-        expect(calculatedAge).toEqual(1) // age should become 22 based on the rule
+        expect(calculatedAge).toEqual(22) // age should become 22 based on the rule
     })
     it('should run the engine with HIDE rule', () => {
         const valueBefore = variableWithHide.visible
         applyRulesToVariable(variableWithHide, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
-        expect(valueBefore).toEqual(variableWithHide.visible)
+        expect(valueBefore).not.toEqual(variableWithHide.visible)
     })
     it('should run the engine with SHOW_ERROR rule', () => {
         const valueBefore = {...variableWithShowError}
         applyRulesToVariable(variableWithShowError, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
-        expect(valueBefore).toEqual(variableWithShowError)
+        expect(valueBefore).not.toEqual(variableWithShowError)
+        expect(variableWithShowError.content).toEqual('')
     })
 })
 
@@ -27,7 +29,7 @@ const values = {
   "G0B8B0AH5Ek": "2025-00004173",
   "SSRTWWEPn15": "2025-0d725788",
   "EPYqXuM0M2u": "2000-09-01",
-//   "l1QCV36yuUy": 22,
+  "l1QCV36yuUy": undefined,
   "X0vzx18XWqu": "female"
 }
 
