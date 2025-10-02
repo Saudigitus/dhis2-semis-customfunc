@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDataEngine } from "@dhis2/app-runtime"
 import useShowAlerts from "../commons/useShowAlert"
 import { CreateFileInterface, CreateFileInterfaceResponse } from '../../types/image/useFileResourceType';
+import { getSysInfo } from '../system/getSysInfo';
 
 const POSTFILERESOURCEMUTATION: any = {
     resource: "fileResources",
@@ -16,8 +17,17 @@ const DELETEFILERESOURCEMUTATION: any = {
 }
 
 const GETFILERESOURCEQUERY: any = ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => ({
-    results: { 
+    results: {
         resource: `trackedEntityInstances/${trackedEntity}/${attribute}/image`,
+        params: {
+            dimension: "MEDIUM"
+        }
+    }
+})
+
+const GETFILERESOURCEQUERYUP40: any = ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => ({
+    results: {
+        resource: `tracker/trackedEntities/${trackedEntity}/attributes/${attribute}/image`,
         params: {
             dimension: "MEDIUM"
         }
@@ -29,6 +39,7 @@ export const useFileResource = () => {
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const [loading, setloading] = useState(false)
+    const { platformVersion } = getSysInfo()
 
     function showAlert(message: string, type: any) {
         setloading(false)
@@ -52,7 +63,14 @@ export const useFileResource = () => {
     async function getFileResource({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) {
         if (trackedEntity && attribute) {
             setloading(true)
-            const file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
+            const regex = /^\d+\.(\d+)\.\d+/;
+            const version: number = platformVersion.match(regex) as unknown as number || 0;
+            let file: any = ""
+            if (version < 41) {
+                file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
+            } else {
+                file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute }))
+            }
             setloading(false)
             return { file: file.results }
         }
