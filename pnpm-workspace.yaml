@@ -1,0 +1,8 @@
+publicHoistPattern:
+  - "@dhis2/*"
+  - "typeface-roboto"
+  - "prop-types"
+  - "post-robot"
+  - "styled-jsx"
+  - "react"
+  - "react-dom"

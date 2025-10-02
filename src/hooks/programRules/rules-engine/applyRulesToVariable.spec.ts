@@ -1,24 +1,26 @@
 import { expect, describe, it } from "vitest";
 import applyRulesToVariable from "./applyRulesToVariable"
 
-describe('Rule Engine', () => {
+describe.only('applyRulesToVariables', () => {
     it('should run the engine to calculate Age based on DoB', () => {
         let calculatedAge = values['l1QCV36yuUy']
         expect(calculatedAge).toBeUndefined() // no age initially
         applyRulesToVariable(ageVariable, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
         calculatedAge = values['l1QCV36yuUy']
-        expect(calculatedAge).toEqual(22) // age should become 22 based on the rule
+        expect(calculatedAge).toEqual("22") // age should become 22 based on the rule
     })
     it('should run the engine with HIDE rule', () => {
         const valueBefore = variableWithHide.visible
+        expect(valueBefore).toBe(true)
         applyRulesToVariable(variableWithHide, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
         expect(valueBefore).not.toEqual(variableWithHide.visible)
+        expect(variableWithHide.visible).toBe(false)
     })
     it('should run the engine with SHOW_ERROR rule', () => {
         const valueBefore = {...variableWithShowError}
         applyRulesToVariable(variableWithShowError, values, {programRulesVariables, newProgramRules, orgUnitsGroups})
         expect(valueBefore).not.toEqual(variableWithShowError)
-        expect(variableWithShowError.content).toEqual('')
+        expect(variableWithShowError.content).toEqual('Name must be at least 2 characters long. Please enter a valid name.')
     })
 })
 

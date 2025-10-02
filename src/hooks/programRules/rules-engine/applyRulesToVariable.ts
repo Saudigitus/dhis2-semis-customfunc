@@ -1,111 +1,5 @@
-import { ExpressionJs, ExpressionMode, RuleEngineJs } from "@dhis2/rule-engine";
-
-function parseValue(value: any) {
-  if (value === undefined || value === null || value === "") {
-    return "undefined";
-  }
-
-  const lower = value.toLowerCase();
-
-  if (lower === "true") return true;
-  if (lower === "false") return false;
-
-  if (!isNaN(value) && value.trim() !== "") {
-    return Number(value);
-  }
-
-  return `'${value}'`;
-}
-
-function evaluateExpression(
-  expression: any,
-  context: any,
-  values: any,
-  programRulesVariables: any,
-  orgUnitsGroups: any
-) {
-  const d2 = createD2(context, orgUnitsGroups);
-
-  expression = expression.replace(/today\(\)/g, `d2.today()`);
-  expression = expression.replace(/d2:(\w+)/g, "d2.$1");
-  expression = expression.replace(/V\{event_date\}/g, "V{enrollment_date}");
-
-  expression = expression.replace(/#\{([^}]+)\}/g, (_: string, key: string) => {
-    const value = values[programRulesVariables[key]];
-    return parseValue(value);
-  });
-
-  expression = expression.replace(/A\{([^}]+)\}/g, (_: string, key: any) => {
-    const value = values[programRulesVariables[key]];
-    return parseValue(value);
-  });
-
-  expression = expression.replace(/V\{([^}]+)\}/g, (_: string, key: any) => {
-    const value = values[key];
-    return parseValue(value);
-  });
-
-  try {
-    const func = new Function("d2", "context", `return ${expression};`);
-    return func(d2, context);
-  } catch (error) {
-    console.error("Error evaluating expression:", expression, error);
-    return null;
-  }
-}
-
-function createD2(context: any, orgUnitsGroups: any) {
-  const today = new Date().toISOString().split("T")[0];
-
-  return {
-    hasValue: (value: any) =>
-      value !== null && value !== undefined && value !== "",
-    yearsBetween: (date1: any, date2: any) => {
-      const d1 = new Date(date1);
-      const d2 = new Date(date2);
-      let years = d2.getFullYear() - d1.getFullYear();
-      if (
-        d2.getMonth() < d1.getMonth() ||
-        (d2.getMonth() === d1.getMonth() && d2.getDate() < d1.getDate())
-      ) {
-        years--;
-      }
-      return years;
-    },
-    daysBetween: (date1: any, date2: any) => {
-      const d1 = new Date(date1) as unknown as number;
-      const d2 = new Date(date2) as unknown as number;
-      return Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24));
-    },
-    addDays: (date: any, days: any) => {
-      const d = new Date(date);
-      d.setDate(d.getDate() + parseInt(days));
-      return d.toISOString().split("T")[0];
-    },
-    substring: (text: any, start: any, end: any) =>
-      typeof text === "string"
-        ? text.substring(parseInt(start), parseInt(end))
-        : "",
-    today: () => today,
-    length: (value: any) => (typeof value === "string" ? value.length : 0),
-    inOrgUnitGroup: (group: any) =>
-      orgUnitsGroups?.filter((x: any) => x.value === group),
-    validatePattern: (value: any, pattern: any) => {
-      try {
-        return new RegExp(pattern).test(value);
-      } catch (error) {
-        console.error("Invalid pattern:", pattern, error);
-        return false;
-      }
-    },
-    concatenate: (...args: any) => args.join(""),
-    left: (text: any, num: number) =>
-      typeof text === "string" ? text.substring(0, num) : "",
-    right: (text: any, num: number) =>
-      typeof text === "string" ? text.substring(text.length - num) : "",
-    floor: (value: number) => Math.floor(value),
-  };
-}
+import { RuleEngineContextJs, RuleEngineJs } from "@dhis2/rule-engine";
+import { mapToRule, mapToRuleEnrollment, mapToRuleVariables, SemisProgramRule } from "./ruleEnginerMappers";
 
 export default function applyRulesToVariable(
   variable: any,
@@ -117,114 +11,95 @@ export default function applyRulesToVariable(
     getOptionGroups,
   }: {
     programRulesVariables: any;
-    newProgramRules: any;
+    newProgramRules: SemisProgramRule[];
     orgUnitsGroups: any;
     getOptionGroups?: any;
   }
 ) {
-  // !ToDo: move this method to use the KMP Rule Engine
-  // const ruleEngine = new RuleEngineJs(true);
-  for (const rule of newProgramRules.filter(
-    (x: any) => x.variable === variable.id
-  )) {
-    // const inputBuilder = new InputBuilder(
-    //         this.inputConverter,
-    //         dataElements,
-    //         trackedEntityAttributes,
-    //         optionSets,
-    //         selectedOrgUnit,
-    //     );
+  // ToDo: this whole calculation should be moved a step up
+  // since it doesn't need to work on a single variable at a time with the Rule Engine
+  const ruleEngine = new RuleEngineJs(true);
+  const rules = newProgramRules.map(mapToRule);
+  const ruleVariables = mapToRuleVariables(programRulesVariables);
+  const executionContext: RuleEngineContextJs = new RuleEngineContextJs(
+    rules,
+    ruleVariables,
+    new Map(),
+    new Map()
+  )
 
-    // const executionContext = inputBuilder.buildRuleEngineContext({
-    //         programRulesContainer,
-    //         selectedUserRoles: selectedUserRoles || this.userRoles,
-    //     });
+  const conditionResult = ruleEngine.evaluateEnrollment(
+            mapToRuleEnrollment(values),
+            [],
+            executionContext,
+        )
 
-    // const conditionResult = ruleEngine.evaluateEvent(
-    //         variable,
-    //         enrollment,
-    //         events,
-    //         executionContext,
-    //     )
-
-    const conditionResult = evaluateExpression(
-      rule.condition,
-      variable,
-      values,
-      programRulesVariables,
-      orgUnitsGroups
-    );
-
-    switch (rule.programRuleActionType) {
+  // no need to filter here anymore as only applied effects are returned
+  for (const rule of conditionResult) {
+    switch (rule.ruleAction?.values?.get("programRuleActionType")) {
       case "ASSIGN":
-        if (conditionResult) {
-          const newValue = evaluateExpression(
-            rule.data,
-            variable,
-            values,
-            programRulesVariables,
-            orgUnitsGroups
-          );
-          values[variable.id] = newValue ?? "";
-          variable["value"] = newValue;
-        }
+        const newValue = rule.data
+        values[variable.id] = newValue ?? "";
+        variable["value"] = newValue;
         variable.disabled = true;
         break;
 
-      case "SHOWOPTIONGROUP":
-        if (conditionResult) {
-          const options =
-            getOptionGroups?.find((op) => op.id === rule.optionGroup)
-              ?.options || [];
-          variable.options = { optionSet: { options } };
-        }
-        break;
+      // ToDO: update to support SHOWOPTIONGROUP
+      // case "SHOWOPTIONGROUP":
+      //   if (conditionResult) {
+      //     const options =
+      //       getOptionGroups?.find((op) => op.id === rule.optionGroup)
+      //         ?.options || [];
+      //     variable.options = { optionSet: { options } };
+      //   }
+      //   break;
 
       case "SHOWWARNING":
         variable.warning = !!conditionResult;
-        variable.content = conditionResult ? rule.content : "";
+        variable.content = conditionResult ? rule.ruleAction.data : "";
         break;
 
       case "SHOWERROR":
         variable.error = !!conditionResult;
         variable.required = !!conditionResult;
-        variable.content = conditionResult ? rule.content : "";
+        variable.content = rule.ruleAction.data;
         break;
 
       case "HIDEFIELD":
         variable.visible = !conditionResult;
         break;
 
-      case "HIDEOPTIONGROUP":
-        if (
-          conditionResult &&
-          conditionResult[0]?.organisationUnits?.some(
-            (x: any) => x.value === values["orgUnit"]
-          )
-        ) {
-          const groupOptions =
-            getOptionGroups?.find((op) => op.id === rule.optionGroup)
-              ?.options || [];
-          const initial = variable.initialOptions?.optionSet?.options || [];
-          variable.options = {
-            optionSet: {
-              options: (variable.optionSet?.options || initial).filter(
-                (o1: any) =>
-                  !groupOptions.some((o2: any) => o2.value === o1.value)
-              ),
-            },
-          };
-        } else if (
-          !conditionResult &&
-          variable.initialOptions?.optionSet?.options
-        ) {
-          variable.options = {
-            optionSet: {
-              options: variable.initialOptions?.optionSet?.options || [],
-            },
-          };
-        }
-        break;
+      // !ToDO
+      // case "HIDEOPTIONGROUP":
+      //   if (
+      //     conditionResult &&
+      //     conditionResult[0]?.organisationUnits?.some(
+      //       (x: any) => x.value === values["orgUnit"]
+      //     )
+      //   ) {
+      //     const groupOptions =
+      //       getOptionGroups?.find((op) => op.id === rule.optionGroup)
+      //         ?.options || [];
+      //     const initial = variable.initialOptions?.optionSet?.options || [];
+      //     variable.options = {
+      //       optionSet: {
+      //         options: (variable.optionSet?.options || initial).filter(
+      //           (o1: any) =>
+      //             !groupOptions.some((o2: any) => o2.value === o1.value)
+      //         ),
+      //       },
+      //     };
+      //   } else if (
+      //     !conditionResult &&
+      //     variable.initialOptions?.optionSet?.options
+      //   ) {
+      //     variable.options = {
+      //       optionSet: {
+      //         options: variable.initialOptions?.optionSet?.options || [],
+      //       },
+      //     };
+      //   }
+      //   break;
     }
   }
   return variable;
