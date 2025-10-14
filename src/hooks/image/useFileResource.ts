@@ -25,11 +25,11 @@ const GETFILERESOURCEQUERY: any = ({ trackedEntity, attribute }: { trackedEntity
     }
 })
 
-const GETFILERESOURCEQUERYUP40: any = ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => ({
+const GETFILERESOURCEQUERYUP40: any = ({ trackedEntity, attribute, program }: { trackedEntity: string, attribute: string, program: string }) => ({
     results: {
         resource: `tracker/trackedEntities/${trackedEntity}/attributes/${attribute}/image`,
         params: {
-            dimension: "MEDIUM"
+            program: program,
         }
     }
 })
@@ -60,20 +60,21 @@ export const useFileResource = () => {
         return { fileId }
     }
 
-    async function getFileResource({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) {
+    async function getFileResource({ trackedEntity, attribute, program }: { trackedEntity: string, attribute: string, program: string }): Promise<{ file: any }> {
         if (trackedEntity && attribute) {
             setloading(true)
-            const regex = /^\d+\.(\d+)\.\d+/;
-            const version: number = platformVersion.match(regex) as unknown as number || 0;
             let file: any = ""
-            if (version < 41) {
+
+            try {
                 file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
-            } else {
-                file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute }))
+            } catch (error) {
+                file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute, program }))
             }
             setloading(false)
-            return { file: file.results }
+
+            return { file: file?.results }
         }
+        return { file: null }
     }
 
     async function deleteFileResource(documentId: string): Promise<void> {
