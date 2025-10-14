@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDataEngine } from "@dhis2/app-runtime"
 import useShowAlerts from "../commons/useShowAlert"
 import { CreateFileInterface, CreateFileInterfaceResponse } from '../../types/image/useFileResourceType';
+import { getSysInfo } from '../system/getSysInfo';
 
 const POSTFILERESOURCEMUTATION: any = {
     resource: "fileResources",
@@ -24,11 +25,21 @@ const GETFILERESOURCEQUERY: any = ({ trackedEntity, attribute }: { trackedEntity
     }
 })
 
+const GETFILERESOURCEQUERYUP40: any = ({ trackedEntity, attribute, program }: { trackedEntity: string, attribute: string, program: string }) => ({
+    results: {
+        resource: `tracker/trackedEntities/${trackedEntity}/attributes/${attribute}/image`,
+        params: {
+            program: program,
+        }
+    }
+})
+
 
 export const useFileResource = () => {
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const [loading, setloading] = useState(false)
+    const { platformVersion } = getSysInfo()
 
     function showAlert(message: string, type: any) {
         setloading(false)
@@ -49,19 +60,21 @@ export const useFileResource = () => {
         return { fileId }
     }
 
-    async function getFileResource({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) {
+    async function getFileResource({ trackedEntity, attribute, program }: { trackedEntity: string, attribute: string, program: string }): Promise<{ file: any }> {
         if (trackedEntity && attribute) {
+            setloading(true)
+            let file: any = ""
+
             try {
-                setloading(true)
-                const file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
-                return { file: file.results }
-            } catch (error: any) {
-                return { error: error?.message }
+                file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
+            } catch (error) {
+                file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute, program }))
             }
-            finally {
-                setloading(false)
-            }
+            setloading(false)
+
+            return { file: file?.results }
         }
+        return { file: null }
     }
 
     async function deleteFileResource(documentId: string): Promise<void> {
