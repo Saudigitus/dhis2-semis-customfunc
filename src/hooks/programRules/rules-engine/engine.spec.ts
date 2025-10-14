@@ -74,7 +74,7 @@ const mapToRules: (rules: typeof programRulesResponse) => RuleJs[] = (
 ) => {
   const result = rules
     .map((programRule) => {
-      const actions = programRule.programRuleActions.flatMap((ruleAction) => {
+      const actions = programRule.programRuleActions.flatMap((ruleAction: any) => {
         const action = new RuleActionJs(
           ruleAction.data ?? ruleAction.content ?? '',
           // rule.type ?? "",
@@ -96,7 +96,7 @@ const mapToRules: (rules: typeof programRulesResponse) => RuleJs[] = (
         programRule.condition,
         actions,
         programRule.id,
-        programRule.displayName, 
+        programRule.displayName,
         programRule.programStage?.id ?? "",
         programRule.priority ?? null
       );

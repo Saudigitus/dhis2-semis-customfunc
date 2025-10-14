@@ -166,7 +166,8 @@ const newProgramRules = [
     "programStage": "Wi3KEZ7C3w9",
     "data": "#{Amount of bursary for exam fees} +#{Amount of bursary for other} +#{Amount of bursary for school fees}",
     "id": "JRFID0uTgeA",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:hasValue(A{Nationality}) && A{Nationality} == 'zambian'",
@@ -175,7 +176,8 @@ const newProgramRules = [
     "type": "dataElement",
     "data": "40",
     "id": "jLO88ry548t",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:hasValue(A{Nationality}) && A{Nationality} != 'zambian'",
@@ -184,7 +186,8 @@ const newProgramRules = [
     "type": "dataElement",
     "data": "80",
     "id": "cbWRBxFx0tU",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:hasValue(#{Mathematics}) && (#{Mathematics} < 0 || #{Mathematics} > 20)",
@@ -193,7 +196,8 @@ const newProgramRules = [
     "type": "dataElement",
     "content": "Marks out of range (0 -20)",
     "id": "buIrFhAWOO5",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Attendance status} != 'Absent'",
@@ -202,7 +206,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Ljyrr3cktAr",
     "id": "X2RZLHTX6ku",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Receives bursary} != 1",
@@ -211,7 +216,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Wi3KEZ7C3w9",
     "id": "TMEJEoUpSMs",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Receives bursary} != 1",
@@ -220,7 +226,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Wi3KEZ7C3w9",
     "id": "P5SomP0Rz4r",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Receives bursary} != 1",
@@ -229,7 +236,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Wi3KEZ7C3w9",
     "id": "nrl4h8rqPyg",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Receives bursary} != 1",
@@ -238,7 +246,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Wi3KEZ7C3w9",
     "id": "QtKRGCZrxxB",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Receives bursary} != 1",
@@ -247,7 +256,8 @@ const newProgramRules = [
     "type": "dataElement",
     "programStage": "Wi3KEZ7C3w9",
     "id": "wepHdsiD32I",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "true",
@@ -255,7 +265,8 @@ const newProgramRules = [
     "variable": "iDSrFrrVgmX",
     "type": "dataElement",
     "id": "YOCvHMmXej7",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Grade} == 'Grade 1'",
@@ -263,7 +274,8 @@ const newProgramRules = [
     "variable": "cTTpaVY6m1Q",
     "type": "dataElement",
     "id": "dTBH2b6yRGb",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Grade} == 'Grade 1'",
@@ -271,7 +283,8 @@ const newProgramRules = [
     "variable": "w75mLLmHYyS",
     "type": "dataElement",
     "id": "XDVt6hKwsEf",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Grade} == 'Grade 2'",
@@ -279,7 +292,8 @@ const newProgramRules = [
     "variable": "cTTpaVY6m1Q",
     "type": "dataElement",
     "id": "k9E70AxBd1o",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:inOrgUnitGroup('PS')",
@@ -288,7 +302,8 @@ const newProgramRules = [
     "type": "dataElement",
     "optionGroup": "Qpdm1zNZDEV",
     "id": "NXmBLjI3h2w",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "!d2:hasValue(#{Destiny school})",
@@ -296,13 +311,15 @@ const newProgramRules = [
     "variable": "ZdFo5gthBt2",
     "type": "dataElement",
     "id": "YBsT2m0KKDJ",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Attendance status} == 'absent'  || #{Attendance status} == 'Absent'",
     "programRuleActionType": "SENDMESSAGE",
     "id": "J2M4UMd5squ",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "#{Attendance status} == 'absent'  || #{Attendance status} == 'Absent'",
@@ -312,7 +329,8 @@ const newProgramRules = [
     "content": "error test",
     "data": "error testing",
     "id": "meBSqNvWv42",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:length(A{full_name}) < 2 && d2:hasValue(A{full_name})",
@@ -321,7 +339,8 @@ const newProgramRules = [
     "type": "attribute",
     "content": "Name must be at least 2 characters long. Please enter a valid name.",
     "id": "srzQLiiTAj4",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   },
   {
     "condition": "d2:hasValue(A{DOB})",
@@ -330,7 +349,8 @@ const newProgramRules = [
     "type": "attribute",
     "data": "d2:floor( d2:daysBetween( A{DOB}, d2:concatenate( d2:substring( V{enrollment_date}, 0, 4 ), '-06-30' ) ) / 365.25 )",
     "id": "XQEnSE8o6dP",
-    "program": "wQaiD2V27Dp"
+    "program": "wQaiD2V27Dp",
+    "priority": undefined
   }
 ]
 

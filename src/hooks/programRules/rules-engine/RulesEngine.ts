@@ -30,7 +30,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
         }
     }, [props.variables]);
 
-    const contextForRuleEngine = {programRulesVariables, newProgramRules, orgUnitsGroups, getOptionGroups}
+    const contextForRuleEngine:any = {programRulesVariables, newProgramRules, orgUnitsGroups, getOptionGroups}
 
     function runRulesEngine(arg?: { overrideVariables?: any[], overrideValues?: Record<string, any> }) {
         const { overrideVariables = [], overrideValues = {} } = arg || {};
