@@ -23,11 +23,7 @@ type ProgramRulesVariablesQueryResponse = {
     }
 }
 
-export function useGetProgramRulesVariables(programs: string[]): {
-    loadingPRulesVariables: boolean;
-    refetch: () => Promise<any>;
-    errorPRulesVariables: boolean;
-} {
+export function useGetProgramRulesVariables(programs: string[]):any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setProgramRuleVariablesConfigState] = useRecoilState(ProgramRulesVariablesConfigState);

@@ -9,14 +9,7 @@ const ENROLLMENT_QUERY = {
     }
 }
 
-interface UseGetEnrollmentResult {
-    getEnrollment: (enrollment: string, onComplete?: (data?: unknown) => void, onError?: (error?: unknown) => void) => Promise<unknown>;
-    loading: boolean;
-    data: unknown;
-    error: unknown;
-}
-
-export function useGetEnrollment(): UseGetEnrollmentResult {
+export function useGetEnrollment():any {
     const engine = useDataEngine();
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<unknown>(null)

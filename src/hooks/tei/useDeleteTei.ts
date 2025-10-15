@@ -7,13 +7,7 @@ const DELETE_TEI_MUTATION: any = {
     id: ({ id }: any) => id,
 }
 
-type UseDeleteTEIReturn = {
-    deleteTEI: (trackedEntity: string, onComplete?: () => void, onError?: (error?: unknown) => void) => Promise<unknown>;
-    loading: boolean;
-    error: unknown;
-};
-
-export function useDeleteTEI(): UseDeleteTEIReturn {
+export function useDeleteTEI():any {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<unknown>(null)
     const engine = useDataEngine();

@@ -15,18 +15,23 @@ export function formatRowsData({ registrationInstances, teiInstances, isBasicSta
         allRows.push({
             ...dataValues(event.dataValues),
             ...(attributes((teiDetails?.attributes) ?? [])),
-            trackedEntity: event.trackedEntity,
-            enrollmentId: event?.enrollment,
             // If isBasicStage is false, the function is being called by `getStageData`, 
             // so the event ID needed comes from the other stage. 
             // To avoid overwriting data, a second key is required.
-            ...(isBasicStage ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
-            ...(isBasicStage ? { registrationEventOccurredAt: event?.occurredAt } : {}),
-            orgUnitId: currentEnrollment?.orgUnit,
-            programId: currentEnrollment?.program,
-            status: currentEnrollment?.status,
-            ownershipOu: teiDetails?.programOwners?.[teiDetails?.programOwners.length - 1]?.orgUnit ??
-                teiDetails?.programOwners?.[0]?.orgUnit,
+            ...(isBasicStage ?
+                {
+                    registrationEvent: event?.event,
+                    registrationEventOccurredAt: event?.occurredAt,
+                    enrollmentId: event?.enrollment,
+                    trackedEntity: event.trackedEntity,
+                    orgUnitId: currentEnrollment?.orgUnit,
+                    programId: currentEnrollment?.program,
+                    status: currentEnrollment?.status,
+                    ownershipOu: teiDetails?.programOwners?.[teiDetails?.programOwners.length - 1]?.orgUnit ??
+                        teiDetails?.programOwners?.[0]?.orgUnit,
+                } : {
+                    programStageEvent: event?.event
+                })
         });
     }
     return allRows;

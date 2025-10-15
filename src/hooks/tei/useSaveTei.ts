@@ -12,12 +12,7 @@ const SAVE_TEI: any = {
     }
 }
 
-export function useSaveTei(): {
-    saveTei: ({ data, messages, handleComplete }: { data: any, messages: { error: string, sucess: string }, handleComplete?: () => void }) => Promise<any>,
-    loading: boolean | undefined,
-    error: boolean | undefined,
-    response: any
-} {
+export function useSaveTei():any {
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>()

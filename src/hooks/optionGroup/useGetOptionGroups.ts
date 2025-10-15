@@ -21,11 +21,7 @@ type OptionGroupsQueryResponse = {
     }
 }
 
-export function useGetOptionGroups(): {
-    loadingOptionGroups: boolean;
-    refetch: () => Promise<void>;
-    errorOptionGroups: boolean;
-} {
+export function useGetOptionGroups():any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setOptionGroupsConfigState] = useRecoilState(OptionGroupsConfigState);

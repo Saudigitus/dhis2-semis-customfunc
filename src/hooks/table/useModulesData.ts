@@ -159,6 +159,8 @@ export function useModulesData() {
             const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
+            console.log(formatRowsData({ registrationInstances: filteredEvents ?? [], teiInstances: [], isBasicStage: false })[0])
+
             copy[i] = {
                 ...(Modules.Attendance == module ?
                     attendanceDataValuesFormater(filteredEvents, attendanceConfig as unknown as any)

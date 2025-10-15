@@ -7,7 +7,7 @@ const postEvent: any = {
     params: ({ params }: any) => params
 }
 
-const useUploadEvents: () => { uploadValues: (postData: any, importMode: string, importStrategy: string) => Promise<any> } = () => {
+const useUploadEvents = ():any => {
     const engine = useDataEngine();
 
     const params = {
