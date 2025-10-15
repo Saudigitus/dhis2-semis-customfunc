@@ -9,7 +9,7 @@ const ENROLLMENT_QUERY = {
     }
 }
 
-export function useGetEnrollment() {
+export function useGetEnrollment():any {
     const engine = useDataEngine();
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<unknown>(null)

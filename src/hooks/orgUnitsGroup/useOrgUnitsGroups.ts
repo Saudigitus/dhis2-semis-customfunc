@@ -21,7 +21,7 @@ type OrgUnitGroupsQueryResponse = {
     }
 }
 
-export function useOrgUnitsGroups() {
+export function useOrgUnitsGroups():any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setOrgUnitsGroupsConfigState] = useRecoilState(OrgUnitsGroupsConfigState);
