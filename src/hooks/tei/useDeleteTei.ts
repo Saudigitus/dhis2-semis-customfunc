@@ -7,7 +7,7 @@ const DELETE_TEI_MUTATION: any = {
     id: ({ id }: any) => id,
 }
 
-export function useDeleteTEI() {
+export function useDeleteTEI():any {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<unknown>(null)
     const engine = useDataEngine();
