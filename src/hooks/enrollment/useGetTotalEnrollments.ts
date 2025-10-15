@@ -11,7 +11,13 @@ const ENROLLMENT_QUERY = {
     }
 }
 
-export function useGetTotalEnrollments() {
+type UseGetTotalEnrollmentsResult = {
+    getTotalEnrollment: (trackedEntity: string) => Promise<unknown>;
+    data: unknown;
+    loading: boolean;
+};
+
+export function useGetTotalEnrollments(): UseGetTotalEnrollmentsResult {
     const engine = useDataEngine();
     const [data, setData] = useState<unknown>(null)
     const [loading, setLoading] = useState<boolean>(false)

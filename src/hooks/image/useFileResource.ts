@@ -35,7 +35,14 @@ const GETFILERESOURCEQUERYUP40: any = ({ trackedEntity, attribute, program }: { 
 })
 
 
-export const useFileResource = () => {
+interface UseFileResourceReturn {
+    createFileResource: ({ file }: CreateFileInterface) => Promise<{ fileId: string }>;
+    deleteFileResource: (documentId: string) => Promise<void>;
+    getFileResource: ({ trackedEntity, attribute }: { trackedEntity: string, attribute: string }) => Promise<{ file: any } | undefined>;
+    loading: boolean;
+}
+
+export const useFileResource = (): UseFileResourceReturn => {
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const [loading, setloading] = useState(false)
