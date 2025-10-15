@@ -3,27 +3,35 @@ import { FormatResponseRowsProps, RowsDataProps } from "../../../types/common/Fo
 import { dataValuesProps } from "../../../types/events/eventsProps";
 import { attributesProps } from "../../../types/tei/teiProps";
 
-
 export function formatRowsData({ registrationInstances, teiInstances, isBasicStage = false }: FormatResponseRowsProps): RowsDataProps[] {
     const allRows: RowsDataProps[] = [];
 
     for (const event of registrationInstances ?? []) {
         const teiDetails = teiInstances?.find(tei => tei.trackedEntity === event.trackedEntity);
 
+        // Find the enrollment that matches the current academic year event's 
+        const currentEnrollment = teiDetails?.enrollments?.find(enrollment => enrollment.enrollment === event.enrollment);
+
         allRows.push({
             ...dataValues(event.dataValues),
             ...(attributes((teiDetails?.attributes) ?? [])),
-            trackedEntity: event.trackedEntity,
-            enrollmentId: event?.enrollment,
             // If isBasicStage is false, the function is being called by `getStageData`, 
             // so the event ID needed comes from the other stage. 
             // To avoid overwriting data, a second key is required.
-            ...(isBasicStage ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
-            ...(isBasicStage ? { registrationEventOccurredAt: event?.occurredAt } : {}),
-            orgUnitId: teiDetails?.enrollments?.[0]?.orgUnit,
-            programId: teiDetails?.enrollments?.[0]?.program,
-            status: teiDetails?.enrollments?.[0]?.status,
-            ownershipOu: teiDetails?.programOwners?.[0]?.orgUnit,
+            ...(isBasicStage ?
+                {
+                    registrationEvent: event?.event,
+                    registrationEventOccurredAt: event?.occurredAt,
+                    enrollmentId: event?.enrollment,
+                    trackedEntity: event.trackedEntity,
+                    orgUnitId: currentEnrollment?.orgUnit,
+                    programId: currentEnrollment?.program,
+                    status: currentEnrollment?.status,
+                    ownershipOu: teiDetails?.programOwners?.[teiDetails?.programOwners.length - 1]?.orgUnit ??
+                        teiDetails?.programOwners?.[0]?.orgUnit,
+                } : {
+                    programStageEvent: event?.event
+                })
         });
     }
     return allRows;

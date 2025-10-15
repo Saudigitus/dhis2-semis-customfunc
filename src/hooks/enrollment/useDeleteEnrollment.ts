@@ -7,7 +7,7 @@ const ENROLLMENT_MUTATION: any = {
     id: ({ id }: any) => id,
 }
 
-export function useDeleteEnrollment() {
+export function useDeleteEnrollment(): any {
     const engine = useDataEngine();
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<unknown>(null)

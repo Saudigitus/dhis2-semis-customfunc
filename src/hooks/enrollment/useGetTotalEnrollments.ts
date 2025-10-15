@@ -11,7 +11,7 @@ const ENROLLMENT_QUERY = {
     }
 }
 
-export function useGetTotalEnrollments() {
+export function useGetTotalEnrollments():any {
     const engine = useDataEngine();
     const [data, setData] = useState<unknown>(null)
     const [loading, setLoading] = useState<boolean>(false)

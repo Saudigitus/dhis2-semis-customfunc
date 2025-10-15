@@ -12,7 +12,7 @@ const SAVE_TEI: any = {
     }
 }
 
-export function useSaveTei() {
+export function useSaveTei():any {
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>()

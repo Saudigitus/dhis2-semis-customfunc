@@ -21,7 +21,7 @@ type OptionGroupsQueryResponse = {
     }
 }
 
-export function useGetOptionGroups() {
+export function useGetOptionGroups():any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setOptionGroupsConfigState] = useRecoilState(OptionGroupsConfigState);
