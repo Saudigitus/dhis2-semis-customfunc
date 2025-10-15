@@ -3,12 +3,14 @@ import { FormatResponseRowsProps, RowsDataProps } from "../../../types/common/Fo
 import { dataValuesProps } from "../../../types/events/eventsProps";
 import { attributesProps } from "../../../types/tei/teiProps";
 
-
 export function formatRowsData({ registrationInstances, teiInstances, isBasicStage = false }: FormatResponseRowsProps): RowsDataProps[] {
     const allRows: RowsDataProps[] = [];
 
     for (const event of registrationInstances ?? []) {
         const teiDetails = teiInstances?.find(tei => tei.trackedEntity === event.trackedEntity);
+
+        // Find the enrollment that matches the current academic year event's 
+        const currentEnrollment = teiDetails?.enrollments?.find(enrollment => enrollment.enrollment === event.enrollment);
 
         allRows.push({
             ...dataValues(event.dataValues),
@@ -20,10 +22,11 @@ export function formatRowsData({ registrationInstances, teiInstances, isBasicSta
             // To avoid overwriting data, a second key is required.
             ...(isBasicStage ? { registrationEvent: event?.event } : { programStageEvent: event?.event }),
             ...(isBasicStage ? { registrationEventOccurredAt: event?.occurredAt } : {}),
-            orgUnitId: teiDetails?.enrollments?.[0]?.orgUnit,
-            programId: teiDetails?.enrollments?.[0]?.program,
-            status: teiDetails?.enrollments?.[0]?.status,
-            ownershipOu: teiDetails?.programOwners?.[0]?.orgUnit,
+            orgUnitId: currentEnrollment?.orgUnit,
+            programId: currentEnrollment?.program,
+            status: currentEnrollment?.status,
+            ownershipOu: teiDetails?.programOwners?.[teiDetails?.programOwners.length - 1]?.orgUnit ??
+                teiDetails?.programOwners?.[0]?.orgUnit,
         });
     }
     return allRows;
