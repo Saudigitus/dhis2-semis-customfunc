@@ -7,7 +7,7 @@ export interface AttendanceFormaterProps {
     event: string
 }
 interface defaults {
-    currentAcademicYear: string
+    academicYear: string
 }
 
 interface ClassPeriodType {
