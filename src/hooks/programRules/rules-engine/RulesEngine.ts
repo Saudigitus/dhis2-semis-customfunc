@@ -57,6 +57,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                 return applyRulesToVariable(copy, values, contextForRuleEngine);
             })
         }));
+        console.log(updated)
         setUpdatedVariables(updated);
     }
 
@@ -68,6 +69,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
                 return applyRulesToVariable(copy, values, contextForRuleEngine);
             })
         }));
+        console.log(updated)
         setUpdatedVariables(updated);
     }
 
@@ -76,8 +78,11 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
             const copy = { ...variable };
             return applyRulesToVariable(copy, values, contextForRuleEngine);
         });
+        console.log(updated)
         setUpdatedVariables(updated);
     }    
+
+    console.log(updatedVariables);
 
     return {
         runRulesEngine,

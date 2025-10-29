@@ -48,7 +48,7 @@ export default function applyRulesToVariable(
       // case "SHOWOPTIONGROUP":
       //   if (conditionResult) {
       //     const options =
-      //       getOptionGroups?.find((op) => op.id === rule.optionGroup)
+      //       getOptionGroups?.find((op:any) => op.id === rule.optionGroup)
       //         ?.options || [];
       //     variable.options = { optionSet: { options } };
       //   }

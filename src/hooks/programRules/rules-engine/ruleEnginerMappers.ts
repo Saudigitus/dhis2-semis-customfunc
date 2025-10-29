@@ -13,7 +13,7 @@ export const mapToRuleEnrollment: (e: {
     "enrollment",
     "programName",
     LocalDate.now(), // incident date
-    LocalDate.parse(enrollment.enrollment_date!), // enrollemntDate
+    LocalDate.parse(enrollment.enrollment_date! || "2025-11-29" ), // enrollemntDate
     RuleEnrollmentStatus.ACTIVE,
     "orgUnit",
     "orgUnitCode",
