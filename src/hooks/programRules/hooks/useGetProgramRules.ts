@@ -4,6 +4,7 @@ import { useDataQuery } from "@dhis2/app-runtime";
 import useShowAlerts from "../../commons/useShowAlert";
 import { ProgramRulesConfigState } from "../../../schema/programRulesSchema";
 import { ProgramRuleConfig } from "../../../types/programRules/ProgramRulesTypes";
+import { useCacheData } from "../../../hooks/useCacheData/useCacheData";
 
 const PROGRAM_RULES_QUERY = {
     results: {
@@ -25,6 +26,7 @@ type ProgramRulesQueryResponse = {
 
 export function useGetProgramRules(programs: string[]):any {
     const { hide, show } = useShowAlerts()
+    const { initializeDB, getDataFromDB, saveDataToDB } = useCacheData();
     const [error, setError] = useState<boolean>(false)
     const [, setProgramRulesConfigState] = useRecoilState(ProgramRulesConfigState);
 
@@ -42,12 +44,22 @@ export function useGetProgramRules(programs: string[]):any {
         },
         onComplete(response: { results: { programRules: any[] } }) {
             setProgramRulesConfigState(response?.results?.programRules);
+            saveDataToDB({ id: 'programRules', data: response?.results?.programRules }, 'programRules');
         },
         lazy: true
     })
 
     useEffect(() => {
-        void refetch()
+        initializeDB();
+
+        (async () => {
+            const cached = await getDataFromDB('programRules', 'programRules');
+            if (cached?.data && Array.isArray(cached.data) && cached.data.length > 0) {
+                setProgramRulesConfigState(cached.data);
+            } else {
+                void refetch();
+            }
+        })();
     }, [])
 
     return { loadingPRules, refetch, errorPRules: error }

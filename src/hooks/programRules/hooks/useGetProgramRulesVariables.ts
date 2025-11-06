@@ -4,6 +4,7 @@ import { useDataQuery } from "@dhis2/app-runtime";
 import useShowAlerts from "../../commons/useShowAlert";
 import { ProgramRulesVariablesConfigState } from "../../../schema/programRulesVariablesSchema";
 import { ProgramRuleVariableConfig } from "../../../types/programRules/ProgramRulesTypes";
+import { useCacheData } from "../../../hooks/useCacheData/useCacheData";
 
 const PROGRAM_RULES_VARIABLES_QUERY = {
     results: {
@@ -25,6 +26,7 @@ type ProgramRulesVariablesQueryResponse = {
 
 export function useGetProgramRulesVariables(programs: string[]):any {
     const { hide, show } = useShowAlerts()
+    const { initializeDB, getDataFromDB, saveDataToDB } = useCacheData();
     const [error, setError] = useState<boolean>(false)
     const [, setProgramRuleVariablesConfigState] = useRecoilState(ProgramRulesVariablesConfigState);
 
@@ -42,12 +44,22 @@ export function useGetProgramRulesVariables(programs: string[]):any {
         },
         onComplete(response: { results: { programRuleVariables: any[] } }) {
             setProgramRuleVariablesConfigState(response?.results?.programRuleVariables);
+            saveDataToDB({ id: 'programRuleVariables', data: response?.results?.programRuleVariables }, 'programRuleVariables');
         },
         lazy: true
     })
 
     useEffect(() => {
-        void refetch()
+        initializeDB();
+
+        (async () => {
+            const cached = await getDataFromDB('programRuleVariables', 'programRuleVariables');
+            if (cached?.data && Array.isArray(cached.data) && cached.data.length > 0) {
+                setProgramRuleVariablesConfigState(cached.data);
+            } else {
+                void refetch();
+            }
+        })();
     }, [])
 
     return { loadingPRulesVariables, refetch, errorPRulesVariables: error }

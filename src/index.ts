@@ -35,6 +35,7 @@ import { UserInfoState } from "./schema/userInfoSchema"
 import { useGetSysInfo } from "./hooks/system/info"
 import { getSysInfo } from "./hooks/system/getSysInfo"
 import { useIncrementDays } from "./utils/attendance/getDates"
+import { useCacheData } from "./hooks/useCacheData/useCacheData"
 
 export {
     useBuildForm,
@@ -77,5 +78,6 @@ export {
     UserInfoState,
     useGetSysInfo,
     getSysInfo,
-    useIncrementDays
+    useIncrementDays,
+    useCacheData
 }
