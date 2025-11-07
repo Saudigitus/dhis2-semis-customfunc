@@ -26,7 +26,7 @@ export function useOrgUnitsGroups():any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setOrgUnitsGroupsConfigState] = useRecoilState(OrgUnitsGroupsConfigState);
-    const { initializeDB, getDataFromDB, saveDataToDB } = useCacheData();
+    const { getDataFromDB, saveDataToDB } = useCacheData();
 
     const { data, loading: loadingOrgUnitsGroups, refetch } = useDataQuery<OrgUnitGroupsQueryResponse>(OPTION_GROUPS_QUERY, {
         onError(error: { message: string }) {
@@ -45,7 +45,6 @@ export function useOrgUnitsGroups():any {
     })
 
     useEffect(() => {
-        initializeDB();
 
         (async () => {
             const cached = await getDataFromDB('organisationUnitGroups', 'organisationUnitGroups');
