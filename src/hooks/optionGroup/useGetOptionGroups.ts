@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import useShowAlerts from "../commons/useShowAlert";
 import { OptionGroupsConfig, OptionGroupsConfigState } from "../../schema/optionGroupsSchema";
+import { useCacheData } from "../useCacheData/useCacheData";
 
 const OPTION_GROUPS_QUERY = {
     results: {
@@ -23,6 +24,7 @@ type OptionGroupsQueryResponse = {
 
 export function useGetOptionGroups():any {
     const { hide, show } = useShowAlerts()
+    const { initializeDB, getDataFromDB, saveDataToDB } = useCacheData();
     const [error, setError] = useState<boolean>(false)
     const [, setOptionGroupsConfigState] = useRecoilState(OptionGroupsConfigState);
 
@@ -37,12 +39,22 @@ export function useGetOptionGroups():any {
         },
         onComplete(response: { results: { optionGroups: any[] } }) {
             setOptionGroupsConfigState(response?.results?.optionGroups);
+            // Salva no cache com uma chave fixa para o conjunto
+            saveDataToDB({ id: 'optionGroups', data: response?.results?.optionGroups }, 'optionGroups');
         },
         lazy: true
     })
 
     useEffect(() => {
-        void refetch()
+
+        (async () => {
+            const cached = await getDataFromDB('optionGroups', 'optionGroups');
+            if (cached?.data && Array.isArray(cached.data) && cached.data.length > 0) {
+                setOptionGroupsConfigState(cached.data);
+            } else {
+                void refetch();
+            }
+        })();
     }, [])
 
     return { loadingOptionGroups, refetch, errorOptionGroups: error }

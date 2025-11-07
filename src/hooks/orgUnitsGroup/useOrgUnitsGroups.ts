@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import useShowAlerts from "../commons/useShowAlert";
 import { OrgUnitsGroupsConfig, OrgUnitsGroupsConfigState } from "../../schema/orgUnitsGroupSchema";
+import { useCacheData } from "../useCacheData/useCacheData";
 
 const OPTION_GROUPS_QUERY = {
     results: {
@@ -25,6 +26,7 @@ export function useOrgUnitsGroups():any {
     const { hide, show } = useShowAlerts()
     const [error, setError] = useState<boolean>(false)
     const [, setOrgUnitsGroupsConfigState] = useRecoilState(OrgUnitsGroupsConfigState);
+    const { getDataFromDB, saveDataToDB } = useCacheData();
 
     const { data, loading: loadingOrgUnitsGroups, refetch } = useDataQuery<OrgUnitGroupsQueryResponse>(OPTION_GROUPS_QUERY, {
         onError(error: { message: string }) {
@@ -37,12 +39,21 @@ export function useOrgUnitsGroups():any {
         },
         onComplete(response: { results: { organisationUnitGroups: any[] } }) {
             setOrgUnitsGroupsConfigState(response?.results?.organisationUnitGroups);
+            saveDataToDB({ id: 'organisationUnitGroups', data: response?.results?.organisationUnitGroups }, 'organisationUnitGroups');
         },
         lazy: true
     })
 
     useEffect(() => {
-        void refetch()
+
+        (async () => {
+            const cached = await getDataFromDB('organisationUnitGroups', 'organisationUnitGroups');
+            if (cached?.data && Array.isArray(cached.data) && cached.data.length > 0) {
+                setOrgUnitsGroupsConfigState(cached.data);
+            } else {
+                void refetch()
+            }
+        })();
     }, [])
 
     return { loadingOrgUnitsGroups, refetch, errorOrgUnitsGroups: error }
