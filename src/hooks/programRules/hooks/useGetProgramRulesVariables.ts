@@ -26,7 +26,7 @@ type ProgramRulesVariablesQueryResponse = {
 
 export function useGetProgramRulesVariables(programs: string[]):any {
     const { hide, show } = useShowAlerts()
-    const { initializeDB, getDataFromDB, saveDataToDB } = useCacheData();
+    const { getDataFromDB, saveDataToDB } = useCacheData();
     const [error, setError] = useState<boolean>(false)
     const [, setProgramRuleVariablesConfigState] = useRecoilState(ProgramRulesVariablesConfigState);
 
@@ -50,8 +50,6 @@ export function useGetProgramRulesVariables(programs: string[]):any {
     })
 
     useEffect(() => {
-        initializeDB();
-
         (async () => {
             const cached = await getDataFromDB('programRuleVariables', 'programRuleVariables');
             if (cached?.data && Array.isArray(cached.data) && cached.data.length > 0) {
