@@ -31,21 +31,30 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
             .then(async (teiResponse: any) => {
 
                 for (const tei of teiResponse?.results?.instances) {
-                    let socioEconomicsResponse: any = {}
+                    let socioEconomicsResponse: any[] = []
 
                     const registrationResponse = await getEvents({
                         program, programStage: registration.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
                     })
 
-                    if (socioEconomics)
+                    if (socioEconomics) {
                         socioEconomicsResponse = await getEvents({
                             program, programStage: socioEconomics.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
-                        })
+                        }) || []
+                    }
 
+                    const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", registrationResponse) || []
+                    const socioEconomicsEvents = socioEconomics ? (formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse) || []) : []
 
-                    const registrationEvents = formatResponseData("WITHOUT_REGISTRATION", registrationResponse)
-                    const socioEconomicsEvents = formatResponseData("WITHOUT_REGISTRATION", socioEconomicsResponse)
-                    teisWithRegistrationEvents.push({ ...tei, ownershipOu: tei?.programOwners?.[0]?.orgUnit, enrollmentsNumber: registrationEvents?.length, registrationEvents, socioEconomicsEvents, mainAttributesFormatted: attributes(tei?.attributes), ...attributes(tei?.attributes) })
+                    teisWithRegistrationEvents.push({
+                        ...tei,
+                        ownershipOu: tei?.programOwners?.[0]?.orgUnit,
+                        enrollmentsNumber: registrationEvents?.length,
+                        registrationEvents,
+                        socioEconomicsEvents,
+                        mainAttributesFormatted: attributes(tei?.attributes),
+                        ...attributes(tei?.attributes)
+                    })
                 }
 
                 setEnrollmentValues(teisWithRegistrationEvents)
