@@ -44,10 +44,10 @@ export class useValidation {
                     const data: Uint8Array = new Uint8Array(event.target?.result as any);
                     const workbook = read(data, {
                         type: 'array',
-                        cellDates: true,
+                        cellDates: false,
                         cellNF: false,
-                        dateNF: "YYYY-MM-DD",
-                        cellText: true
+                        cellText: false,
+                        raw: false
                     });
 
                     // const sheetName = workbook.SheetNames[0];
