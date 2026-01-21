@@ -44,10 +44,10 @@ export class useValidation {
                     const data: Uint8Array = new Uint8Array(event.target?.result as any);
                     const workbook = read(data, {
                         type: 'array',
-                        cellDates: true,
+                        cellDates: false,
                         cellNF: false,
-                        dateNF: "YYYY-MM-DD",
-                        cellText: true
+                        cellText: false,
+                        raw: false
                     });
 
                     // const sheetName = workbook.SheetNames[0];
@@ -64,31 +64,35 @@ export class useValidation {
                     this.converterXlstoJson(workbook);
                     this.sheetValidation(workbook.SheetNames);
 
-                    // Process data 
                     for (let i = 3; i < this.rawData.length; i++) {
-                        mappedData.push(this.mapDataWithKeys(
-                            this.rawData[i],
-                            this.headerVariablesSheets,
-                            this.headerSectionSheets
-                        ));
+                        const row = this.rawData[i];
+                        const isEmptyRow = !row || row.every((cell: any) =>
+                            cell === null || cell === undefined || cell === '' ||
+                            (typeof cell === 'string' && cell.trim() === '')
+                        );
+
+                        if (!isEmptyRow) {
+                            mappedData.push(this.mapDataWithKeys(
+                                row,
+                                this.headerVariablesSheets,
+                                this.headerSectionSheets
+                            ));
+                        }
                     }
 
-                    // Resolve the Promise with the result
                     resolve({
                         mapping: mappedData,
                         module: this.module
                     });
                 } catch (error) {
-                    // Reject the Promise in case of any error
                     reject(error);
                 }
             };
 
             reader.onerror = (error) => {
-                reject(error); // Handle file reading errors
+                reject(error);
             };
 
-            // Start reading the file as an ArrayBuffer
             reader.readAsArrayBuffer(file);
         });
     }
