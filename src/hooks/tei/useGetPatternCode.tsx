@@ -17,6 +17,7 @@ const TEI_ATTRIBUTES: any = {
 
 export const useGetPatternCode = () => {
     const engine = useDataEngine()
+    const [error, setError] = useState(false)
     const [loadingCodes, setloadingCodes] = useState(false)
     const [value, setvalue] = useState<GeneratedCodeType>({})
     const { getPatternCodeParams } = useGetPatternCodeParams()
@@ -29,7 +30,7 @@ export const useGetPatternCode = () => {
             let code: PatternCodeQueryResults = { results: { value: "" } }
 
             if (pattern?.length) {
-                const params = await getPatternCodeParams({ pattern, orgUnit, params: {} })
+                const params = await getPatternCodeParams({ pattern, orgUnit, params: {}, onFail: () => setError(true) })
                 code = await engine.query(TEI_ATTRIBUTES, { variables: { id, params } }) as unknown as PatternCodeQueryResults
                 patterns.push({ [id]: code?.results?.value })
             }
@@ -41,6 +42,7 @@ export const useGetPatternCode = () => {
     }
 
     return {
+        errorLoading: error,
         returnPattern,
         loadingCodes,
         generatedVariables: value
