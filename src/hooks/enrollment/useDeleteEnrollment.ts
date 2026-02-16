@@ -1,35 +1,69 @@
-import { useDataEngine } from "@dhis2/app-runtime";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useDataEngine, } from "@dhis2/app-runtime";
 
-const ENROLLMENT_MUTATION: any = {
-    resource: "enrollments",
-    type: 'delete',
-    id: ({ id }: any) => id,
-}
+const DELETE_ENROLLMENT_MUTATION = {
+    resource: "tracker",
+    type: 'create',
+    data: ({ data }: { data: any }) => data,
+    params: {
+        async: false,
+        importStrategy: "DELETE",
+    },
+} as any;
 
-export function useDeleteEnrollment(): any {
+const ENROLLMENT_QUERY = {
+    results: {
+        resource: "tracker/enrollments",
+        id: ({ id }: { id: string }) => id,
+        params: {
+            fields: "enrollment,trackedEntity,program,status,orgUnit,enrolledAt,occurredAt,followUp,deleted,createdBy,updatedBy",
+        },
+    },
+} as any;
+
+type DeleteEnrollmentCallbacks = {
+    onComplete?: () => void;
+    onError?: (error: unknown) => void;
+};
+
+const returnEnrollmentBody = (enrollment: any) => ({
+    enrollments: [{
+        ...enrollment,
+        deleted: true,
+    }]
+});
+
+export function useDeleteEnrollment() {
     const engine = useDataEngine();
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<unknown>(null)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<unknown>(null);
 
+    const deleteEnrollment = useCallback(
+        async (enrollmentId: string, { onComplete, onError }: DeleteEnrollmentCallbacks = {}) => {
+            setLoading(true);
+            setError(null);
 
-    async function deleteEnrollment(enrollment: string, onComplete?: () => void, onError?: (error?: unknown) => void) {
-        try {
-            setLoading(true)
-            const response = await engine.mutate(ENROLLMENT_MUTATION, { variables: { id: enrollment } });
-            if (onComplete) {
-                onComplete()
+            try {
+                const { results } = (await engine.query(ENROLLMENT_QUERY, {
+                    variables: { id: enrollmentId },
+                }));
+
+                if (!results) throw new Error("Enrollment not found");
+
+                await engine.mutate(DELETE_ENROLLMENT_MUTATION, {
+                    variables: { data: returnEnrollmentBody(results) },
+                });
+
+                onComplete?.();
+            } catch (err) {
+                setError(err);
+                onError?.(err);
+            } finally {
+                setLoading(false);
             }
-            return response;
-        } catch (error) {
-            setError(error)
-            if (onError) {
-                onError(error)
-            }
-        } finally {
-            setLoading(false)
-        }
-    }
+        },
+        [engine]
+    );
 
-    return { deleteEnrollment, loading, error }
+    return { deleteEnrollment, loading, error };
 }
