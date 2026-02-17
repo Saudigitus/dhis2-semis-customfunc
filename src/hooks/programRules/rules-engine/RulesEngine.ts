@@ -197,7 +197,7 @@ export const CustomDhis2RulesEngine = (props: RulesEngineProps) => {
 
                 case "SHOWERROR":
                     variable.error = !!conditionResult;
-                    variable.required = !!conditionResult;
+                    // variable.required = !!conditionResult;
                     variable.content = conditionResult ? rule.content : "";
                     break;
 
