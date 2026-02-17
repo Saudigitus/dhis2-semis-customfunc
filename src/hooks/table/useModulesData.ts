@@ -36,12 +36,14 @@ export function useModulesData() {
     const { cancelAllOperations, makeCancellablePromise } = RequestBroker({ requestRef })
 
     async function getRegistrationData(tableDataProps: GetTableDataProps) {
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
 
         const eventsResults = await engine.query(EVENT_QUERY({
             ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
             page,
             pageSize,
+            ...(paging ? { paging } : {}),
+            ...(skipPaging ? { skipPaging } : {}),
             program: program as unknown as string,
             order: order || "occurredAt:desc",
             programStage: baseProgramStage,
@@ -63,13 +65,15 @@ export function useModulesData() {
 
     async function getBasicData(tableDataProps: GetTableDataProps) {
         cancelAllOperations()
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
 
         const eventsResults = makeCancellablePromise(
             engine.query(EVENT_QUERY({
                 ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                 page,
                 pageSize,
+                ...(paging ? { paging } : {}),
+                ...(skipPaging ? { skipPaging } : {}),
                 program: program as unknown as string,
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
@@ -98,6 +102,7 @@ export function useModulesData() {
                 engine.query(TEI_QUERY({
                     ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     skipPaging: true,
+                    paging: false,
                     program: program as unknown as string,
                     trackedEntity: registrationTrackedEntities,
                     orgUnit
@@ -158,8 +163,6 @@ export function useModulesData() {
             requestRef.current.push(cancelable);
             const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
-
-            console.log(formatRowsData({ registrationInstances: filteredEvents ?? [], teiInstances: [], isBasicStage: false })[0])
 
             copy[i] = {
                 ...(Modules.Attendance == module ?

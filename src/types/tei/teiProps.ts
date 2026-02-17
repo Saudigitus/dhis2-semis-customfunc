@@ -1,4 +1,5 @@
 interface TeiQueryProps {
+    paging?: boolean
     program: string
     pageSize?: number
     ouMode?: string

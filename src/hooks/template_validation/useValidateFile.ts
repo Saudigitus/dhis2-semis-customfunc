@@ -29,9 +29,10 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const { displayName } = program
     const { urlParameters } = useUrlParams()
     const { sectionType, school } = urlParameters
+    const Profile = (sectionType ?? '').substring(0, 1).toUpperCase() + (sectionType ?? '').substring(1, (sectionType ?? '').length) + ' profile'
 
     const validador = async ({ module, data }: { module: string, data: any[] }) => {
-        const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module)
+        const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module, Profile)
         setInvalidRecords(invalidData)
 
         if (module !== "enrollment") {
