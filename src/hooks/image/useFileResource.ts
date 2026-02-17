@@ -68,7 +68,11 @@ export const useFileResource = () => {
             try {
                 file = await engine.query(GETFILERESOURCEQUERY({ trackedEntity, attribute }))
             } catch (error) {
-                file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute, program }))
+                try {
+                    file = await engine.query(GETFILERESOURCEQUERYUP40({ trackedEntity, attribute, program }))
+                } catch (error) {
+                    setloading(false)
+                }
             }
             setloading(false)
 
