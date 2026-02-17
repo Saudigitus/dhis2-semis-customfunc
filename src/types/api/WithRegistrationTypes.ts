@@ -2,7 +2,7 @@ interface TeiQueryProps {
     program: string
     pageSize?: number
     ouMode?: string
-    trackedEntity: string[]
+    trackedEntities: string[]
     orgUnit?: string
     order?: string
     paging?: boolean
