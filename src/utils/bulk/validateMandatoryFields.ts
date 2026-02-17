@@ -1,4 +1,4 @@
-const madatoryFieldsValidator = (program: any, fileRowData: any, module: string) => {
+const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string) => {
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
@@ -9,7 +9,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
 
 
     students.forEach((student: any) => {
-        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes).length === 0 && validateMandatoryDataElements(student, program).length === 0) {
+        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile).length === 0 && validateMandatoryDataElements(student, program, profile).length === 0) {
             validData.push({
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
@@ -33,23 +33,24 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
                             error: "Empty required field"
                         }
                     }),
-                    ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
-                    ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field, error: "Empty required field" } })]
+                    ...validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
+                    ...validateMandatoryDataElements(student, program, profile).map((field: any) => { return { key: field, error: "Empty required field" } })]
             })
         }
     });
     return { validData, invalidData, uniqueAttributes }
 }
 
-const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any): [] => {
+const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any, profile: string): [] => {
     //FILTER ALL NULL, UNDEFINED AND EMPTY ATTRIBUTES
+    console.log(student, madatoryFieldsAttributes)
     return madatoryFieldsAttributes.filter(({ trackedEntityAttribute: { id } }: any) => {
-        const value = student?.['Student profile']?.[id];
+        const value = student?.[profile]?.[id];
         return value === undefined || value === null || value === '';
     });
 }
 
-const validateMandatoryDataElements = (student: any, program: any): [] => {
+const validateMandatoryDataElements = (student: any, program: any, profile: string): [] => {
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const madatoryFieldsProgramStages = program?.programStages.map((programStage: any) => {
         const compulsoryElements = programStage.programStageDataElements.filter((el: any) => el.compulsory);
@@ -64,7 +65,7 @@ const validateMandatoryDataElements = (student: any, program: any): [] => {
 
     // FILTER ALL STUDENT FILE PROGRAM STAGES AND MERGE ON ONE OBJECT
     const filteredObjects = Object.entries(student)
-        .filter(([key]) => key !== "Student profile" && key !== "Ids")
+        .filter(([key]) => key !== profile && key !== "Ids")
         .map(([_, value]) => value);
     const merged = Object.assign({}, ...filteredObjects);
 
