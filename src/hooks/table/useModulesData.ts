@@ -67,7 +67,7 @@ export function useModulesData() {
 
         const eventsResults = makeCancellablePromise(
             engine.query(EVENT_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
                 page,
                 pageSize,
                 program: program as unknown as string,
