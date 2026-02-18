@@ -75,7 +75,7 @@ export function useModulesData() {
                 programStage: baseProgramStage,
                 filter: dataElementFilters,
                 filterAttributes: attributeFilters,
-                orgUnit: orgUnit,
+                // orgUnit: orgUnit,
                 totalPages: true
             }))
                 .catch((error) => {
