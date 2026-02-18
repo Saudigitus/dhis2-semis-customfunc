@@ -67,7 +67,7 @@ export function useModulesData() {
 
         const eventsResults = makeCancellablePromise(
             engine.query(EVENT_QUERY({
-                ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
+                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                 page,
                 pageSize,
                 program: program as unknown as string,
@@ -75,7 +75,7 @@ export function useModulesData() {
                 programStage: baseProgramStage,
                 filter: dataElementFilters,
                 filterAttributes: attributeFilters,
-                // orgUnit: orgUnit,
+                orgUnit: orgUnit,
                 totalPages: true
             }))
                 .catch((error) => {
@@ -96,11 +96,11 @@ export function useModulesData() {
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
                 engine.query(TEI_QUERY({
-                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
                     skipPaging: true,
                     program: program as unknown as string,
                     trackedEntity: registrationTrackedEntities,
-                    orgUnit
+                    // orgUnit
                 })).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
