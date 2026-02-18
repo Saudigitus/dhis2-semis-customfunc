@@ -96,11 +96,11 @@ export function useModulesData() {
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
                 engine.query(TEI_QUERY({
-                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
                     skipPaging: true,
                     program: program as unknown as string,
                     trackedEntity: registrationTrackedEntities,
-                    orgUnit
+                    // orgUnit
                 })).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
