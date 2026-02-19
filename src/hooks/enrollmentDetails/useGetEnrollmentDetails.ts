@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useGetTeis } from '../tei/useGetTei';
+import { useGetTrackers } from '../tei/useGetTei';
 import { useGetEvents } from '../events/useGetEvents';
 import { ExportData } from '../../types/bulk/bulkOperations';
 import { attributes, dataValues } from '../../utils/format/formatData';
@@ -7,7 +7,7 @@ import { Modules } from 'dhis2-semis-types';
 import { format } from 'date-fns';
 
 export function useGetEnrollmentData(props: ExportData) {
-    const { getTeis } = useGetTeis()
+    const { getTrackers } = useGetTrackers()
     const { getEvents } = useGetEvents()
     const [error, setError] = useState<boolean>(false)
     const { orgUnitName, orgUnit, eventFilters, withSocioEconomics, selectedSectionDataStore, module } = props
@@ -16,7 +16,7 @@ export function useGetEnrollmentData(props: ExportData) {
         const trackedEntityIds = events?.map((x: { trackedEntity: string }) => x.trackedEntity).join(';')
 
         try {
-            return getTeis({ program: selectedSectionDataStore?.program as unknown as string, trackedEntity: trackedEntityIds, orgUnit })
+            return getTrackers({ program: selectedSectionDataStore?.program as unknown as string, trackedEntity: trackedEntityIds, orgUnit })
                 .then(async (trackedEntityInstance: any) => {
                     const data = trackedEntityInstance?.results?.instances ? trackedEntityInstance?.results?.instances : trackedEntityInstance?.results?.trackedEntities
                     let rows: any = []

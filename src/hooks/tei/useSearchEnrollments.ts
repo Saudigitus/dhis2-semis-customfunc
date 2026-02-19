@@ -15,7 +15,7 @@ interface useSearchEnrollmentsProps {
 export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
     const { show } = useShowAlerts()
     const { getEvents } = useGetEvents()
-    const { getTeiSearch } = useSearchTei()
+    const { getTrackersearch } = useSearchTei()
     const [error, setError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const { registration, program, socioEconomics } = props
@@ -27,7 +27,7 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
         const fields: string = "event,trackedEntity,enrollment,occurredAt,dataValues[dataElement,value],orgUnitName,orgUnit"
 
         setLoading(true)
-        getTeiSearch({ program, filters, orgUnit })
+        getTrackersearch({ program, filters, orgUnit })
             .then(async (teiResponse: any) => {
 
                 for (const tei of teiResponse?.results?.instances) {

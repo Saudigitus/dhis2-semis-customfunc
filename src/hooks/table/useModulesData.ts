@@ -1,56 +1,41 @@
-import { useDataEngine } from "@dhis2/app-runtime";
-import { EventQueryProps, EventQueryResults } from "../../types/events/eventsProps";
-import { TeiQueryProps, TeiQueryResults } from "../../types/tei/teiProps";
-import { GetTableDataProps } from "../../types/table/tableDataProps";
-import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
-import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
-import useShowAlerts from "../commons/useShowAlert";
-import { Modules } from "dhis2-semis-types";
 import { useRef } from "react";
+import { Modules } from "dhis2-semis-types";
+import { useDataEngine } from "@dhis2/app-runtime";
+import useShowAlerts from "../commons/useShowAlert";
+import { useGetEvents } from "../events/useGetEvents";
 import { RequestBroker } from "../requestBroker/requestBroker";
+import { GetTableDataProps } from "../../types/table/tableDataProps";
+import { EventQueryResults } from "../../types/api/WithoutRegistrationTypes";
+import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
+import { TeiQueryResults } from "../../types/api/WithRegistrationTypes";
+import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
+import { useGetTrackers } from "../tei/useGetTei";
 
-export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
-    results: {
-        resource: "tracker/events",
-        params: {
-            fields: queryProps?.fields ?? "*",
-            ...queryProps
-        }
-    }
-})
 
-export const TEI_QUERY = (queryProps: TeiQueryProps) => ({
-    results: {
-        resource: "tracker/trackedEntities",
-        params: {
-            fields: "trackedEntity,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,orgUnit,program,status],programOwners[orgUnit]",
-            ...queryProps
-        }
-    }
-})
 
 export function useModulesData() {
     const engine = useDataEngine();
-    const { hide, show } = useShowAlerts()
+    const { getEvents } = useGetEvents()
     const requestRef = useRef<any[]>([]);
+    const { hide, show } = useShowAlerts()
+    const { getTrackers } = useGetTrackers()
     const { cancelAllOperations, makeCancellablePromise } = RequestBroker({ requestRef })
 
     async function getRegistrationData(tableDataProps: GetTableDataProps) {
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
-        const eventsResults = await engine.query(EVENT_QUERY({
-            ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+        const eventsResults = await getEvents({
+            orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
             page,
             pageSize,
             ...(paging ? { paging } : {}),
-            ...(skipPaging ? { skipPaging } : {}),
             program: program as unknown as string,
             order: order || "occurredAt:desc",
             programStage: baseProgramStage,
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-        })).catch((error) => {
+        }).catch((error) => {
             show({
                 message: `${("Could not get events")}: ${error.message}`,
                 type: { critical: true }
@@ -65,15 +50,14 @@ export function useModulesData() {
 
     async function getBasicData(tableDataProps: GetTableDataProps) {
         cancelAllOperations()
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
         const eventsResults = makeCancellablePromise(
-            engine.query(EVENT_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+            getEvents({
+                orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                 page,
                 pageSize,
                 ...(paging ? { paging } : {}),
-                ...(skipPaging ? { skipPaging } : {}),
                 program: program as unknown as string,
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
@@ -81,7 +65,7 @@ export function useModulesData() {
                 filterAttributes: attributeFilters,
                 orgUnit: orgUnit,
                 totalPages: true
-            }))
+            })
                 .catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
@@ -99,14 +83,13 @@ export function useModulesData() {
 
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
-                engine.query(TEI_QUERY({
-                    ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
-                    skipPaging: true,
+                getTrackers({
+                    orgUnitMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
                     paging: false,
                     program: program as unknown as string,
-                    trackedEntity: registrationTrackedEntities,
+                    trackedEntities: registrationTrackedEntities,
                     // orgUnit
-                })).catch((error) => {
+                }).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
                         type: { critical: true }
@@ -141,16 +124,16 @@ export function useModulesData() {
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
             const cancelable = makeCancellablePromise(
-                engine.query(EVENT_QUERY({
-                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                getEvents({
+                    orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     program: program as unknown as string,
                     order: order || "occurredAt:desc",
                     programStage: baseProgramStage!,
                     orgUnit: orgUnit,
-                    trackedEntity: formattedBasicTableData[i].trackedEntity,
+                    trackedEntities: formattedBasicTableData[i].trackedEntity,
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
                     ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
-                })).catch((error) => {
+                }).catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
                         type: { critical: true }

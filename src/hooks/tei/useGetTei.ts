@@ -1,24 +1,26 @@
-import { useDataEngine } from "@dhis2/app-runtime";
 import useShowAlerts from "../commons/useShowAlert";
+import { useConfig, useDataEngine } from "@dhis2/app-runtime";
 import { type TeiQueryProps } from "../../types/api/WithRegistrationTypes";
+import { convertTrackerQueryProps } from "src/utils/tracker-migration/trackersParamsMapping";
 
 const TEI_QUERY = (queryProps: TeiQueryProps) => ({
     results: {
         resource: "tracker/trackedEntities",
         params: {
-            fields: "trackedEntity,occuredAt,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,status],",
+            fields: "trackedEntity,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,orgUnit,program,status],programOwners[orgUnit]",
             ...queryProps
         }
     }
 })
 
-export function useGetTeis() {
+export function useGetTrackers() {
+    const config = useConfig()
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
 
-    async function getTeis(props: TeiQueryProps) {
+    async function getTrackers(props: TeiQueryProps) {
         return await engine.query(TEI_QUERY(
-            { ...props }
+            { ...convertTrackerQueryProps({ queryProps: props, apiVersion: config.apiVersion }) }
         )).then((resp: any) => {
             return resp.results?.instances ? resp.results?.instances : resp.results?.trackedEntities
         }).catch((error: any) => {
@@ -27,5 +29,5 @@ export function useGetTeis() {
         })
     }
 
-    return { getTeis }
+    return { getTrackers }
 }

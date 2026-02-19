@@ -14,7 +14,7 @@ import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
 import { useDeleteTEI } from "./hooks/tei/useDeleteTei"
-import { useGetTeis } from "./hooks/tei/useGetTei"
+import { useGetTrackers } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
 import { attributes, dataValues } from "./utils/table/rows/formatRowsData"
 import { useDeleteEnrollment } from "./hooks/enrollment/useDeleteEnrollment"
@@ -55,7 +55,7 @@ export {
     useFileResource,
     useSearchEnrollments,
     formatResponseData,
-    useGetTeis,
+    useGetTrackers,
     attributes,
     dataValues,
     useGetEvents,

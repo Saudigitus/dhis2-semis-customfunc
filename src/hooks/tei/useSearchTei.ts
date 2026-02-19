@@ -21,7 +21,7 @@ export function useSearchTei() {
     const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
 
-    async function getTeiSearch({ program, orgUnit, filters }: { program: string, filters: string, orgUnit?: string }) {
+    async function getTrackersearch({ program, orgUnit, filters }: { program: string, filters: string, orgUnit?: string }) {
         return await engine.query(SEARCH_TEI_QUERY({
             pageSize: 5,
             page: 1,
@@ -39,5 +39,5 @@ export function useSearchTei() {
 
     }
 
-    return { getTeiSearch }
+    return { getTrackersearch }
 }

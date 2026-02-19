@@ -1,7 +1,7 @@
 interface TeiQueryProps {
     program: string
     pageSize?: number
-    ouMode?: string
+    orgUnitMode?: string
     trackedEntities: string[]
     orgUnit?: string
     order?: string
@@ -12,7 +12,7 @@ interface TeiSearchQueryProps {
     program: string
     page?: number
     pageSize?: number
-    ouMode?: string
+    orgUnitMode?: string
     orgUnit?: string
     order?: string
     filter?: string
