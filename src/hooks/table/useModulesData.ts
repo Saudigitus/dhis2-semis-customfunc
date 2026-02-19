@@ -112,10 +112,10 @@ export function useModulesData() {
             teiInstances,
             formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances, isBasicStage: true }),
             pagination: {
-                page: eventsResultsResponse?.results?.page,
-                pageSize: eventsResultsResponse?.results?.pageSize,
-                totalPages: eventsResultsResponse?.results?.pageCount,
-                totalElements: eventsResultsResponse?.results?.total
+                page: eventsResultsResponse?.results?.pager?.page,
+                pageSize: eventsResultsResponse?.results?.pager?.pageSize,
+                totalPages: eventsResultsResponse?.results?.pager?.pageCount,
+                totalElements: eventsResultsResponse?.results?.pager?.total
             }
         }
     }
