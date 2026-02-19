@@ -3,6 +3,7 @@ import useShowAlerts from "../commons/useShowAlert";
 import { useConfig, useDataEngine } from "@dhis2/app-runtime";
 import { EventQueryProps } from "../../types/api/WithoutRegistrationTypes";
 import { convertEventQueryProps, } from "../../utils/tracker-migration/eventsParamsMapping";
+import { getSysInfo } from "../system/getSysInfo";
 
 const EVENT_QUERY = (queryProps: EventQueryProps) => ({
     results: {
@@ -20,10 +21,12 @@ export function useGetEvents() {
     const config = useConfig()
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
+    const { platformVersion } = getSysInfo()
+    const minorVersion = Number.parseInt(platformVersion?.split('.')[1]);
 
     async function getEvents(props: EventQueryProps): Promise<any> {
         return await engine.query(EVENT_QUERY(
-            { ...convertEventQueryProps({ queryProps: props, apiVersion: config.apiVersion }) }
+            { ...convertEventQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
         )).then((resp: any) => {
             return resp.results?.instances ? resp.results?.instances : resp.results?.events
         }).catch((error: any) => {
