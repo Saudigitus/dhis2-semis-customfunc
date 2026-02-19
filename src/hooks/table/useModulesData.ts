@@ -82,7 +82,7 @@ export function useModulesData() {
         const eventsResultsResponse = await eventsResults
         const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
 
-        const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
+        const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString()
 
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
