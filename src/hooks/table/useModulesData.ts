@@ -1,30 +1,33 @@
 import { useRef } from "react";
 import { Modules } from "dhis2-semis-types";
+import { useGetTeis } from "../tei/useGetTei";
 import { useDataEngine } from "@dhis2/app-runtime";
 import useShowAlerts from "../commons/useShowAlert";
 import { useGetEvents } from "../events/useGetEvents";
+import { useGetCompleteTeis } from "../tei/useGetCompleteTei";
 import { RequestBroker } from "../requestBroker/requestBroker";
 import { GetTableDataProps } from "../../types/table/tableDataProps";
+import { useGetCompleteEvents } from "../events/useGetCompleteEvents";
+import { TeiQueryResults } from "../../types/api/WithRegistrationTypes";
 import { EventQueryResults } from "../../types/api/WithoutRegistrationTypes";
 import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
-import { TeiQueryResults } from "../../types/api/WithRegistrationTypes";
 import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
-import { useGetTrackers } from "../tei/useGetTei";
 
 
 
 export function useModulesData() {
-    const engine = useDataEngine();
-    const { getEvents } = useGetEvents()
+    // const { getTeis } = useGetTeis()
+    // const { getEvents } = useGetEvents()
+    const { getCompleteTeis } = useGetCompleteTeis()
+    const { getCompleteEvents } = useGetCompleteEvents()
     const requestRef = useRef<any[]>([]);
     const { hide, show } = useShowAlerts()
-    const { getTrackers } = useGetTrackers()
     const { cancelAllOperations, makeCancellablePromise } = RequestBroker({ requestRef })
 
     async function getRegistrationData(tableDataProps: GetTableDataProps) {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
-        const eventsResults = await getEvents({
+        const eventsResults = await getCompleteEvents({
             orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
             page,
             pageSize,
@@ -53,7 +56,7 @@ export function useModulesData() {
         const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
         const eventsResults = makeCancellablePromise(
-            getEvents({
+            getCompleteEvents({
                 orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                 page,
                 pageSize,
@@ -83,12 +86,11 @@ export function useModulesData() {
 
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
-                getTrackers({
-                    orgUnitMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
+                getCompleteTeis({
+                    orgUnitMode: "ACCESSIBLE",
                     paging: false,
                     program: program as unknown as string,
                     trackedEntities: registrationTrackedEntities,
-                    // orgUnit
                 }).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
@@ -124,7 +126,7 @@ export function useModulesData() {
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
             const cancelable = makeCancellablePromise(
-                getEvents({
+                getCompleteEvents({
                     orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     program: program as unknown as string,
                     order: order || "occurredAt:desc",

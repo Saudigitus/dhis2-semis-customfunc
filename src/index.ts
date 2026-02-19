@@ -14,7 +14,7 @@ import { useFileResource } from "./hooks/image/useFileResource"
 import useSearchEnrollments from "./hooks/tei/useSearchEnrollments"
 import { formatResponseData } from "./utils/tei/formatResponseData"
 import { useDeleteTEI } from "./hooks/tei/useDeleteTei"
-import { useGetTrackers } from "./hooks/tei/useGetTei"
+import { useGetTeis } from "./hooks/tei/useGetTei"
 import { useGetEvents } from "./hooks/events/useGetEvents"
 import { attributes, dataValues } from "./utils/table/rows/formatRowsData"
 import { useDeleteEnrollment } from "./hooks/enrollment/useDeleteEnrollment"
@@ -37,6 +37,9 @@ import { getSysInfo } from "./hooks/system/getSysInfo"
 import { useIncrementDays } from "./utils/attendance/getDates"
 import { useCacheData } from "./hooks/useCacheData/useCacheData"
 import { useGetPatternCodeParams } from "./hooks/tei/useGetPatternCodeParams"
+import { useGetCompleteEvents } from "./hooks/events/useGetCompleteEvents"
+
+
 
 export {
     useBuildForm,
@@ -55,7 +58,7 @@ export {
     useFileResource,
     useSearchEnrollments,
     formatResponseData,
-    useGetTrackers,
+    useGetTeis,
     attributes,
     dataValues,
     useGetEvents,
@@ -81,5 +84,6 @@ export {
     getSysInfo,
     useIncrementDays,
     useCacheData,
-    useGetPatternCodeParams
+    useGetPatternCodeParams,
+    useGetCompleteEvents
 }

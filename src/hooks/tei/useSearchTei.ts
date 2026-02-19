@@ -1,34 +1,21 @@
-import { useDataEngine } from "@dhis2/app-runtime";
-import { TeiSearchQueryProps } from "../../types/api/WithRegistrationTypes";
 import useShowAlerts from "../commons/useShowAlert";
-
-const SEARCH_TEI_QUERY = ({ program, filter, ouMode = "ACCESSIBLE", page, pageSize }: TeiSearchQueryProps) => ({
-    results: {
-        resource: "tracker/trackedEntities",
-        params: {
-            fields: "trackedEntity,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,enrolledAt],programOwners[orgUnit]",
-            ouMode,
-            totalPages: true,
-            program,
-            filter,
-            page,
-            pageSize
-        }
-    }
-})
+import { useGetCompleteTeis } from "./useGetCompleteTei";
+import { TeiQueryProps } from "../../types/api/WithRegistrationTypes";
 
 export function useSearchTei() {
-    const engine = useDataEngine();
     const { hide, show } = useShowAlerts()
+    const { getCompleteTeis } = useGetCompleteTeis()
 
     async function getTrackersearch({ program, orgUnit, filters }: { program: string, filters: string, orgUnit?: string }) {
-        return await engine.query(SEARCH_TEI_QUERY({
+        return await getCompleteTeis({
             pageSize: 5,
             page: 1,
             program,
             orgUnit,
-            filter: filters.slice(0, -1)
-        })).then((resp: any) => {
+            totalPages: true,
+            orgUnitMode: "ACCESSIBLE",
+            filter: filters.slice(0, -1),
+        } as TeiQueryProps).then((resp: any) => {
             return {
                 results: { instances: resp?.results?.instances ? resp?.results?.instances : resp?.results?.trackedEntities, ...resp?.results }
             }

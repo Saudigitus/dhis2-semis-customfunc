@@ -34,12 +34,12 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
                     let socioEconomicsResponse: any[] = []
 
                     const registrationResponse = await getEvents({
-                        program, programStage: registration.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
+                        program, programStage: registration.programStage as unknown as string, trackedEntities: tei?.trackedEntity, fields
                     })
 
                     if (socioEconomics) {
                         socioEconomicsResponse = await getEvents({
-                            program, programStage: socioEconomics.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
+                            program, programStage: socioEconomics.programStage as unknown as string, trackedEntities: tei?.trackedEntity, fields
                         }) || []
                     }
 
