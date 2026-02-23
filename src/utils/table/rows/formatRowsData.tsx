@@ -1,7 +1,7 @@
+import { attributesProps } from "../../../types/api/WithRegistrationTypes";
+import { dataValuesProps } from "../../../types/api/WithoutRegistrationTypes";
 import { attendanceConfig, AttendanceFormaterProps } from "src/types/table/FormatRowsDataTypes";
 import { FormatResponseRowsProps, RowsDataProps } from "../../../types/common/FormatRowsDataProps";
-import { dataValuesProps } from "../../../types/events/eventsProps";
-import { attributesProps } from "../../../types/tei/teiProps";
 
 export function formatRowsData({ registrationInstances, teiInstances, isBasicStage = false }: FormatResponseRowsProps): RowsDataProps[] {
     const allRows: RowsDataProps[] = [];

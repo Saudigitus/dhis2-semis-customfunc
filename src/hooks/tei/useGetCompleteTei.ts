@@ -14,23 +14,17 @@ const TEI_QUERY = (queryProps: TeiQueryProps) => ({
     }
 })
 
-export function useGetTeis() {
+export function useGetCompleteTeis() {
     const config = useConfig()
     const engine = useDataEngine();
-    const { hide, show } = useShowAlerts()
     const { platformVersion } = getSysInfo()
     const minorVersion = Number.parseInt(platformVersion?.split('.')[1]);
 
-    async function getTeis(props: TeiQueryProps) {
+    async function getCompleteTeis(props: TeiQueryProps) {
         return await engine.query(TEI_QUERY(
             { ...convertTrackerQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
-        )).then((resp: any) => {
-            return resp.results?.instances ? resp.results?.instances : resp.results?.trackedEntities
-        }).catch((error: any) => {
-            show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
-            setTimeout(hide, 5000);
-        })
+        ))
     }
 
-    return { getTeis }
+    return { getCompleteTeis }
 }

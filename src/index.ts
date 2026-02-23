@@ -37,6 +37,10 @@ import { getSysInfo } from "./hooks/system/getSysInfo"
 import { useIncrementDays } from "./utils/attendance/getDates"
 import { useCacheData } from "./hooks/useCacheData/useCacheData"
 import { useGetPatternCodeParams } from "./hooks/tei/useGetPatternCodeParams"
+import { useGetCompleteEvents } from "./hooks/events/useGetCompleteEvents"
+import { useGetCompleteTeis } from "./hooks/tei/useGetCompleteTei"
+
+
 
 export {
     useBuildForm,
@@ -81,5 +85,7 @@ export {
     getSysInfo,
     useIncrementDays,
     useCacheData,
-    useGetPatternCodeParams
+    useGetPatternCodeParams,
+    useGetCompleteEvents,
+    useGetCompleteTeis,
 }

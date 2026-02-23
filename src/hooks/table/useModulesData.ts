@@ -1,56 +1,44 @@
-import { useDataEngine } from "@dhis2/app-runtime";
-import { EventQueryProps, EventQueryResults } from "../../types/events/eventsProps";
-import { TeiQueryProps, TeiQueryResults } from "../../types/tei/teiProps";
-import { GetTableDataProps } from "../../types/table/tableDataProps";
-import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
-import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
-import useShowAlerts from "../commons/useShowAlert";
-import { Modules } from "dhis2-semis-types";
 import { useRef } from "react";
+import { Modules } from "dhis2-semis-types";
+import { useGetTeis } from "../tei/useGetTei";
+import { useDataEngine } from "@dhis2/app-runtime";
+import useShowAlerts from "../commons/useShowAlert";
+import { useGetEvents } from "../events/useGetEvents";
+import { useGetCompleteTeis } from "../tei/useGetCompleteTei";
 import { RequestBroker } from "../requestBroker/requestBroker";
+import { GetTableDataProps } from "../../types/table/tableDataProps";
+import { useGetCompleteEvents } from "../events/useGetCompleteEvents";
+import { TeiQueryResults } from "../../types/api/WithRegistrationTypes";
+import { EventQueryResults } from "../../types/api/WithoutRegistrationTypes";
+import { FormatResponseRowsProps } from "../../types/common/FormatRowsDataProps";
+import { attendanceDataValuesFormater, formatRowsData } from "../../utils/table/rows/formatRowsData";
 
-export const EVENT_QUERY = (queryProps: EventQueryProps) => ({
-    results: {
-        resource: "tracker/events",
-        params: {
-            fields: queryProps?.fields ?? "*",
-            ...queryProps
-        }
-    }
-})
 
-export const TEI_QUERY = (queryProps: TeiQueryProps) => ({
-    results: {
-        resource: "tracker/trackedEntities",
-        params: {
-            fields: "trackedEntity,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,orgUnit,program,status],programOwners[orgUnit]",
-            ...queryProps
-        }
-    }
-})
 
 export function useModulesData() {
-    const engine = useDataEngine();
-    const { hide, show } = useShowAlerts()
+    // const { getTeis } = useGetTeis()
+    // const { getEvents } = useGetEvents()
+    const { getCompleteTeis } = useGetCompleteTeis()
+    const { getCompleteEvents } = useGetCompleteEvents()
     const requestRef = useRef<any[]>([]);
+    const { hide, show } = useShowAlerts()
     const { cancelAllOperations, makeCancellablePromise } = RequestBroker({ requestRef })
 
     async function getRegistrationData(tableDataProps: GetTableDataProps) {
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
-        const eventsResults = await engine.query(EVENT_QUERY({
-            ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+        const eventsResults = await getCompleteEvents({
+            orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
             page,
             pageSize,
             ...(paging ? { paging } : {}),
-            ...(skipPaging ? { skipPaging } : {}),
             program: program as unknown as string,
             order: order || "occurredAt:desc",
             programStage: baseProgramStage,
             filter: dataElementFilters,
             filterAttributes: attributeFilters,
             orgUnit: orgUnit
-        })).catch((error) => {
+        }).catch((error) => {
             show({
                 message: `${("Could not get events")}: ${error.message}`,
                 type: { critical: true }
@@ -65,15 +53,14 @@ export function useModulesData() {
 
     async function getBasicData(tableDataProps: GetTableDataProps) {
         cancelAllOperations()
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, skipPaging } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
 
         const eventsResults = makeCancellablePromise(
-            engine.query(EVENT_QUERY({
-                ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+            getCompleteEvents({
+                orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                 page,
                 pageSize,
                 ...(paging ? { paging } : {}),
-                ...(skipPaging ? { skipPaging } : {}),
                 program: program as unknown as string,
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
@@ -81,7 +68,7 @@ export function useModulesData() {
                 filterAttributes: attributeFilters,
                 orgUnit: orgUnit,
                 totalPages: true
-            }))
+            })
                 .catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
@@ -95,18 +82,16 @@ export function useModulesData() {
         const eventsResultsResponse = await eventsResults
         const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
 
-        const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
+        const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString()
 
         const teiResults = registrationTrackedEntities?.length > 0
             && makeCancellablePromise(
-                engine.query(TEI_QUERY({
-                    ouMode: orgUnit != null ? "ACCESSIBLE" : "ACCESSIBLE",
-                    skipPaging: true,
+                getCompleteTeis({
+                    orgUnitMode: "ACCESSIBLE",
                     paging: false,
                     program: program as unknown as string,
-                    trackedEntity: registrationTrackedEntities,
-                    // orgUnit
-                })).catch((error) => {
+                    trackedEntities: registrationTrackedEntities,
+                }).catch((error) => {
                     show({
                         message: `${("Could not get traked entities")}: ${error.message}`,
                         type: { critical: true }
@@ -127,10 +112,10 @@ export function useModulesData() {
             teiInstances,
             formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances, isBasicStage: true }),
             pagination: {
-                page: eventsResultsResponse?.results?.page,
-                pageSize: eventsResultsResponse?.results?.pageSize,
-                totalPages: eventsResultsResponse?.results?.pageCount,
-                totalElements: eventsResultsResponse?.results?.total
+                page: eventsResultsResponse?.results?.pager?.page,
+                pageSize: eventsResultsResponse?.results?.pager?.pageSize,
+                totalPages: eventsResultsResponse?.results?.pager?.pageCount,
+                totalElements: eventsResultsResponse?.results?.pager?.total
             }
         }
     }
@@ -141,16 +126,16 @@ export function useModulesData() {
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
             const cancelable = makeCancellablePromise(
-                engine.query(EVENT_QUERY({
-                    ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                getCompleteEvents({
+                    orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     program: program as unknown as string,
                     order: order || "occurredAt:desc",
                     programStage: baseProgramStage!,
                     orgUnit: orgUnit,
-                    trackedEntity: formattedBasicTableData[i].trackedEntity,
+                    trackedEntities: formattedBasicTableData[i].trackedEntity,
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
                     ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
-                })).catch((error) => {
+                }).catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
                         type: { critical: true }
