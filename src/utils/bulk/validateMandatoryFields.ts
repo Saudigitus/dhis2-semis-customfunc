@@ -1,3 +1,9 @@
+import { getDateValidationIssue } from "../format/checkDateFormat";
+
+const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
+const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY-MM-DD"
+const DATE_VALUE_TYPE = "DATE"
+
 const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string) => {
     const validData: any[] = []
     const invalidData: any[] = []
@@ -9,7 +15,11 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
 
     students.forEach((student: any) => {
-        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile).length === 0 && validateMandatoryDataElements(student, program, profile).length === 0) {
+        const mandatoryAttributeErrors = validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile)
+        const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile)
+        const invalidDateFormatErrors = validateDateFields(student, program, profile)
+
+        if (mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
             validData.push({
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
@@ -33,8 +43,9 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                             error: "Empty required field"
                         }
                     }),
-                    ...validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
-                    ...validateMandatoryDataElements(student, program, profile).map((field: any) => { return { key: field, error: "Empty required field" } })]
+                    ...mandatoryAttributeErrors.map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
+                    ...mandatoryDataElementErrors.map((field: any) => { return { key: field, error: "Empty required field" } }),
+                    ...invalidDateFormatErrors]
             })
         }
     });
@@ -78,6 +89,69 @@ const validateMandatoryDataElements = (student: any, program: any, profile: stri
                 return value === undefined || value === null || value === '';
             }).map(({ dataElement }: any) => dataElement?.displayName ?? dataElement?.name)
         ).flat();
+}
+
+const validateDateFields = (student: any, program: any, profile: string) => {
+    const dateErrors: Array<{ key: string, error: string }> = []
+    const profileValues = student?.[profile] ?? {}
+    const mergedStageValues = Object.assign(
+        {},
+        ...Object.entries(student)
+            .filter(([key]) => key !== profile && key !== "Ids")
+            .map(([_, value]) => value)
+    )
+
+    for (const programAttribute of (program?.programTrackedEntityAttributes ?? [])) {
+        const trackedEntityAttribute = programAttribute?.trackedEntityAttribute
+        if (trackedEntityAttribute?.valueType !== DATE_VALUE_TYPE) continue
+
+        const value = profileValues?.[trackedEntityAttribute?.id]
+        if (value === undefined || value === null || value === '') continue
+
+        const issue = getDateValidationIssue(String(value))
+        if (issue) {
+            dateErrors.push({
+                key: trackedEntityAttribute?.displayName ?? trackedEntityAttribute?.name,
+                error: issue === "FORMAT" ? DATE_FORMAT_VALIDATION_ERROR : DATE_VALUE_VALIDATION_ERROR
+            })
+        }
+    }
+
+    for (const programStage of (program?.programStages ?? [])) {
+        for (const programStageDataElement of (programStage?.programStageDataElements ?? [])) {
+            const dataElement = programStageDataElement?.dataElement
+            if (dataElement?.valueType !== DATE_VALUE_TYPE) continue
+
+            const value = mergedStageValues?.[`${programStage?.id}.${dataElement?.id}`]
+            if (value === undefined || value === null || value === '') continue
+
+            const issue = getDateValidationIssue(String(value))
+            if (issue) {
+                dateErrors.push({
+                    key: `${programStage?.displayName ?? programStage?.name} - ${dataElement?.displayName ?? dataElement?.name}`,
+                    error: issue === "FORMAT" ? DATE_FORMAT_VALIDATION_ERROR : DATE_VALUE_VALIDATION_ERROR
+                })
+            }
+        }
+    }
+
+    // "enrollmentDate" is a template/system field used to build enrollment payload dates.
+    for (const [section, sectionValues] of Object.entries(student ?? {})) {
+        if (section === profile || section === "Ids") continue
+
+        const enrollmentDate = (sectionValues as any)?.enrollmentDate
+        if (enrollmentDate === undefined || enrollmentDate === null || enrollmentDate === '') continue
+
+        const issue = getDateValidationIssue(String(enrollmentDate))
+        if (issue) {
+            dateErrors.push({
+                key: `${section} - enrollmentDate`,
+                error: issue === "FORMAT" ? DATE_FORMAT_VALIDATION_ERROR : DATE_VALUE_VALIDATION_ERROR
+            })
+        }
+    }
+
+    return dateErrors
 }
 
 const validateAttendanceFields = (module: string, student: any) => {
