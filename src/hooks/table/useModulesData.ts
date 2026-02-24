@@ -80,7 +80,7 @@ export function useModulesData() {
                 filter: dataElementFilters,
                 filterAttributes: attributeFilters,
                 orgUnit: orgUnit,
-                totalPages: true
+                ...(skipPaging ? {} : { totalPages: true })
             }))
                 .catch((error) => {
                     show({
@@ -93,7 +93,7 @@ export function useModulesData() {
 
         requestRef.current.push(eventsResults);
         const eventsResultsResponse = await eventsResults
-        const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
+        const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events ?? []
 
         const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString().replaceAll(",", ";")
 
@@ -139,7 +139,7 @@ export function useModulesData() {
         const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig } = tableDataProps;
         let copy = []
 
-        for (let i = 0; i < formattedBasicTableData.length; i++) {
+        const stageRequests = formattedBasicTableData.map((row: any) => {
             const cancelable = makeCancellablePromise(
                 engine.query(EVENT_QUERY({
                     ouMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
@@ -147,7 +147,7 @@ export function useModulesData() {
                     order: order || "occurredAt:desc",
                     programStage: baseProgramStage!,
                     orgUnit: orgUnit,
-                    trackedEntity: formattedBasicTableData[i].trackedEntity,
+                    trackedEntity: row.trackedEntity,
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
                     ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
                 })).catch((error) => {
@@ -159,8 +159,14 @@ export function useModulesData() {
                 })
             )
 
-            const eventsResults = await cancelable as unknown as EventQueryResults;
             requestRef.current.push(cancelable);
+            return cancelable as unknown as Promise<EventQueryResults>;
+        });
+
+        const stageResponses = await Promise.all(stageRequests);
+
+        for (let i = 0; i < formattedBasicTableData.length; i++) {
+            const eventsResults = stageResponses[i] as unknown as EventQueryResults;
             const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
