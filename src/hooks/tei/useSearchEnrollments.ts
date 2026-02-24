@@ -15,7 +15,7 @@ interface useSearchEnrollmentsProps {
 export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
     const { show } = useShowAlerts()
     const { getEvents } = useGetEvents()
-    const { getTeiSearch } = useSearchTei()
+    const { getTrackersearch } = useSearchTei()
     const [error, setError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const { registration, program, socioEconomics } = props
@@ -27,19 +27,19 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
         const fields: string = "event,trackedEntity,enrollment,occurredAt,dataValues[dataElement,value],orgUnitName,orgUnit"
 
         setLoading(true)
-        getTeiSearch({ program, filters, orgUnit })
+        getTrackersearch({ program, filters, orgUnit })
             .then(async (teiResponse: any) => {
 
                 for (const tei of teiResponse?.results?.instances) {
                     let socioEconomicsResponse: any[] = []
 
                     const registrationResponse = await getEvents({
-                        program, programStage: registration.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
+                        program, programStage: registration.programStage as unknown as string, trackedEntities: tei?.trackedEntity, fields
                     })
 
                     if (socioEconomics) {
                         socioEconomicsResponse = await getEvents({
-                            program, programStage: socioEconomics.programStage as unknown as string, trackedEntity: tei?.trackedEntity, fields
+                            program, programStage: socioEconomics.programStage as unknown as string, trackedEntities: tei?.trackedEntity, fields
                         }) || []
                     }
 
@@ -60,7 +60,7 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
                 setEnrollmentValues(teisWithRegistrationEvents)
                 setLoading(false)
                 setShowResults(true)
-                setTotalResults(teiResponse.results.total || 0);
+                setTotalResults(teiResponse?.results?.pager?.total || 0);
             })
             .catch((error: any) => {
                 setLoading(false)

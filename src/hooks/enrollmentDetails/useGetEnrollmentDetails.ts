@@ -13,12 +13,11 @@ export function useGetEnrollmentData(props: ExportData) {
     const { orgUnitName, orgUnit, eventFilters, withSocioEconomics, selectedSectionDataStore, module } = props
 
     const getEnrollmentDetails = async (events: any) => {
-        const trackedEntityIds = events?.map((x: { trackedEntity: string }) => x.trackedEntity).join(';')
+        const trackedEntityIds = events?.map((x: { trackedEntity: string }) => x.trackedEntity).join(',')
 
         try {
-            return getTeis({ program: selectedSectionDataStore?.program as unknown as string, trackedEntity: trackedEntityIds, orgUnit })
-                .then(async (trackedEntityInstance: any) => {
-                    const data = trackedEntityInstance?.results?.instances ? trackedEntityInstance?.results?.instances : trackedEntityInstance?.results?.trackedEntities
+            return getTeis({ program: selectedSectionDataStore?.program as unknown as string, trackedEntities: trackedEntityIds, orgUnit })
+                .then(async (data: any) => {
                     let rows: any = []
                     let counter = 0
 
@@ -30,11 +29,11 @@ export function useGetEnrollmentData(props: ExportData) {
                         const registrationData: any = await getEvents({
                             program: selectedSectionDataStore?.program as unknown as string,
                             programStage: selectedSectionDataStore?.registration.programStage as unknown as string,
-                            ouMode: "SELECTED",
+                            orgUnitMode: "SELECTED",
                             fields: "*",
                             filter: eventFilters,
-                            skipPaging: true,
-                            trackedEntity: tei.trackedEntity,
+                            paging: false,
+                            trackedEntities: tei.trackedEntity,
                             orgUnit: orgUnit
                         })
 
@@ -42,11 +41,11 @@ export function useGetEnrollmentData(props: ExportData) {
                             socioEconomiscData = await getEvents({
                                 program: selectedSectionDataStore?.program as unknown as string,
                                 programStage: selectedSectionDataStore?.['socio-economics'].programStage as unknown as string,
-                                ouMode: "SELECTED",
+                                orgUnitMode: "SELECTED",
                                 fields: "*",
                                 filter: eventFilters,
-                                skipPaging: true,
-                                trackedEntity: tei.trackedEntity,
+                                paging: false,
+                                trackedEntities: tei.trackedEntity,
                                 orgUnit: orgUnit
                             })
                         }

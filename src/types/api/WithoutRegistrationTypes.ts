@@ -1,19 +1,25 @@
+export const DataElementFieldType = {
+    programStage: "executionDateLabel,programStageDataElements[displayInReports,compulsory,dataElement[id,displayName,valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]],programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]",
+    programStageSection: "executionDateLabel,programStageSections[displayName,id,displayInReports,compulsory,dataElements[id,formName~rename(displayName),valueType,optionSet[options[code~rename(value),displayName~rename(label)]]]]"
+}
 interface EventQueryProps {
     page?: number
     pageSize?: number
-    ouMode?: string
+    orgUnitMode?: string
     program: string
     order?: string
     programStage?: string
     orgUnit?: string
     filter?: string[]
     filterAttributes?: string[]
-    trackedEntity?: string
+    trackedEntities?: string
     occurredAfter?: string
     occurredBefore?: string
     fields?: string
-    skipPaging?: boolean
-
+    paging?: boolean
+    enrollment?: string
+    totalPages?: boolean
+    enrollmentStatus?: string
 }
 
 interface DataValuesProps {
@@ -23,9 +29,13 @@ interface DataValuesProps {
 
 interface EventQueryResults {
     results: {
-        instances: [{
+        instances?: [{
             trackedEntity: string
-            dataValues: DataValuesProps[]
+            dataValues: dataValuesProps[]
+        }],
+        events?: [{
+            trackedEntity: string
+            dataValues: dataValuesProps[]
         }]
     }
 }
@@ -56,5 +66,19 @@ interface CreateEventProps {
     setselectedTerm: any
 }
 
+
+interface GetDataElementsProps {
+    programStageId: string
+    type?: keyof typeof DataElementFieldType
+}
+
+interface dataValuesProps {
+    dataElement: string
+    value: string
+}
+
+
+
+export type { GetDataElementsProps, dataValuesProps }
 
 export type { EventQueryProps, EventQueryResults, DataValuesProps, TransferQueryResults, AttendanceQueryResults, CreateEventProps }

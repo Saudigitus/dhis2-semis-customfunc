@@ -1,6 +1,6 @@
-import { DataValuesProps } from "../api/WithoutRegistrationTypes"
-import { dataValuesProps } from "../events/eventsProps"
-import { attributesProps } from "../tei/teiProps"
+import { attributesProps } from "../api/WithRegistrationTypes"
+import { dataValuesProps, DataValuesProps } from "../api/WithoutRegistrationTypes"
+
 
 interface FormatResponseRowsProps {
     isBasicStage?: boolean
