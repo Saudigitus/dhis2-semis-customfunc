@@ -60,7 +60,7 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
                 setEnrollmentValues(teisWithRegistrationEvents)
                 setLoading(false)
                 setShowResults(true)
-                setTotalResults(teiResponse?.results?.pager?.total || 0);
+                setTotalResults((teiResponse?.results?.pager?.total ?? teiResponse?.results?.total) || 0);
             })
             .catch((error: any) => {
                 setLoading(false)
