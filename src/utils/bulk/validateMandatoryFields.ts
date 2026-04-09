@@ -9,7 +9,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
 
     students.forEach((student: any) => {
-        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes).length === 0 && validateMandatoryDataElements(student, program, dataStore).length === 0) {
+        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes).length === 0 && validateMandatoryDataElements(student, program, dataStore, module).length === 0) {
             validData.push({
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
@@ -34,7 +34,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                         }
                     }),
                     ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
-                    ...validateMandatoryDataElements(student, program, dataStore).map((field: any) => { return { key: field, error: "Empty required field" } })]
+                    ...validateMandatoryDataElements(student, program, dataStore, module).map((field: any) => { return { key: field, error: "Empty required field" } })]
             })
         }
     });
@@ -49,11 +49,19 @@ const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: an
     });
 }
 
-const validateMandatoryDataElements = (student: any, program: any, dataStore: any): [] => {
-    const pgTransfer = dataStore?.transfer?.programStage || null
+const validateMandatoryDataElements = (student: any, program: any, dataStore: any, module: string): [] => {
+    const toValidateProgramStage = {
+        "final-result": [dataStore?.['final-result']?.programStage],
+        "enrollment": [dataStore?.registration?.programStage,
+        dataStore?.['socio-economics']?.programStage],
+        "attendance": [dataStore?.attendance?.programStage],
+        "performance": [dataStore?.performance?.programStages?.map((item: any) => item?.programStage)?.join(",")],
+    }
+
+
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const madatoryFieldsProgramStages = program?.programStages.map((programStage: any) => {
-        if (programStage.id === pgTransfer) return null;
+        if (!toValidateProgramStage?.[module]?.includes(programStage.id)) return null;
         const compulsoryElements = programStage.programStageDataElements.filter((el: any) => el.compulsory);
         if (compulsoryElements.length === 0) return null;
         return {
