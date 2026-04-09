@@ -1,4 +1,4 @@
-const madatoryFieldsValidator = (program: any, fileRowData: any, module: string) => {
+const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, dataStore: any) => {
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
@@ -9,7 +9,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
 
 
     students.forEach((student: any) => {
-        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes).length === 0 && validateMandatoryDataElements(student, program).length === 0) {
+        if (validateMandatoryAttributtes(student, madatoryFieldsAttributes).length === 0 && validateMandatoryDataElements(student, program, dataStore).length === 0) {
             validData.push({
                 ...student,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
@@ -34,7 +34,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string)
                         }
                     }),
                     ...validateMandatoryAttributtes(student, madatoryFieldsAttributes).map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
-                    ...validateMandatoryDataElements(student, program).map((field: any) => { return { key: field, error: "Empty required field" } })]
+                    ...validateMandatoryDataElements(student, program, dataStore).map((field: any) => { return { key: field, error: "Empty required field" } })]
             })
         }
     });
@@ -49,9 +49,11 @@ const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: an
     });
 }
 
-const validateMandatoryDataElements = (student: any, program: any): [] => {
+const validateMandatoryDataElements = (student: any, program: any, dataStore: any): [] => {
+    const pgTransfer = dataStore?.transfer?.programStage || null
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const madatoryFieldsProgramStages = program?.programStages.map((programStage: any) => {
+        if (programStage.id === pgTransfer) return null;
         const compulsoryElements = programStage.programStageDataElements.filter((el: any) => el.compulsory);
         if (compulsoryElements.length === 0) return null;
         return {
