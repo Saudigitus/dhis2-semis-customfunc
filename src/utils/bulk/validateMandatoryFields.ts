@@ -4,7 +4,7 @@ const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
 const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY-MM-DD"
 const DATE_VALUE_TYPE = "DATE"
 
-const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string) => {
+const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string, dataStore: any) => {
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
@@ -16,7 +16,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
     students.forEach((student: any) => {
         const mandatoryAttributeErrors = validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile)
-        const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile)
+        const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile, dataStore, module)
         const invalidDateFormatErrors = validateDateFields(student, program, profile)
 
         if (mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
@@ -61,9 +61,17 @@ const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: an
     });
 }
 
-const validateMandatoryDataElements = (student: any, program: any, profile: string): [] => {
+const validateMandatoryDataElements = (student: any, program: any, profile: string, dataStore: any, module: string): [] => {
+    const toValidateProgramStage = {
+        "final-result": [dataStore?.['final-result']?.programStage],
+        "enrollment": [dataStore?.registration?.programStage,
+        dataStore?.['socio-economics']?.programStage],
+        "attendance": [dataStore?.attendance?.programStage],
+        "performance": [dataStore?.performance?.programStages?.map((item: any) => item?.programStage)?.join(",")],
+    }
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const madatoryFieldsProgramStages = program?.programStages.map((programStage: any) => {
+        if (!toValidateProgramStage?.[module]?.includes(programStage.id)) return null;
         const compulsoryElements = programStage.programStageDataElements.filter((el: any) => el.compulsory);
         if (compulsoryElements.length === 0) return null;
         return {
