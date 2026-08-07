@@ -212,29 +212,27 @@ const validatePerformanceFields = (student: any, module: string, program: any) =
     );
 
     if (module === "performance") {
-        const emptyTerm1 = Object.keys(student?.['Term 1']).filter(key => student?.['Term 1'][key] === ""
-            || student?.['Term 1'][key] === null || student?.['Term 1'][key] === undefined
-        );
+        Object.keys(student ?? {})
+            .filter(key => key.startsWith("Term "))
+            .forEach(term => {
+                const emptyFields = Object.keys(student?.[term] ?? {}).filter(
+                    key =>
+                        student?.[term]?.[key] === "" ||
+                        student?.[term]?.[key] === null ||
+                        student?.[term]?.[key] === undefined
+                );
 
-        const emptyTerm2 = Object.keys(student?.['Term 2']).filter(key => student?.['Term 2'][key] === ""
-            || student?.['Term 2'][key] === null || student?.['Term 2'][key] === undefined
-        );
+                emptyFields.forEach((key: string) => {
+                    const field = nonMandatoryFieldsDataElements?.find(
+                        (field: any) =>
+                            `${field?.programStageId}.${field?.id}` === key
+                    );
 
-        const emptyTerm3 = Object.keys(student?.['Term 3']).filter(key => student?.['Term 3'][key] === ""
-            || student?.['Term 3'][key] === null || student?.['Term 3'][key] === undefined
-        );
-
-        emptyTerm1.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm2.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm3.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
+                    if (field) {
+                        warningRecords.push(field);
+                    }
+                });
+            });
     }
     return warningRecords
 }
