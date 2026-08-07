@@ -9,28 +9,58 @@ const TEI_QUERY = (queryProps: TeiQueryProps) => ({
         resource: "tracker/trackedEntities",
         params: {
             fields: "trackedEntity,createdAt,orgUnit,attributes[attribute,value],enrollments[enrollment,orgUnit,program,status],programOwners[orgUnit]",
-            ...queryProps
-        }
-    }
-})
+            ...queryProps,
+        },
+    },
+});
 
 export function useGetTeis() {
-    const config = useConfig()
+    const config = useConfig();
     const engine = useDataEngine();
-    const { hide, show } = useShowAlerts()
-    const { platformVersion } = getSysInfo()
-    const minorVersion = Number.parseInt(platformVersion?.split('.')[1]);
+    const { hide, show } = useShowAlerts();
+    const { platformVersion } = getSysInfo();
+    const minorVersion = Number.parseInt(platformVersion?.split(".")[1]);
 
     async function getTeis(props: TeiQueryProps) {
-        return await engine.query(TEI_QUERY(
-            { ...convertTrackerQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
-        )).then((resp: any) => {
-            return resp.results?.instances ? resp.results?.instances : resp.results?.trackedEntities
-        }).catch((error: any) => {
-            show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
+        let teis: any[] = [];
+        let page = 1;
+        const pageSize = Number(props?.pageSize ?? 50);
+        let currentPageData: any[] = [];
+
+        try {
+            do {
+                const resp: any = await engine.query(
+                    TEI_QUERY({
+                        ...convertTrackerQueryProps({
+                            queryProps: {
+                                ...props,
+                                page,
+                                pageSize,
+                            },
+                            apiVersion: minorVersion ?? config.apiVersion,
+                        }),
+                    })
+                );
+
+                currentPageData =
+                    resp.results?.instances ??
+                    resp.results?.trackedEntities ??
+                    [];
+
+                teis = [...teis, ...currentPageData];
+                page++;
+            } while (currentPageData.length === pageSize);
+
+            return teis;
+        } catch (error: any) {
+            show({
+                message: `Occurred error while fetching data: ${error}`,
+                type: { critical: true },
+            });
             setTimeout(hide, 5000);
-        })
+            return [];
+        }
     }
 
-    return { getTeis }
+    return { getTeis };
 }
