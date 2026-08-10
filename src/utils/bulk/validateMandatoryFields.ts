@@ -8,6 +8,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
+
     const madatoryFieldsAttributes = program.programTrackedEntityAttributes.filter((field: any) => field.mandatory)
     const uniqueAttributes: any[] = program.programTrackedEntityAttributes.filter((attribute: any) => {
         return attribute.trackedEntityAttribute?.unique
@@ -25,7 +26,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
                     return { key: validateAttendanceField, error: "No attendance to this date" }
                 }),
-                ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
+                ...(validatePerformanceFields(student, module, program, dataStore) || []).map((field: any) => {
                     return {
                         key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
                         error: "Empty required field"
@@ -197,7 +198,7 @@ const validateOptionalFields = (student: any, module: string, program: any) => {
     return warningRecords
 }
 
-const validatePerformanceFields = (student: any, module: string, program: any) => {
+const validatePerformanceFields = (student: any, module: string, program: any, dataStore: any) => {
     const warningRecords: any = []
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const nonMandatoryFieldsDataElements = program?.programStages.flatMap((programStage: any) =>
@@ -211,30 +212,29 @@ const validatePerformanceFields = (student: any, module: string, program: any) =
             }))
     );
 
+
     if (module === "performance") {
-        const emptyTerm1 = Object.keys(student?.['Term 1']).filter(key => student?.['Term 1'][key] === ""
-            || student?.['Term 1'][key] === null || student?.['Term 1'][key] === undefined
-        );
+        Object.keys(student ?? {})
+            .filter(key => key.startsWith("Term "))
+            .forEach(term => {
+                const emptyFields = Object.keys(student?.[term] ?? {}).filter(
+                    key =>
+                        student?.[term]?.[key] === "" ||
+                        student?.[term]?.[key] === null ||
+                        student?.[term]?.[key] === undefined
+                );
 
-        const emptyTerm2 = Object.keys(student?.['Term 2']).filter(key => student?.['Term 2'][key] === ""
-            || student?.['Term 2'][key] === null || student?.['Term 2'][key] === undefined
-        );
+                emptyFields.forEach((key: string) => {
+                    const field = nonMandatoryFieldsDataElements?.find(
+                        (field: any) =>
+                            `${field?.programStageId}.${field?.id}` === key
+                    );
 
-        const emptyTerm3 = Object.keys(student?.['Term 3']).filter(key => student?.['Term 3'][key] === ""
-            || student?.['Term 3'][key] === null || student?.['Term 3'][key] === undefined
-        );
-
-        emptyTerm1.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm2.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm3.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
+                    if (field) {
+                        warningRecords.push(field);
+                    }
+                });
+            });
     }
     return warningRecords
 }
