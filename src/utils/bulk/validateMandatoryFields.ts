@@ -8,6 +8,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
+
     const madatoryFieldsAttributes = program.programTrackedEntityAttributes.filter((field: any) => field.mandatory)
     const uniqueAttributes: any[] = program.programTrackedEntityAttributes.filter((attribute: any) => {
         return attribute.trackedEntityAttribute?.unique
@@ -25,7 +26,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                 warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
                     return { key: validateAttendanceField, error: "No attendance to this date" }
                 }),
-                ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
+                ...(validatePerformanceFields(student, module, program, dataStore) || []).map((field: any) => {
                     return {
                         key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
                         error: "Empty required field"
@@ -197,7 +198,7 @@ const validateOptionalFields = (student: any, module: string, program: any) => {
     return warningRecords
 }
 
-const validatePerformanceFields = (student: any, module: string, program: any) => {
+const validatePerformanceFields = (student: any, module: string, program: any, dataStore: any) => {
     const warningRecords: any = []
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const nonMandatoryFieldsDataElements = program?.programStages.flatMap((programStage: any) =>
@@ -210,6 +211,7 @@ const validatePerformanceFields = (student: any, module: string, program: any) =
                 programStageName: programStage?.name ?? programStage?.displayName
             }))
     );
+
 
     if (module === "performance") {
         Object.keys(student ?? {})
