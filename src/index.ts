@@ -39,6 +39,7 @@ import { useCacheData } from "./hooks/useCacheData/useCacheData"
 import { useGetPatternCodeParams } from "./hooks/tei/useGetPatternCodeParams"
 import { useGetCompleteEvents } from "./hooks/events/useGetCompleteEvents"
 import { useGetCompleteTeis } from "./hooks/tei/useGetCompleteTei"
+import { useGetProgramIndicators } from "./hooks/programIndicator/useGetProgramIndicators"
 import { formatVariables } from "./utils/table/header/formatVariables"
 
 export {
@@ -87,5 +88,6 @@ export {
     useGetPatternCodeParams,
     useGetCompleteEvents,
     useGetCompleteTeis,
+    useGetProgramIndicators,
     formatVariables,
 }
