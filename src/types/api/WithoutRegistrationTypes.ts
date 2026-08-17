@@ -13,6 +13,7 @@ interface EventQueryProps {
     filter?: string[]
     filterAttributes?: string[]
     trackedEntities?: string
+    trackedEntity?: string
     occurredAfter?: string
     occurredBefore?: string
     fields?: string
