@@ -23,6 +23,24 @@ export function getDisplayName({ metaData, value, program }: defaultProps): stri
     return value
 }
 
+export function getOptionStyle({ metaData, value, program }: defaultProps): { color: string } | undefined {
+    const dataElementsWithOptions = program?.programStages?.flatMap(stage => stage?.programStageDataElements?.map(dataElement => dataElement?.dataElement?.optionSet ? dataElement.dataElement : null))?.filter(Boolean);
+    const attributesWithOptions = program?.programTrackedEntityAttributes?.flatMap(programAttributes => programAttributes?.trackedEntityAttribute?.optionSet ? programAttributes.trackedEntityAttribute : null)?.filter(Boolean)
+
+    var metaDataOptionSet: any = attributesWithOptions?.filter(x => x?.id === metaData)[0]?.optionSet
+    if (metaDataOptionSet === undefined) {
+        metaDataOptionSet = dataElementsWithOptions?.filter(x => x?.id === metaData)[0]?.optionSet
+    }
+
+    if (metaDataOptionSet) {
+        for (const op of metaDataOptionSet?.options || []) {
+            if (op?.value === value) return op?.style
+        }
+    }
+
+    return undefined
+}
+
 export function formatDataToDisplayName({ rowData, columns, program }: any): any {
     const newData = rowData?.map((data: any) => {
         columns?.map((column: any) => {
