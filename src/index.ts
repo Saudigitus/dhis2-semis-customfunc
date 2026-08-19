@@ -41,6 +41,7 @@ import { useGetCompleteEvents } from "./hooks/events/useGetCompleteEvents"
 import { useGetCompleteTeis } from "./hooks/tei/useGetCompleteTei"
 import { useGetProgramIndicators } from "./hooks/programIndicator/useGetProgramIndicators"
 import { formatVariables } from "./utils/table/header/formatVariables"
+import { getOptionStyle } from "./utils/helpers/getDisplayNameByOption"
 
 export {
     useBuildForm,
@@ -90,4 +91,5 @@ export {
     useGetCompleteTeis,
     useGetProgramIndicators,
     formatVariables,
+    getOptionStyle,
 }
