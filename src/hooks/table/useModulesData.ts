@@ -132,7 +132,7 @@ export function useModulesData() {
                     order: order || "occurredAt:desc",
                     programStage: baseProgramStage!,
                     orgUnit: orgUnit,
-                    trackedEntities: formattedBasicTableData[i].trackedEntity,
+                    trackedEntity: formattedBasicTableData[i].trackedEntity,
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
                     ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
                 }).catch((error) => {
