@@ -28,7 +28,9 @@ export function useGetEvents() {
         return await engine.query(EVENT_QUERY(
             { ...convertEventQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
         )).then((resp: any) => {
-            return resp.results?.instances ? resp.results?.instances : resp.results?.events
+            return resp.results?.instances ?
+                props?.totalPages ? { pagination: resp.results?.pager, events: resp.results?.instances } : resp.results?.instances :
+                props?.totalPages ? { pagination: resp.results?.pager, events: resp.results?.events } : resp.results?.events
         }).catch((error: any) => {
             show({ message: `Occurred error wihile fetching data: ${error}`, type: { critical: true } })
             setTimeout(hide, 5000);
