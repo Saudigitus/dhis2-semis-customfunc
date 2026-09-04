@@ -8,6 +8,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
+    const { attendance } = dataStore
     const madatoryFieldsAttributes = program.programTrackedEntityAttributes.filter((field: any) => field.mandatory)
     const uniqueAttributes: any[] = program.programTrackedEntityAttributes.filter((attribute: any) => {
         return attribute.trackedEntityAttribute?.unique
@@ -18,25 +19,33 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
         const mandatoryAttributeErrors = validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile)
         const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile, dataStore, module)
         const invalidDateFormatErrors = validateDateFields(student, program, profile)
+        const { filledEntries, emptyEntries } = validateAttendanceFields(module, student, attendance)
 
-        if (mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
+        if (filledEntries?.length !== 0 && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
+
             validData.push({
                 ...student,
-                warnings: [...(validateAttendanceFields(module, student) || [])?.map((validateAttendanceField: any) => {
-                    return { key: validateAttendanceField, error: "No attendance to this date" }
-                }),
-                ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
-                    return {
-                        key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
-                        error: "Empty required field"
-                    }
-                })
+                warnings: [
+                    ...filledEntries?.map((validateAttendanceField: any) => {
+                        return { key: validateAttendanceField, error: student?.Attendance?.[validateAttendanceField] }
+                    }),
+                    ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
+                        return {
+                            key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
+                            error: "Empty required field"
+                        }
+                    })
                 ],
             })
-        } else {
+        }
+
+        if (emptyEntries?.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0) {
             invalidData.push({
                 ...student,
                 errors: [
+                    ...emptyEntries?.map((validateAttendanceField: any) => {
+                        return { key: validateAttendanceField, error: "No attendance to this date" }
+                    }),
                     ...(validateOptionalFields(student, module, program) || []).map((field: any) => {
                         return {
                             key: `${field?.displayName ?? field?.name}`,
@@ -45,7 +54,8 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                     }),
                     ...mandatoryAttributeErrors.map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
                     ...mandatoryDataElementErrors.map((field: any) => { return { key: field, error: "Empty required field" } }),
-                    ...invalidDateFormatErrors]
+                    ...invalidDateFormatErrors
+                ]
             })
         }
     });
@@ -162,12 +172,21 @@ const validateDateFields = (student: any, program: any, profile: string) => {
     return dateErrors
 }
 
-const validateAttendanceFields = (module: string, student: any) => {
+const validateAttendanceFields: any = (module: string, student: any, attendance: any) => {
     if (module === "attendance") {
+        const statusOptions = attendance?.statusOptions?.map((x: any) => x.code)
+
         const emptyEntries = Object.keys(student?.Attendance).filter(key => student?.Attendance[key] === ""
             || student?.Attendance[key] === null || student?.Attendance[key] === undefined
         );
-        return emptyEntries;
+
+        const filledEntries = Object.keys(student?.Attendance).filter(key => {
+            if (statusOptions.includes(student?.Attendance[key])) {
+                return key
+            }
+        });
+
+        return { filledEntries, emptyEntries };
     }
 }
 
