@@ -58,6 +58,7 @@ export function useDeleteEnrollment() {
             } catch (err) {
                 setError(err);
                 onError?.(err);
+                throw err;
             } finally {
                 setLoading(false);
             }

@@ -10,7 +10,7 @@ const DELETE_TRACKER_MUTATION = {
         async: false,
         importStrategy: "DELETE",
     },
-}  as any;
+} as any;
 
 const TRACKER_QUERY = {
     results: {
@@ -56,36 +56,19 @@ export function useDeleteTEI(): any {
 
                 await engine.mutate(DELETE_TRACKER_MUTATION, {
                     variables: { data: returnTrackerBody(results) },
-                });
+                })
 
                 onComplete?.();
             } catch (err) {
                 setError(err);
                 onError?.(err);
+                throw err;
             } finally {
                 setLoading(false);
             }
         },
         [engine]
     );
-
-    // async function deleteTEI(trackedEntity: string, onComplete?: () => void, onError?: (error?: unknown) => void) {
-    //     try {
-    //         setLoading(true)
-    //         const response = await engine.mutate(DELETE_TEI_MUTATION, { variables: { id: trackedEntity } });
-    //         if (onComplete) {
-    //             onComplete()
-    //         }
-    //         return response;
-    //     } catch (error) {
-    //         setError(error)
-    //         if (onError) {
-    //             onError(error)
-    //         }
-    //     } finally {
-    //         setLoading(false)
-    //     }
-    // }
 
     return { deleteTEI, loading, error }
 }
