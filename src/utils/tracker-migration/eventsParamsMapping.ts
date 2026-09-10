@@ -43,8 +43,12 @@ export const rules: Record<string, MapRule> = {
 
 
 export const convertEventQueryProps = ({ queryProps, apiVersion }
-  : { queryProps: EventQueryProps, apiVersion: number }): EventQueryProps => {
-  if (apiVersion < 41)
+  : { queryProps: EventQueryProps, apiVersion: any }): EventQueryProps => {
+  const pattern = /^2\.41/;
+  const exceptionVersions = ['2.41.4.2']
+
+  if (exceptionVersions.includes(apiVersion)) return { ...transformQueryParams({ rules, params: queryProps }) as EventQueryProps }
+  if (!pattern.test(apiVersion))
     return { ...transformQueryParams({ rules, params: queryProps }) as EventQueryProps }
 
   return { ...queryProps }
