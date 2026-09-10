@@ -14,14 +14,12 @@ const EVENT_QUERY = (queryProps: EventQueryProps) => ({
 })
 
 export function useGetCompleteEvents() {
-    const config = useConfig()
     const engine = useDataEngine()
     const { platformVersion } = getSysInfo()
-    const minorVersion = Number.parseInt(platformVersion?.split('.')[1]);
 
     async function getCompleteEvents(props: EventQueryProps): Promise<any> {
         return await engine.query(EVENT_QUERY(
-            { ...convertEventQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
+            { ...convertEventQueryProps({ queryProps: props, apiVersion: platformVersion }) }
         ))
     }
 

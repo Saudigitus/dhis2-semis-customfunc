@@ -1,6 +1,6 @@
 import useShowAlerts from "../commons/useShowAlert";
 // import { EventQueryProps } from "dhis2-semis-types";
-import { useConfig, useDataEngine } from "@dhis2/app-runtime";
+import { useDataEngine } from "@dhis2/app-runtime";
 import { EventQueryProps } from "../../types/api/WithoutRegistrationTypes";
 import { convertEventQueryProps, } from "../../utils/tracker-migration/eventsParamsMapping";
 import { getSysInfo } from "../system/getSysInfo";
@@ -18,15 +18,13 @@ const EVENT_QUERY = (queryProps: EventQueryProps) => ({
 
 
 export function useGetEvents() {
-    const config = useConfig()
     const engine = useDataEngine()
     const { hide, show } = useShowAlerts()
     const { platformVersion } = getSysInfo()
-    const minorVersion = Number.parseInt(platformVersion?.split('.')[1]);
 
     async function getEvents(props: EventQueryProps): Promise<any> {
         return await engine.query(EVENT_QUERY(
-            { ...convertEventQueryProps({ queryProps: props, apiVersion: minorVersion ?? config.apiVersion }) }
+            { ...convertEventQueryProps({ queryProps: props, apiVersion: platformVersion }) }
         )).then((resp: any) => {
             return resp.results?.instances ?
                 props?.totalPages ? { pagination: resp.results?.pager, events: resp.results?.instances } : resp.results?.instances :
