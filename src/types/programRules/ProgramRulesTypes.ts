@@ -1,4 +1,5 @@
 interface ProgramRuleConfig {
+    priority?: number
     id: string
     condition: string
     displayName: string
@@ -14,6 +15,10 @@ interface ProgramRuleConfig {
 }
 
 interface ProgramRuleAction {
+    priority?: number
+    location?: string
+    option?: { id: string }
+    programStage?: { id: string }
     id: string
     programRuleActionType: string
     trackedEntityAttribute?: {
@@ -34,6 +39,9 @@ interface ProgramRuleAction {
 }
 
 interface ProgramRuleVariableConfig {
+    programRuleVariableSourceType?: string
+    useNameForOptionSet?: boolean
+    programStage?: { id: string }
     name: string
     program: {
         id: string

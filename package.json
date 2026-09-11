@@ -14,6 +14,7 @@
     }
   },
   "scripts": {
+    "test:rules": "node --test tests/programRules.test.cjs",
     "build": "d2-app-scripts build",
     "start": "d2-app-scripts start --proxy https://emis.dhis2.org/startracker",
     "test": "d2-app-scripts test",
@@ -43,6 +44,7 @@
     "recoil": "^0.7.7"
   },
   "dependencies": {
+    "@dhis2/rule-engine": "3.8.2",
     "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "react-router-dom": "^6.28.0",
