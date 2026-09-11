@@ -23,8 +23,8 @@ export function formatHeaders({ programConfigData, dataStoreData, programStage }
 
 
         const columnsToDisplay =
-            formatVariables({ variables: programConfigData?.programTrackedEntityAttributes as [], type: VariablesTypes.Attribute })
-                ?.concat(
+            (formatVariables({ variables: programConfigData?.programTrackedEntityAttributes as [], type: VariablesTypes.Attribute }) ?? [])
+                .concat(
                     Object.keys(originalData)?.length > 0
                         ? originalDataElements : []
                 )
