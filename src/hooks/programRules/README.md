@@ -44,6 +44,9 @@ parity. Section renderers must honor the returned section `visible` property.
 
 ASSIGN updates `updatedValues` and marks the affected field `ruleAssigned`.
 SEMIS GenericFields synchronizes these assignments with React Final Form.
+HIDEFIELD and HIDESECTION clear affected values to an empty string and mark
+fields as `ruleHidden`. CustomForm clears these values even when the fields are
+unmounted. Hiding takes precedence over assignments for an affected field.
 Consumers outside that form renderer must persist `updatedValues` themselves.
 Calculated assignments must use valid DHIS2 references such as `#{variable}`.
 
