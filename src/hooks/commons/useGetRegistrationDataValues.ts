@@ -5,8 +5,8 @@ export default function useGetRegitration() {
     const { useQuery, urlParameters } = useUrlParams();
     const { academicYear: academicYearId } = useSchoolCalendarKey()
     const { academicYear, sectionType } = urlParameters;
-    const { dataStoreData = {} } = useDataStoreKey({ sectionType })
-    const { filters = {} } = dataStoreData
+    const dataStoreData = useDataStoreKey({ sectionType })
+    const { filters } = dataStoreData
 
     function useGetRegitrationDataElements() {
 
