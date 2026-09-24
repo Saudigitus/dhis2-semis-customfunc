@@ -118,7 +118,7 @@ export function evaluateProgramRules(input: EvaluationInput) {
                     copy.value = assigned; copy.ruleAssigned = true; copy.disabled = true; updatedValues[field.id] = assigned;
                     break;
                 }
-                case 'HIDEFIELD': copy.visible = false; break;
+                case 'HIDEFIELD': copy.visible = false; copy.ruleHidden = true; break;
                 case 'SETMANDATORYFIELD': copy.required = true; break;
                 case 'SHOWERROR': copy.error = true; copy.content = [copy.content, message].filter(Boolean).join('\n'); break;
                 case 'SHOWWARNING': copy.warning = true; copy.content = [copy.content, message].filter(Boolean).join('\n'); break;
@@ -145,7 +145,16 @@ export function evaluateProgramRules(input: EvaluationInput) {
     };
     const updateItem = (item: any, parentHidden = false): any => {
         const keys = sectionKeys(item);
-        if (!keys.length) return { ...updateField(item), ...(parentHidden ? { visible: false } : {}) };
+        if (!keys.length) {
+            const field = updateField(item);
+            if (parentHidden || field.ruleHidden) {
+                field.visible = false;
+                field.ruleHidden = true;
+                field.value = '';
+                updatedValues[item.id] = '';
+            }
+            return field;
+        }
         const hidden = parentHidden || effects.some(e => e.ruleAction.type === 'HIDESECTION' && e.ruleAction.values.get('programStageSectionId') === item.id);
         return { ...item, ...(hidden ? { visible: false } : {}),
             ...Object.fromEntries(keys.map(key => [key, item[key].map((child: any) => updateItem(child, hidden))])) };

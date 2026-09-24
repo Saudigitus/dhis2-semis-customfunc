@@ -22,6 +22,29 @@ const base = { program: 'p', type: 'programStage', variables: [{ id: 'x', valueT
 const rule = (type, data, condition = 'true', extra = {}) => ({ id: 'r', program: { id: 'p' }, condition,
     programRuleActions: [{ id: 'a', programRuleActionType: type, data, dataElement: { id: 'x' }, ...extra }] });
 
+test('hidden fields clear existing values and override assignments', async () => {
+    const evaluate = await loadAdapter();
+    for (const value of [false, 0, 'selected']) {
+        const values = Object.freeze({ x: value });
+        const result = evaluate({ ...base, values, rules: [rule('HIDEFIELD', null),
+            { ...rule('ASSIGN', '5'), id: 'assign' }] });
+        assert.equal(result.updatedValues.x, '');
+        assert.equal(result.updatedVariables[0].value, '');
+        assert.equal(result.updatedVariables[0].ruleHidden, true);
+        assert.equal(values.x, value);
+    }
+});
+
+test('hidden sections clear descendants but preserve unrelated fields', async () => {
+    const evaluate = await loadAdapter();
+    const result = evaluate({ ...base, values: { x: 'selected', y: 'keep' },
+        variables: [{ id: 'section', fields: base.variables }, { id: 'y', visible: true }],
+        rules: [rule('HIDESECTION', null, 'true', { dataElement: undefined, programStageSection: { id: 'section' } })] });
+    assert.equal(result.updatedValues.x, '');
+    assert.equal(result.updatedValues.y, 'keep');
+    assert.equal(result.updatedVariables[0].fields[0].ruleHidden, true);
+});
+
 test('official engine assigns numbers without mutating form inputs', async () => {
     const evaluate = await loadAdapter();
     const values = Object.freeze({ x: 0 });
@@ -159,7 +182,7 @@ test('mixed fields, nested sections and empty sections preserve layout', async (
     assert.deepEqual(result.updatedVariables[0], variables[0]);
     assert.equal(result.updatedVariables[1].value, 5);
     assert.equal(result.updatedVariables[1].visible, undefined);
-    assert.equal(result.updatedVariables[2].fields[0].variable[0].value, 5);
+    assert.equal(result.updatedVariables[2].fields[0].variable[0].value, '');
     assert.equal(result.updatedVariables[2].fields[0].variable[0].visible, false);
     assert.deepEqual(evaluate({ ...base, variables: [] }).updatedVariables, []);
 });
