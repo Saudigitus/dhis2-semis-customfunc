@@ -42,8 +42,10 @@ import { useGetCompleteTeis } from "./hooks/tei/useGetCompleteTei"
 import { useGetProgramIndicators } from "./hooks/programIndicator/useGetProgramIndicators"
 import { formatVariables } from "./utils/table/header/formatVariables"
 import { getOptionStyle } from "./utils/helpers/getDisplayNameByOption"
+import useGetRegitration from "./hooks/commons/useGetRegistrationDataValues"
 
 export {
+    useGetRegitration,
     useBuildForm,
     useSaveTei,
     useTableData,

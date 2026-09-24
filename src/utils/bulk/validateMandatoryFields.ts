@@ -175,12 +175,14 @@ const validateDateFields = (student: any, program: any, profile: string) => {
 const validateAttendanceFields: any = (module: string, student: any, attendance: any) => {
     if (module === "attendance") {
         const statusOptions = attendance?.statusOptions?.map((x: any) => x.code)
+        const allowAttendanceStatus = attendance?.attendanceStatus?.allowAttendanceStatus
 
         const emptyEntries = Object.keys(student?.Attendance).filter(key => student?.Attendance[key] === ""
             || student?.Attendance[key] === null || student?.Attendance[key] === undefined
         );
 
         const filledEntries = Object.keys(student?.Attendance).filter(key => {
+            if (allowAttendanceStatus) return key
             if (statusOptions.includes(student?.Attendance[key])) {
                 return key
             }
