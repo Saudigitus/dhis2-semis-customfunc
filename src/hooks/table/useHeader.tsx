@@ -19,7 +19,7 @@ export function useHeader({  programConfigData, dataStoreData, programStage }: U
 
     useEffect(() => {
         setHeader(getHeader(programStage))
-    }, [programConfigData, programStage])
+    }, [programConfigData, programStage, dataStoreData])
 
     return { columns: header, getHeader }
 }
