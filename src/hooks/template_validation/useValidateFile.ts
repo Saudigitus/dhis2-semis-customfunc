@@ -51,38 +51,43 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
             })
 
             setLoader(true)
-            for (const params of filterParams) {
+            try {
+                for (const params of filterParams) {
 
-                let isValid = true;
-                for (const param of params?.params) {
-                    const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit ?? school, [param])
-                    if (instances.length > 0) {
-                        setInvalidRecords(prevState => [
+                    let isValid = true;
+                    for (const param of params?.params) {
+                        const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit ?? school, [param])
+                        if (instances.length > 0) {
+                            setInvalidRecords(prevState => [
+                                ...prevState,
+                                {
+                                    ...params.student,
+                                    errors: [
+                                        {
+                                            key: `${displayName ?? sectionType}`,
+                                            error: `already exists in the system`
+                                        }
+                                    ]
+                                }
+                            ])
+                            isValid = false
+                            break
+                        }
+                    }
+                    if (isValid) {
+                        setValidRecords(prevState => [
                             ...prevState,
                             {
                                 ...params.student,
-                                errors: [
-                                    {
-                                        key: `${displayName ?? sectionType}`,
-                                        error: `already exists in the system`
-                                    }
-                                ]
                             }
                         ])
-                        isValid = false
-                        break
                     }
                 }
-                if (isValid) {
-                    setValidRecords(prevState => [
-                        ...prevState,
-                        {
-                            ...params.student,
-                        }
-                    ])
-                }
+            } finally {
+                // Release the loader also when a request fails; the error is passed on to the
+                // caller, which shows it to the user.
+                setLoader(false)
             }
-            setLoader(false)
         }
     }
     return { validador, loader, validRecords, invalidRecords }
