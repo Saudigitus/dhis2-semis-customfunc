@@ -2,7 +2,8 @@ import { useState } from "react"
 import { madatoryFieldsValidator } from "../../utils/bulk/validateMandatoryFields"
 import { useDataEngine } from "@dhis2/app-runtime"
 import { useUrlParams } from "../commons/useQueryParams";
-import { UNIQUE_VALUES_PER_REQUEST, UniqueValueQuery, buildInFilter, buildUniqueValueQueries, existingValueKey, splitRowsByExistingValues } from "../../utils/bulk/uniqueValues";
+import { UNIQUE_VALUES_PER_REQUEST, UniqueValueQuery, buildInFilter, buildUniqueValueQueries, existingValueKey, splitRowsByExistingValues, splitRowsByRepeatedValues } from "../../utils/bulk/uniqueValues";
+import useGetRegitration from "../commons/useGetRegistrationDataValues";
 
 // Returns the values of the given unique attribute that already exist in the school, reading
 // many values per request (paged) instead of one request per value.
@@ -48,9 +49,12 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
     const { urlParameters } = useUrlParams()
     const { sectionType, school } = urlParameters
     const Profile = (sectionType ?? '').substring(0, 1).toUpperCase() + (sectionType ?? '').substring(1, (sectionType ?? '').length) + ' profile'
+    const { useGetRegitrationDataElements } = useGetRegitration()
 
     const validador = async ({ module, data, dataStore }: { module: string, data: any[], dataStore: any }) => {
-        const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module, Profile, dataStore)
+        // Registration values of the class selected on screen: rows of another class get a warning.
+        const selectedClass = module === "enrollment" ? useGetRegitrationDataElements() : []
+        const { invalidData, uniqueAttributes, validData } = madatoryFieldsValidator(program, data, module, Profile, dataStore, selectedClass)
         setInvalidRecords(invalidData)
 
         if (module !== "enrollment") {
@@ -60,10 +64,15 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
         }
 
         if (mutateType === "POST" && module === "enrollment") {
-            // The check against the server reads only the student profile section (staff: SEMIS-211).
-            const profileSection = 'Student profile'
+            // The profile section of the file of this module ("Student profile" / "Staff profile").
+            const profileSection = Profile
             const orgUnit = school as unknown as string
-            const queries = buildUniqueValueQueries(validData, uniqueAttributes, profileSection, orgUnit)
+            const errorKey = `${displayName ?? sectionType}`
+
+            // A unique value repeated inside the file is invalid in all its rows.
+            const inFile = splitRowsByRepeatedValues(validData, uniqueAttributes, profileSection, errorKey)
+            setInvalidRecords(prevState => [...prevState, ...inFile.invalid])
+            const queries = buildUniqueValueQueries(inFile.valid, uniqueAttributes, profileSection, orgUnit)
 
             setLoader(true)
             try {
@@ -71,7 +80,7 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
                 for (const query of queries)
                     for (const key of await findExistingValues(engine, program.id, query)) existing.add(key)
 
-                const { valid, invalid } = splitRowsByExistingValues(validData, uniqueAttributes, profileSection, orgUnit, existing, `${displayName ?? sectionType}`)
+                const { valid, invalid } = splitRowsByExistingValues(inFile.valid, uniqueAttributes, profileSection, orgUnit, existing, errorKey)
                 setInvalidRecords(prevState => [...prevState, ...invalid])
                 setValidRecords(prevState => [...prevState, ...valid])
             } finally {

@@ -59,3 +59,23 @@ export function splitRowsByExistingValues(rows: any[], uniqueAttributes: any[], 
     }
     return { valid, invalid }
 }
+
+// Rows with a unique value that appears in more than one row of the file are invalid (all of
+// them: the user decides which one is right); the others stay valid.
+export function splitRowsByRepeatedValues(rows: any[], uniqueAttributes: any[], profile: string, errorKey: string) {
+    const count: Record<string, number> = {}
+    const keysOf = (row: any) => uniqueAttributes
+        .map(({ trackedEntityAttribute: { id } }: any) => [id, row?.[profile]?.[id]])
+        .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== "")
+        .map(([id, value]) => `${id}|${normalize(value)}`)
+
+    for (const row of rows) for (const key of keysOf(row)) count[key] = (count[key] ?? 0) + 1
+
+    const valid: any[] = []
+    const invalid: any[] = []
+    for (const row of rows) {
+        if (keysOf(row).some(key => count[key] > 1)) invalid.push({ ...row, errors: [{ key: errorKey, error: "repeated in the file" }] })
+        else valid.push(row)
+    }
+    return { valid, invalid }
+}

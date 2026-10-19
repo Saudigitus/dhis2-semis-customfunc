@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test:rules": "node --test tests/programRules.test.cjs",
-    "test:bulk": "node --test tests/bulkValidation.test.cjs tests/uniqueValues.test.cjs",
+    "test:bulk": "node --test tests/bulkValidation.test.cjs tests/uniqueValues.test.cjs tests/valueChecks.test.cjs",
     "build": "d2-app-scripts build",
     "start": "d2-app-scripts start --proxy https://emis.dhis2.org/startracker",
     "test": "d2-app-scripts test",
