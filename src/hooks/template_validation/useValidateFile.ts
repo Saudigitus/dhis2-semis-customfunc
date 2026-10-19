@@ -2,23 +2,41 @@ import { useState } from "react"
 import { madatoryFieldsValidator } from "../../utils/bulk/validateMandatoryFields"
 import { useDataEngine } from "@dhis2/app-runtime"
 import { useUrlParams } from "../commons/useQueryParams";
+import { UNIQUE_VALUES_PER_REQUEST, UniqueValueQuery, buildInFilter, buildUniqueValueQueries, existingValueKey, splitRowsByExistingValues } from "../../utils/bulk/uniqueValues";
 
-const checkTEI = async (engine: any, programId: string, ouID: string, filterParams: string[]): Promise<any[]> => {
-    const queryResult = await engine.query({
-        trackedEntities: {
-            resource: 'tracker/trackedEntities',
-            params: {
-                program: programId,
-                orgUnit: ouID,
-                filter: filterParams
-            },
-            fields: ['trackedEntity', 'attributes', 'enrollments']
-        }
-    });
-    if (queryResult?.trackedEntities?.instances?.length > 0 || queryResult?.trackedEntities?.trackedEntities?.length > 0) {
-        return queryResult?.trackedEntities?.instances ? queryResult?.trackedEntities?.instances : queryResult?.trackedEntities?.trackedEntities
-    }
-    return []
+// Returns the values of the given unique attribute that already exist in the school, reading
+// many values per request (paged) instead of one request per value.
+const findExistingValues = async (engine: any, programId: string, query: UniqueValueQuery): Promise<Set<string>> => {
+    const found = new Set<string>()
+    const pageSize = UNIQUE_VALUES_PER_REQUEST
+    let page = 1, received = 0
+
+    do {
+        const queryResult = await engine.query({
+            trackedEntities: {
+                resource: 'tracker/trackedEntities',
+                params: {
+                    program: programId,
+                    orgUnit: query.orgUnit,
+                    filter: [buildInFilter(query.attribute, query.values)],
+                    page,
+                    pageSize
+                },
+                fields: ['trackedEntity', 'attributes[attribute,value]']
+            }
+        });
+        const instances: any[] = queryResult?.trackedEntities?.instances ?? queryResult?.trackedEntities?.trackedEntities ?? []
+
+        for (const instance of instances)
+            for (const attribute of (instance?.attributes ?? []))
+                if (attribute?.attribute === query.attribute)
+                    found.add(existingValueKey(query.orgUnit, query.attribute, attribute?.value))
+
+        received = instances.length
+        page++
+    } while (received === pageSize)
+
+    return found
 }
 
 const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
@@ -42,47 +60,20 @@ const useValidateFile = (program: any, mutateType: "POST" | "UPDATE") => {
         }
 
         if (mutateType === "POST" && module === "enrollment") {
-            const filterParams = validData.map((student: any) => {
-                const params = uniqueAttributes.flatMap((attributes: any) => {
-                    const value = student?.['Student profile']?.[attributes.trackedEntityAttribute.id]
-                    return value ? [`${attributes.trackedEntityAttribute.id}:EQ:${value}`] : null
-                })?.filter(x => x !== null)
-                return { student, params }
-            })
+            // The check against the server reads only the student profile section (staff: SEMIS-211).
+            const profileSection = 'Student profile'
+            const orgUnit = school as unknown as string
+            const queries = buildUniqueValueQueries(validData, uniqueAttributes, profileSection, orgUnit)
 
             setLoader(true)
             try {
-                for (const params of filterParams) {
+                const existing = new Set<string>()
+                for (const query of queries)
+                    for (const key of await findExistingValues(engine, program.id, query)) existing.add(key)
 
-                    let isValid = true;
-                    for (const param of params?.params) {
-                        const instances: any[] = await checkTEI(engine, program.id, params?.student?.Ids?.orgUnit ?? school, [param])
-                        if (instances.length > 0) {
-                            setInvalidRecords(prevState => [
-                                ...prevState,
-                                {
-                                    ...params.student,
-                                    errors: [
-                                        {
-                                            key: `${displayName ?? sectionType}`,
-                                            error: `already exists in the system`
-                                        }
-                                    ]
-                                }
-                            ])
-                            isValid = false
-                            break
-                        }
-                    }
-                    if (isValid) {
-                        setValidRecords(prevState => [
-                            ...prevState,
-                            {
-                                ...params.student,
-                            }
-                        ])
-                    }
-                }
+                const { valid, invalid } = splitRowsByExistingValues(validData, uniqueAttributes, profileSection, orgUnit, existing, `${displayName ?? sectionType}`)
+                setInvalidRecords(prevState => [...prevState, ...invalid])
+                setValidRecords(prevState => [...prevState, ...valid])
             } finally {
                 // Release the loader also when a request fails; the error is passed on to the
                 // caller, which shows it to the user.
