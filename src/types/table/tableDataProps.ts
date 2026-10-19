@@ -16,6 +16,7 @@ interface GetTableDataProps {
     occurredBefore?: string
     attendanceConfig?: attendanceConfig
     paging?: boolean
+    allowAttendanceStatus?:boolean
 }
 
 interface GetAttendanceDataProps {

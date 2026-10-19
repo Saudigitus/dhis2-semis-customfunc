@@ -114,25 +114,27 @@ export function useModulesData() {
             pagination: {
                 page: eventsResultsResponse?.results?.pager?.page ?? eventsResultsResponse?.results?.page,
                 pageSize: eventsResultsResponse?.results?.pager?.pageSize ?? eventsResultsResponse?.results?.pageSize,
-                totalPages: eventsResultsResponse?.results?.pager?.pageCount ??  eventsResultsResponse?.results?.pageCount,
+                totalPages: eventsResultsResponse?.results?.pager?.pageCount ?? eventsResultsResponse?.results?.pageCount,
                 totalElements: eventsResultsResponse?.results?.pager?.total ?? eventsResultsResponse?.results?.total,
             }
         }
     }
 
     async function getStageData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
-        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig } = tableDataProps;
-        let copy = []
+        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig, dataElementFilters } = tableDataProps;
+        let copy = [], loadedEvents = [], page = 1, pageSize = 150, fetchedEvents: any = []
 
-        for (let i = 0; i < formattedBasicTableData.length; i++) {
+        do {
             const cancelable = makeCancellablePromise(
                 getCompleteEvents({
                     orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
                     program: program as unknown as string,
                     order: order || "occurredAt:desc",
                     programStage: baseProgramStage!,
+                    pageSize,
+                    page,
                     orgUnit: orgUnit,
-                    trackedEntities: formattedBasicTableData[i].trackedEntity,
+                    ...(Modules.Attendance == module ? { filter: dataElementFilters } : {}),
                     ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
                     ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
                 }).catch((error) => {
@@ -143,11 +145,18 @@ export function useModulesData() {
                     setTimeout(hide, 5000);
                 })
             )
-
-            const eventsResults = await cancelable as unknown as EventQueryResults;
+            
             requestRef.current.push(cancelable);
-            const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
-            const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+            const eventsResults = await cancelable as unknown as EventQueryResults;
+
+            loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
+            fetchedEvents = [...fetchedEvents, ...loadedEvents]
+
+        } while (loadedEvents?.length === pageSize)
+
+        for (let i = 0; i < formattedBasicTableData.length; i++) {
+
+            const filteredEvents = fetchedEvents?.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
             copy[i] = {
                 ...(Modules.Attendance == module ?
