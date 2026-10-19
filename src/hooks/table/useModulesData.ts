@@ -145,13 +145,13 @@ export function useModulesData() {
                     setTimeout(hide, 5000);
                 })
             )
-            
+
             requestRef.current.push(cancelable);
             const eventsResults = await cancelable as unknown as EventQueryResults;
 
             loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             fetchedEvents = [...fetchedEvents, ...loadedEvents]
-
+            pageSize++
         } while (loadedEvents?.length === pageSize)
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
