@@ -120,7 +120,7 @@ export function useModulesData() {
         }
     }
 
-    async function getStageData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
+    async function getAttendanceData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
         const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig, dataElementFilters } = tableDataProps;
         let copy = [], loadedEvents = [], page = 1, pageSize = 150, fetchedEvents: any = []
 
@@ -134,9 +134,9 @@ export function useModulesData() {
                     pageSize,
                     page,
                     orgUnit: orgUnit,
-                    ...(Modules.Attendance == module ? { filter: dataElementFilters } : {}),
-                    ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
-                    ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
+                    filter: dataElementFilters,
+                    occurredAfter: occurredAfter,
+                    occurredBefore: occurredBefore,
                 }).catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
@@ -151,12 +151,53 @@ export function useModulesData() {
 
             loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             fetchedEvents = [...fetchedEvents, ...loadedEvents]
+            
             pageSize++
         } while (loadedEvents?.length === pageSize)
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
 
             const filteredEvents = fetchedEvents?.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+
+            copy[i] = {
+                ...attendanceDataValuesFormater(filteredEvents, attendanceConfig as unknown as any),
+                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: filteredEvents[0] ?? {} } : {})
+            }
+        }
+
+        return {
+            formattedStagedData: copy
+        }
+    }
+
+    async function getStageData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
+        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig } = tableDataProps;
+        let copy = []
+
+        for (let i = 0; i < formattedBasicTableData.length; i++) {
+            const cancelable = makeCancellablePromise(
+                getCompleteEvents({
+                    orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    program: program as unknown as string,
+                    order: order || "occurredAt:desc",
+                    programStage: baseProgramStage!,
+                    orgUnit: orgUnit,
+                    trackedEntities: formattedBasicTableData[i].trackedEntity,
+                    ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
+                    ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
+                }).catch((error) => {
+                    show({
+                        message: `${("Could not get events")}: ${error.message}`,
+                        type: { critical: true }
+                    });
+                    setTimeout(hide, 5000);
+                })
+            )
+
+            const eventsResults = await cancelable as unknown as EventQueryResults;
+            requestRef.current.push(cancelable);
+            const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
+            const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
             copy[i] = {
                 ...(Modules.Attendance == module ?
@@ -170,10 +211,10 @@ export function useModulesData() {
             formattedStagedData: copy
         }
     }
-
     return {
         getRegistrationData,
         getBasicData,
-        getStageData
+        getStageData,
+        getAttendanceData
     }
 }

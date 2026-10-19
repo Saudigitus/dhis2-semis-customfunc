@@ -4,7 +4,7 @@ import { useModulesData } from "./useModulesData";
 import { Modules } from "dhis2-semis-types";
 
 export function useTableData({ module }: { module: Modules }) {
-    const { getBasicData, getStageData } = useModulesData()
+    const { getBasicData, getStageData, getAttendanceData } = useModulesData()
     const [loading, setLoading] = useState<boolean>(false)
     const [tableData, setTableData] = useState<{ data: TableDataProps[], pagination: any }>({ data: [], pagination: {} })
 
@@ -27,7 +27,23 @@ export function useTableData({ module }: { module: Modules }) {
                     setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
                     break;
                 }
-                case Modules.Performance: case Modules.Final_Result: case Modules.Attendance: case Modules.Transfer: {
+
+                case Modules.Attendance:
+                    const { otherProgramStage, ...rest } = updatedProps;
+                    if (otherProgramStage) {
+                        const { formattedStagedData } = await getAttendanceData({
+                            formattedBasicTableData,
+                            tableDataProps: { ...rest, baseProgramStage: otherProgramStage! },
+                            module
+                        });
+                        setTableData({ pagination: pagination, data: [...formattedStagedData] });
+                        return { data: [...formattedStagedData], pagination }
+                    } else {
+                        setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
+                        return { data: [...formattedBasicTableData], pagination }
+                    }
+
+                case Modules.Performance: case Modules.Final_Result: case Modules.Transfer: {
                     const { otherProgramStage, ...rest } = updatedProps;
                     if (otherProgramStage) {
                         const { formattedStagedData } = await getStageData({
