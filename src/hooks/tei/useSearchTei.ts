@@ -13,7 +13,6 @@ export function useSearchTei() {
             program,
             orgUnit,
             totalPages: true,
-            orgUnitMode: "ACCESSIBLE",
             filter: filters.slice(0, -1),
         } as TeiQueryProps).then((resp: any) => {
             return {
