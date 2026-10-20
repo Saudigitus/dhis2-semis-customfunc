@@ -10,6 +10,8 @@ interface FormatResponseRowsProps {
         enrollment: string
         event?: string
         occurredAt?: string
+        createdAt?: string
+        orgUnit?: string
         isRegistrationEvent?: boolean
     }[]
     teiInstances?: {
