@@ -1,4 +1,5 @@
 import { getDateValidationIssue } from "../format/checkDateFormat";
+import { classRecordErrors, isClassRecordRow } from "./classRecord";
 import { enrollmentDateName, fieldsOfModule, otherClassWarnings, validateEnrollmentDate, validateFieldValues } from "./valueChecks";
 
 const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
@@ -6,6 +7,8 @@ const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY
 const DATE_VALUE_TYPE = "DATE"
 // Written by the attendance export on the days without school (locked cells).
 const NON_SCHOOL_DAY = "Non School Day"
+// Offered in the attendance file when the class attendance status is enabled.
+const PRESENT = "present"
 
 // "selectedClass": registration values of the class selected on screen ({ dataElement, value }),
 // used to warn about rows of another class (enrollment files).
@@ -23,6 +26,14 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
 
     students.forEach((student: any) => {
+        // Attendance files: the row "Class record status" is not a person; only its values are checked.
+        if (module === "attendance" && isClassRecordRow(student)) {
+            const errors = classRecordErrors(student)
+            if (errors.length) invalidData.push({ ...student, classRecord: true, errors })
+            else validData.push({ ...student, classRecord: true, warnings: [] })
+            return
+        }
+
         // The person fields are saved only by the enrollment import: the other files (attendance,
         // performance, final result) may hold only the columns of the list.
         const mandatoryAttributeErrors = module === "enrollment" ? validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile) : []
@@ -192,9 +203,13 @@ const validateDateFields = (student: any, program: any, profile: string) => {
 
 // Attendance files only: the caller runs this check for the attendance module alone.
 // An empty cell means nothing to record; "Non School Day" is written by the export on the days
-// without school; any other value must be one of the attendance options.
+// without school; any other value must be one of the attendance options, or "present" (offered in
+// the file when the class attendance status is enabled: it removes an absence saved before).
 export const validateAttendanceFields = (student: any, attendance: any): { filledEntries: string[], invalidEntries: string[] } => {
-    const statusOptions: string[] = (attendance?.statusOptions ?? []).map((x: any) => x.code)
+    const statusOptions: string[] = [
+        ...(attendance?.statusOptions ?? []).map((x: any) => x.code),
+        ...(attendance?.attendanceStatus?.allowAttendanceStatus ? [PRESENT] : [])
+    ]
     const days = student?.Attendance ?? {}
     const value = (day: string) => days[day] === undefined || days[day] === null ? "" : String(days[day]).trim()
 

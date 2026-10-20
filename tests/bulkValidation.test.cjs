@@ -108,3 +108,26 @@ test('attendance: the person fields of the list are enough (no Date of birth, no
     assert.equal(result.validData.length, 1);
     assert.equal(result.invalidData.length, 0);
 });
+
+test('attendance: the row "Class record status" is not a person; only ACTIVE / COMPLETED / empty (SEMIS-214)', () => {
+    const classRow = (days) => ({ Registration: { ref: 'Class record status' }, [PROFILE]: {}, Attendance: days, Ids: {} });
+    const result = validate([classRow({ '2025-10-01': 'COMPLETED', '2025-10-02': 'active', '2025-10-03': '', '2025-10-04': 'Non School Day' }),
+        row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'absent' } })], 'attendance');
+
+    assert.equal(result.validData.length, 2);
+    assert.equal(result.validData[0].classRecord, true);
+    assert.equal(result.invalidData.length, 0);
+
+    const wrong = validate([classRow({ '2025-10-01': 'DONE' })], 'attendance');
+    assert.deepEqual(wrong.invalidData[0].errors, [{ key: '2025-10-01', error: '"DONE" is not a valid class record status (ACTIVE or COMPLETED)' }]);
+    assert.equal(wrong.invalidData[0].classRecord, true);
+});
+
+test('attendance: "present" is accepted when the class attendance status is enabled (SEMIS-215)', () => {
+    const store = { ...dataStore, attendance: { ...dataStore.attendance, statusOptions: [{ code: 'absent' }], attendanceStatus: { allowAttendanceStatus: true } } };
+    const ok = validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'present' } })], 'attendance', store);
+    assert.equal(ok.validData.length, 1);
+
+    const withoutStatus = { ...store, attendance: { ...store.attendance, attendanceStatus: { allowAttendanceStatus: false } } };
+    assert.equal(validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'present' } })], 'attendance', withoutStatus).invalidData.length, 1);
+});
