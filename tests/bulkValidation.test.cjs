@@ -131,3 +131,15 @@ test('attendance: "present" is accepted when the class attendance status is enab
     const withoutStatus = { ...store, attendance: { ...store.attendance, attendanceStatus: { allowAttendanceStatus: false } } };
     assert.equal(validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'present' } })], 'attendance', withoutStatus).invalidData.length, 1);
 });
+
+test('attendance: only the option mapped as absence takes a reason, from the list (SEMIS-214)', () => {
+    const store = { ...dataStore, attendance: { ...dataStore.attendance, absenceReason: 'reason',
+        statusOptions: [{ code: 'present', configKey: 'presentCode' }, { code: 'absent', configKey: 'absentCode' }] } };
+    const programWithReason = { ...program, programStages: [...program.programStages.filter(s => s.id !== 'att'),
+        { id: 'att', name: 'Attendance', programStageDataElements: [{ dataElement: { id: 'reason', optionSet: { options: [{ value: 'SICK' }, { value: 'OTHER REASON' }] } } }] }] };
+    const check = (days) => madatoryFieldsValidator(programWithReason, [row({ surname: 'Doe' }, { Attendance: days })], 'attendance', PROFILE, store);
+
+    assert.equal(check({ '2025-10-01': 'absent | SICK', '2025-10-02': 'absent | OTHER REASON', '2025-10-03': 'absent', '2025-10-06': 'present' }).validData.length, 1);
+    assert.deepEqual(check({ '2025-10-01': 'absent | FLU' }).invalidData[0].errors, [{ key: '2025-10-01', error: '"absent | FLU" is not a valid attendance option' }]);
+    assert.equal(check({ '2025-10-01': 'present | SICK' }).invalidData.length, 1);
+});

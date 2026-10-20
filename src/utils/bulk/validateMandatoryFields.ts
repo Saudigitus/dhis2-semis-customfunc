@@ -9,6 +9,9 @@ const DATE_VALUE_TYPE = "DATE"
 const NON_SCHOOL_DAY = "Non School Day"
 // Offered in the attendance file when the class attendance status is enabled.
 const PRESENT = "present"
+// "absent | SICK": the absence with its reason of absence in the same cell (same separator in
+// dhis2-semis-components, export and import).
+const REASON_SEPARATOR = " | "
 
 // "selectedClass": registration values of the class selected on screen ({ dataElement, value }),
 // used to warn about rows of another class (enrollment files).
@@ -43,7 +46,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
         // attendance check does not apply, so it must neither fail nor block the row.
         const isAttendance = module === "attendance"
         const { filledEntries, invalidEntries } = isAttendance
-            ? validateAttendanceFields(student, attendance)
+            ? validateAttendanceFields(student, attendance, program)
             : { filledEntries: [], invalidEntries: [] }
         // Values the server would refuse (option, value type) and an empty enrollment date.
         const valueErrors = [...validateFieldValues(student, checkedFields), ...validateEnrollmentDate(student, module, profile, program)]
@@ -203,12 +206,18 @@ const validateDateFields = (student: any, program: any, profile: string) => {
 
 // Attendance files only: the caller runs this check for the attendance module alone.
 // An empty cell means nothing to record; "Non School Day" is written by the export on the days
-// without school; any other value must be one of the attendance options, or "present" (offered in
-// the file when the class attendance status is enabled: it removes an absence saved before).
-export const validateAttendanceFields = (student: any, attendance: any): { filledEntries: string[], invalidEntries: string[] } => {
+// without school; any other value must be one of the attendance options, "present" (offered in
+// the file when the class attendance status is enabled: it removes an absence saved before) or the
+// option mapped as absence with a reason of absence of the list ("absent | SICK").
+export const validateAttendanceFields = (student: any, attendance: any, program?: any): { filledEntries: string[], invalidEntries: string[] } => {
+    const absent = (attendance?.statusOptions ?? []).find((x: any) => x?.configKey === "absentCode")?.code
+    const stage = (program?.programStages ?? []).find((x: any) => x?.id === attendance?.programStage)
+    const reasons: string[] = ((stage?.programStageDataElements ?? []).find((x: any) => x?.dataElement?.id === attendance?.absenceReason)
+        ?.dataElement?.optionSet?.options ?? []).map((option: any) => String(option?.value ?? option?.code ?? "").trim()).filter(Boolean)
     const statusOptions: string[] = [
         ...(attendance?.statusOptions ?? []).map((x: any) => x.code),
-        ...(attendance?.attendanceStatus?.allowAttendanceStatus ? [PRESENT] : [])
+        ...(attendance?.attendanceStatus?.allowAttendanceStatus ? [PRESENT] : []),
+        ...(absent ? reasons.map(reason => `${absent}${REASON_SEPARATOR}${reason}`) : [])
     ]
     const days = student?.Attendance ?? {}
     const value = (day: string) => days[day] === undefined || days[day] === null ? "" : String(days[day]).trim()
