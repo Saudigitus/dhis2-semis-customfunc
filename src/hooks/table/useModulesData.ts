@@ -114,9 +114,59 @@ export function useModulesData() {
             pagination: {
                 page: eventsResultsResponse?.results?.pager?.page ?? eventsResultsResponse?.results?.page,
                 pageSize: eventsResultsResponse?.results?.pager?.pageSize ?? eventsResultsResponse?.results?.pageSize,
-                totalPages: eventsResultsResponse?.results?.pager?.pageCount ??  eventsResultsResponse?.results?.pageCount,
+                totalPages: eventsResultsResponse?.results?.pager?.pageCount ?? eventsResultsResponse?.results?.pageCount,
                 totalElements: eventsResultsResponse?.results?.pager?.total ?? eventsResultsResponse?.results?.total,
             }
+        }
+    }
+
+    async function getAttendanceData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
+        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig, dataElementFilters } = tableDataProps;
+        let copy = [], loadedEvents = [], page = 1, pageSize = 150, fetchedEvents: any = []
+
+        do {
+            const cancelable = makeCancellablePromise(
+                getCompleteEvents({
+                    orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
+                    program: program as unknown as string,
+                    order: order || "occurredAt:desc",
+                    programStage: baseProgramStage!,
+                    pageSize,
+                    page,
+                    orgUnit: orgUnit,
+                    filter: dataElementFilters,
+                    occurredAfter: occurredAfter,
+                    occurredBefore: occurredBefore,
+                }).catch((error) => {
+                    show({
+                        message: `${("Could not get events")}: ${error.message}`,
+                        type: { critical: true }
+                    });
+                    setTimeout(hide, 5000);
+                })
+            )
+
+            requestRef.current.push(cancelable);
+            const eventsResults = await cancelable as unknown as EventQueryResults;
+
+            loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
+            fetchedEvents = [...fetchedEvents, ...loadedEvents]
+            
+            page++
+        } while (loadedEvents?.length === pageSize)
+
+        for (let i = 0; i < formattedBasicTableData.length; i++) {
+
+            const filteredEvents = fetchedEvents?.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
+
+            copy[i] = {
+                ...attendanceDataValuesFormater(filteredEvents, attendanceConfig as unknown as any),
+                ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: filteredEvents[0] ?? {} } : {})
+            }
+        }
+
+        return {
+            formattedStagedData: copy
         }
     }
 
@@ -161,10 +211,10 @@ export function useModulesData() {
             formattedStagedData: copy
         }
     }
-
     return {
         getRegistrationData,
         getBasicData,
-        getStageData
+        getStageData,
+        getAttendanceData
     }
 }
