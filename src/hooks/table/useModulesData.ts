@@ -152,7 +152,7 @@ export function useModulesData() {
             loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             fetchedEvents = [...fetchedEvents, ...loadedEvents]
             
-            pageSize++
+            page++
         } while (loadedEvents?.length === pageSize)
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
