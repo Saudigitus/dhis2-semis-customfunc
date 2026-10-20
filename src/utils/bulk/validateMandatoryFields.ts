@@ -59,7 +59,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                     ...filledEntries.map((validateAttendanceField: any) => {
                         return { key: validateAttendanceField, error: student?.Attendance?.[validateAttendanceField] }
                     }),
-                    ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
+                    ...(validatePerformanceFields(student, module, program, dataStore) || []).map((field: any) => {
                         return {
                             key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
                             error: "Empty required field"
@@ -109,7 +109,8 @@ const validateMandatoryDataElements = (student: any, program: any, profile: stri
         "enrollment": [dataStore?.registration?.programStage,
         dataStore?.['socio-economics']?.programStage],
         "attendance": [dataStore?.attendance?.programStage],
-        "performance": [dataStore?.performance?.programStages?.map((item: any) => item?.programStage)?.join(",")],
+        // Every term configured for Performance (any number, any name).
+        "performance": dataStore?.performance?.programStages?.map((item: any) => item?.programStage) ?? [],
     }
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const madatoryFieldsProgramStages = program?.programStages.map((programStage: any) => {
@@ -254,8 +255,11 @@ const validateOptionalFields = (student: any, module: string, program: any) => {
     return warningRecords
 }
 
-const validatePerformanceFields = (student: any, module: string, program: any) => {
+// Performance: the terms are the program stages configured for Performance (any number, any name);
+// a term that is not in the file is skipped. Empty marks are listed as warnings.
+const validatePerformanceFields = (student: any, module: string, program: any, dataStore: any) => {
     const warningRecords: any = []
+    if (module !== "performance") return warningRecords
     //GET ALL PROGRAM STAGES WITH AT LEAST ONE MANDATORY DATA ELEMENT
     const nonMandatoryFieldsDataElements = program?.programStages.flatMap((programStage: any) =>
         programStage.programStageDataElements
@@ -267,33 +271,20 @@ const validatePerformanceFields = (student: any, module: string, program: any) =
                 programStageName: programStage?.name ?? programStage?.displayName
             }))
     );
+    const termIds: string[] = (dataStore?.performance?.programStages ?? []).map((item: any) => item?.programStage)
+    const termSections = (program?.programStages ?? [])
+        .filter((programStage: any) => termIds.includes(programStage?.id))
+        .map((programStage: any) => student?.[programStage?.displayName ?? programStage?.name] ?? student?.[programStage?.name])
+        .filter(Boolean)
 
-    if (module === "performance") {
-        const emptyTerm1 = Object.keys(student?.['Term 1']).filter(key => student?.['Term 1'][key] === ""
-            || student?.['Term 1'][key] === null || student?.['Term 1'][key] === undefined
-        );
-
-        const emptyTerm2 = Object.keys(student?.['Term 2']).filter(key => student?.['Term 2'][key] === ""
-            || student?.['Term 2'][key] === null || student?.['Term 2'][key] === undefined
-        );
-
-        const emptyTerm3 = Object.keys(student?.['Term 3']).filter(key => student?.['Term 3'][key] === ""
-            || student?.['Term 3'][key] === null || student?.['Term 3'][key] === undefined
-        );
-
-        emptyTerm1.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm2.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
-
-        emptyTerm3.forEach((key: any) => {
-            warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
-        })
+    for (const term of termSections) {
+        Object.keys(term)
+            .filter(key => term[key] === "" || term[key] === null || term[key] === undefined)
+            .forEach((key: any) => {
+                warningRecords.push(nonMandatoryFieldsDataElements?.filter((field: any) => `${field?.programStageId}.${field?.id}` === key)?.[0])
+            })
     }
-    return warningRecords
+    return warningRecords.filter(Boolean)
 }
 
 export { madatoryFieldsValidator }
