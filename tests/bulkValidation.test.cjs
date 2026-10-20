@@ -74,29 +74,36 @@ test('a missing attendance configuration does not break the other modules', () =
     assert.equal(result.invalidData.length, 0);
 });
 
-test('no "No attendance to this date" error outside the attendance module', () => {
+test('person fields are required only in enrollment files (SEMIS-215)', () => {
     const result = validate([row({ surname: '' }, { 'Final result': { 'fr.decision': 'Promoted' } })], 'final-result');
 
-    assert.equal(result.invalidData.length, 1);
-    assert.ok(result.invalidData[0].errors.every(e => e.error !== 'No attendance to this date'));
+    assert.equal(result.validData.length, 1);
+    assert.equal(result.invalidData.length, 0);
+    assert.equal(validate([row({ surname: '' }, { Registration: { 'reg.grade': 'G1' } })], 'enrollment').invalidData.length, 1);
 });
 
-test('attendance behaviour is unchanged: filled days are warnings, empty days are errors', () => {
-    const mixed = row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'absent', '2025-10-02': '' } });
+test('attendance: an empty day is nothing to record, filled days are listed (SEMIS-215)', () => {
+    const mixed = row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'absent', '2025-10-02': '', '2025-10-04': 'Non School Day' } });
     const allEmpty = row({ surname: 'Roe' }, { Attendance: { '2025-10-01': '', '2025-10-02': null } });
 
     const result = validate([mixed, allEmpty], 'attendance');
 
-    assert.equal(result.validData.length, 1);
+    assert.equal(result.validData.length, 2);
     assert.deepEqual(result.validData[0].warnings, [{ key: '2025-10-01', error: 'absent' }]);
-    assert.equal(result.invalidData.length, 2);
-    assert.deepEqual(result.invalidData[0].errors, [{ key: '2025-10-02', error: 'No attendance to this date' }]);
-    assert.deepEqual(result.invalidData[1].errors.map(e => e.key), ['2025-10-01', '2025-10-02']);
+    assert.deepEqual(result.validData[1].warnings, []);
+    assert.equal(result.invalidData.length, 0);
 });
 
-test('attendance with the class attendance status enabled accepts any filled day', () => {
+test('attendance: a value that is not an attendance option makes the row invalid, never lost (SEMIS-215)', () => {
     const store = { ...dataStore, attendance: { ...dataStore.attendance, attendanceStatus: { allowAttendanceStatus: true } } };
-    const result = validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'holiday' } })], 'attendance', store);
+    const result = validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'holiday', '2025-10-02': 'absent' } })], 'attendance', store);
+
+    assert.equal(result.validData.length, 0);
+    assert.deepEqual(result.invalidData[0].errors, [{ key: '2025-10-01', error: '"holiday" is not a valid attendance option' }]);
+});
+
+test('attendance: the person fields of the list are enough (no Date of birth, no Surname) (SEMIS-215)', () => {
+    const result = validate([row({ surname: '' }, { Attendance: { '2025-10-01': 'absent' } })], 'attendance');
 
     assert.equal(result.validData.length, 1);
     assert.equal(result.invalidData.length, 0);
