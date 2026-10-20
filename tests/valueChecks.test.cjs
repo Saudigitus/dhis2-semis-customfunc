@@ -15,7 +15,7 @@ function loadTs(file) {
     return compiled.exports;
 }
 
-const { fieldsOfModule, validateFieldValues, validateEnrollmentDate, otherClassWarnings } = loadTs(path.join(__dirname, '../src/utils/bulk/valueChecks.ts'));
+const { fieldsOfModule, validateFieldValues, validateEnrollmentDate, enrollmentDateName, otherClassWarnings } = loadTs(path.join(__dirname, '../src/utils/bulk/valueChecks.ts'));
 const { splitRowsByRepeatedValues } = loadTs(path.join(__dirname, '../src/utils/bulk/uniqueValues.ts'));
 
 const PROFILE = 'Student profile';
@@ -65,6 +65,9 @@ test('the enrollment date is mandatory in enrollment files only', () => {
     assert.deepEqual(validateEnrollmentDate(row({}, { enrollmentDate: '' }), 'enrollment', PROFILE), [{ key: 'Enrollment details - Enrollment date', error: 'Empty required field' }]);
     assert.deepEqual(validateEnrollmentDate(row(), 'enrollment', PROFILE), []);
     assert.deepEqual(validateEnrollmentDate(row({}, { enrollmentDate: '' }), 'performance', PROFILE), []);
+    // The reason uses the label of the column, configured on the program.
+    assert.deepEqual(validateEnrollmentDate(row({}, { enrollmentDate: '' }), 'enrollment', PROFILE, { displayEnrollmentDateLabel: 'Registration date' }), [{ key: 'Enrollment details - Registration date', error: 'Empty required field' }]);
+    assert.equal(enrollmentDateName({ displayEnrollmentDateLabel: ' ' }), 'Enrollment date');
 });
 
 test('a row of another academic year / grade gets a warning; a row of the selected class does not', () => {

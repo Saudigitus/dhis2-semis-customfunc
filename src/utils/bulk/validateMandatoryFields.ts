@@ -1,5 +1,5 @@
 import { getDateValidationIssue } from "../format/checkDateFormat";
-import { fieldsOfModule, otherClassWarnings, validateEnrollmentDate, validateFieldValues } from "./valueChecks";
+import { enrollmentDateName, fieldsOfModule, otherClassWarnings, validateEnrollmentDate, validateFieldValues } from "./valueChecks";
 
 const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
 const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY-MM-DD"
@@ -32,7 +32,7 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
             : { filledEntries: [], emptyEntries: [] }
         const hasAttendanceValues = !isAttendance || filledEntries.length !== 0
         // Values the server would refuse (option, value type) and an empty enrollment date.
-        const valueErrors = [...validateFieldValues(student, checkedFields), ...validateEnrollmentDate(student, module, profile)]
+        const valueErrors = [...validateFieldValues(student, checkedFields), ...validateEnrollmentDate(student, module, profile, program)]
 
         if (hasAttendanceValues && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0 && valueErrors.length === 0) {
 
@@ -178,7 +178,7 @@ const validateDateFields = (student: any, program: any, profile: string) => {
         const issue = getDateValidationIssue(String(enrollmentDate))
         if (issue) {
             dateErrors.push({
-                key: `${section} - enrollmentDate`,
+                key: `${section} - ${enrollmentDateName(program)}`,
                 error: issue === "FORMAT" ? DATE_FORMAT_VALIDATION_ERROR : DATE_VALUE_VALIDATION_ERROR
             })
         }
