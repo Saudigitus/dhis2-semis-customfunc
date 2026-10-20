@@ -121,7 +121,7 @@ export function useModulesData() {
     }
 
     async function getAttendanceData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
-        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig, dataElementFilters } = tableDataProps;
+        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig, dataElementFilters, attendanceDataElementFilters } = tableDataProps;
         let copy = [], loadedEvents = [], page = 1, pageSize = 150, fetchedEvents: any = []
 
         do {
@@ -134,7 +134,9 @@ export function useModulesData() {
                     pageSize,
                     page,
                     orgUnit: orgUnit,
-                    filter: dataElementFilters,
+                    // The attendance records are searched by the class fields that the attendance stage
+                    // has (given by the attendance module); the records are then matched by enrollment.
+                    filter: attendanceDataElementFilters ?? dataElementFilters,
                     occurredAfter: occurredAfter,
                     occurredBefore: occurredBefore,
                 }).catch((error) => {

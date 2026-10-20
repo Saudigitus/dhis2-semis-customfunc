@@ -17,6 +17,8 @@ interface GetTableDataProps {
     attendanceConfig?: attendanceConfig
     paging?: boolean
     allowAttendanceStatus?:boolean
+    // Filters for the attendance records only (class fields that the attendance stage has).
+    attendanceDataElementFilters?: any[]
 }
 
 interface GetAttendanceDataProps {
