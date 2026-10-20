@@ -34,6 +34,9 @@ const collectFields = (items: any[]): any[] => items.flatMap(item => {
     return keys.length ? keys.flatMap(key => collectFields(item[key])) : [item];
 });
 
+// An option can come with its id, its code or both (the filters and forms load only the code).
+const optionKeys = (o: any) => [o?.id, o?.value, o?.code].filter(Boolean);
+
 /** Convert SEMIS inputs; all expression parsing and evaluation belongs to DHIS2. */
 export function evaluateProgramRules(input: EvaluationInput) {
     const { values, program, context = {} } = input;
@@ -127,7 +130,7 @@ export function evaluateProgramRules(input: EvaluationInput) {
                 case 'HIDEOPTIONGROUP': {
                     const options = input.optionGroups?.find(g => g.id === action.values.get('optionGroupId'))?.options ?? [];
                     if (action.type === 'SHOWOPTIONGROUP') shownGroups.push(...options);
-                    else options.forEach((o: any) => hiddenOptions.add(o.id ?? o.value ?? o.code));
+                    else options.forEach((o: any) => optionKeys(o).forEach(key => hiddenOptions.add(key)));
                     break;
                 }
             }
@@ -136,8 +139,8 @@ export function evaluateProgramRules(input: EvaluationInput) {
         if (initial) {
             const show = matching.some(e => e.ruleAction.type === 'SHOWOPTIONGROUP');
             const options = initial.filter((o: any) => {
-                const keys = [o.id, o.value, o.code].filter(Boolean);
-                return !keys.some(k => hiddenOptions.has(k)) && (!show || shownGroups.some(g => keys.includes(g.id ?? g.value ?? g.code)));
+                const keys = optionKeys(o);
+                return !keys.some(k => hiddenOptions.has(k)) && (!show || shownGroups.some(g => optionKeys(g).some(k => keys.includes(k))));
             });
             copy.options = { ...field.options, optionSet: { ...field.options?.optionSet, options } };
         }

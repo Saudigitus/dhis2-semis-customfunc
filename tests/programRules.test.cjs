@@ -84,6 +84,24 @@ test('option group hiding uses boolean conditions without the old org-unit speci
     assert.deepEqual(result.updatedVariables[0].options.optionSet.options, [{ value: 'b' }]);
 });
 
+// As loaded from DHIS2: group options carry id and code; filter and form options carry only the code.
+const grades = [{ value: 'Grade 1' }, { value: 'Grade 2' }, { value: 'Grade 10' }];
+const gradeGroups = [{ id: 'primary', options: [{ id: 'uid1', value: 'Grade 1' }, { id: 'uid2', value: 'Grade 2' }] }];
+
+test('a shown option group keeps its options when the list has only option codes', async () => {
+    const evaluate = await loadAdapter();
+    const result = evaluate({ ...base, variables: [{ id: 'x', options: { optionSet: { options: grades } } }],
+        optionGroups: gradeGroups, rules: [rule('SHOWOPTIONGROUP', null, 'true', { optionGroup: { id: 'primary' } })] });
+    assert.deepEqual(result.updatedVariables[0].options.optionSet.options, [{ value: 'Grade 1' }, { value: 'Grade 2' }]);
+});
+
+test('a hidden option group removes its options when the list has only option codes', async () => {
+    const evaluate = await loadAdapter();
+    const result = evaluate({ ...base, variables: [{ id: 'x', options: { optionSet: { options: grades } } }],
+        optionGroups: gradeGroups, rules: [rule('HIDEOPTIONGROUP', null, 'true', { optionGroup: { id: 'primary' } })] });
+    assert.deepEqual(result.updatedVariables[0].options.optionSet.options, [{ value: 'Grade 10' }]);
+});
+
 test('event date stays distinct from enrollment date', async () => {
     const evaluate = await loadAdapter();
     const result = evaluate({ ...base, values: { event_date: '2025-03-02', enrollment_date: '2025-01-01' },
