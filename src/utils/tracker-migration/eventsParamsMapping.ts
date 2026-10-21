@@ -44,12 +44,14 @@ export const rules: Record<string, MapRule> = {
 
 export const convertEventQueryProps = ({ queryProps, apiVersion }
   : { queryProps: EventQueryProps, apiVersion: any }): EventQueryProps => {
-  const pattern = /^2\.41/;
-  const exceptionVersions = ['2.41.4.2']
+  const minorVersion = Number.parseInt(String(apiVersion ?? "").split('.')[1])
 
-  if (exceptionVersions.includes(apiVersion)) return { ...transformQueryParams({ rules, params: queryProps }) as EventQueryProps }
-  if (!pattern.test(apiVersion))
+  // Before 2.41 only the old names exist. ouMode and skipPaging are ignored by 2.42 and 2.43,
+  // so lists are cut at 50 records and the org unit mode is lost (SEMIS-198).
+  if (minorVersion < 41)
     return { ...transformQueryParams({ rules, params: queryProps }) as EventQueryProps }
 
-  return { ...queryProps }
+  // From 2.41 the events endpoint still takes a single trackedEntity, not a trackedEntities list, and
+  // programStatus: 2.41.4.2 ignores enrollmentStatus, while 2.43 accepts both.
+  return { ...transformQueryParams({ rules: { trackedEntities: rules.trackedEntities, enrollmentStatus: rules.enrollmentStatus }, params: queryProps }) as EventQueryProps }
 }
