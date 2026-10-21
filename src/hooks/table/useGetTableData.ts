@@ -10,9 +10,13 @@ export function useTableData({ module }: { module: Modules }) {
 
     async function getData(tableDataProps: GetTableDataProps) {
         setLoading(true);
+        // The stages are only swapped when the caller actually requests a second stage.
+        // Otherwise `baseProgramStage` would become undefined, the events query would lose
+        // its program stage filter and events from every stage would be listed.
+        const swapProgramStages = module == Modules.Transfer && Boolean(tableDataProps.otherProgramStage);
         const updatedProps = {
             ...tableDataProps,
-            ...(module == Modules.Transfer ?
+            ...(swapProgramStages ?
                 {
                     baseProgramStage: tableDataProps.otherProgramStage,
                     otherProgramStage: tableDataProps.baseProgramStage

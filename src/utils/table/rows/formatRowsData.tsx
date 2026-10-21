@@ -22,6 +22,8 @@ export function formatRowsData({ registrationInstances, teiInstances, isBasicSta
                 {
                     registrationEvent: event?.event,
                     registrationEventOccurredAt: event?.occurredAt,
+                    registrationEventCreatedAt: event?.createdAt,
+                    registrationEventOrgUnit: event?.orgUnit,
                     enrollmentId: event?.enrollment,
                     trackedEntity: event.trackedEntity,
                     orgUnitId: currentEnrollment?.orgUnit,
