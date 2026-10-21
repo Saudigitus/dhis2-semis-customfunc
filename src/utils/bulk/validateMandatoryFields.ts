@@ -19,14 +19,20 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
         const mandatoryAttributeErrors = validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile)
         const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile, dataStore, module)
         const invalidDateFormatErrors = validateDateFields(student, program, profile)
-        const { filledEntries, emptyEntries } = validateAttendanceFields(module, student, attendance)
+        // The attendance cells exist only in attendance files. For the other modules the
+        // attendance check does not apply, so it must neither fail nor block the row.
+        const isAttendance = module === "attendance"
+        const { filledEntries, emptyEntries } = isAttendance
+            ? validateAttendanceFields(student, attendance)
+            : { filledEntries: [], emptyEntries: [] }
+        const hasAttendanceValues = !isAttendance || filledEntries.length !== 0
 
-        if (filledEntries?.length !== 0 && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
+        if (hasAttendanceValues && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
 
             validData.push({
                 ...student,
                 warnings: [
-                    ...filledEntries?.map((validateAttendanceField: any) => {
+                    ...filledEntries.map((validateAttendanceField: any) => {
                         return { key: validateAttendanceField, error: student?.Attendance?.[validateAttendanceField] }
                     }),
                     ...(validatePerformanceFields(student, module, program) || []).map((field: any) => {
@@ -39,11 +45,11 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
             })
         }
 
-        if (emptyEntries?.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0) {
+        if (emptyEntries.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0) {
             invalidData.push({
                 ...student,
                 errors: [
-                    ...emptyEntries?.map((validateAttendanceField: any) => {
+                    ...emptyEntries.map((validateAttendanceField: any) => {
                         return { key: validateAttendanceField, error: "No attendance to this date" }
                     }),
                     ...(validateOptionalFields(student, module, program) || []).map((field: any) => {
@@ -172,24 +178,23 @@ const validateDateFields = (student: any, program: any, profile: string) => {
     return dateErrors
 }
 
-const validateAttendanceFields: any = (module: string, student: any, attendance: any) => {
-    if (module === "attendance") {
-        const statusOptions = attendance?.statusOptions?.map((x: any) => x.code)
-        const allowAttendanceStatus = attendance?.attendanceStatus?.allowAttendanceStatus
+// Attendance files only: the caller runs this check for the attendance module alone.
+const validateAttendanceFields = (student: any, attendance: any): { filledEntries: string[], emptyEntries: string[] } => {
+    const statusOptions = attendance?.statusOptions?.map((x: any) => x.code)
+    const allowAttendanceStatus = attendance?.attendanceStatus?.allowAttendanceStatus
 
-        const emptyEntries = Object.keys(student?.Attendance).filter(key => student?.Attendance[key] === ""
-            || student?.Attendance[key] === null || student?.Attendance[key] === undefined
-        );
+    const emptyEntries = Object.keys(student?.Attendance).filter(key => student?.Attendance[key] === ""
+        || student?.Attendance[key] === null || student?.Attendance[key] === undefined
+    );
 
-        const filledEntries = Object.keys(student?.Attendance).filter(key => {
-            if (allowAttendanceStatus) return key
-            if (statusOptions.includes(student?.Attendance[key])) {
-                return key
-            }
-        });
+    const filledEntries = Object.keys(student?.Attendance).filter(key => {
+        if (allowAttendanceStatus) return key
+        if (statusOptions.includes(student?.Attendance[key])) {
+            return key
+        }
+    });
 
-        return { filledEntries, emptyEntries };
-    }
+    return { filledEntries, emptyEntries };
 }
 
 const validateOptionalFields = (student: any, module: string, program: any) => {
