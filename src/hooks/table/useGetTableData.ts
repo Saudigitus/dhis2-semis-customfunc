@@ -43,7 +43,7 @@ export function useTableData({ module }: { module: Modules }) {
                         return { data: [...formattedBasicTableData], pagination }
                     }
 
-                case Modules.Performance: case Modules.Final_Result: case Modules.Transfer: {
+                case Modules.Performance: case Modules.Final_Result: case Modules.Transfer: case Modules.Transfer_Execute:{
                     const { otherProgramStage, ...rest } = updatedProps;
                     if (otherProgramStage) {
                         const { formattedStagedData } = await getStageData({
