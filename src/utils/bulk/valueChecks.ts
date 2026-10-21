@@ -78,15 +78,21 @@ export function validateFieldValues(student: any, fields: Record<string, { name:
     return errors
 }
 
+// Name of the enrollment date column, as in the file: the label configured on the program in
+// DHIS2 (e.g. "Registration date"), or "Enrollment date" when the program has none.
+export function enrollmentDateName(program: any): string {
+    return String(program?.displayEnrollmentDateLabel ?? "").trim() || "Enrollment date"
+}
+
 // The enrollment date of a new or updated enrollment is mandatory: when it is empty the
 // enrollment would be dated the day of the import.
-export function validateEnrollmentDate(student: any, module: string, profile: string): RowError[] {
+export function validateEnrollmentDate(student: any, module: string, profile: string, program?: any): RowError[] {
     if (module !== "enrollment") return []
 
     for (const [section, values] of Object.entries(student ?? {})) {
         if (section === profile || section === "Ids" || !values || typeof values !== "object") continue
         if (!("enrollmentDate" in (values as any))) continue
-        return isEmpty((values as any).enrollmentDate) ? [{ key: `${section} - Enrollment date`, error: "Empty required field" }] : []
+        return isEmpty((values as any).enrollmentDate) ? [{ key: `${section} - ${enrollmentDateName(program)}`, error: "Empty required field" }] : []
     }
     return []
 }
