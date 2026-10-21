@@ -55,10 +55,11 @@ export function attributes(data: attributesProps[]): RowsDataProps {
 
 export function attendanceDataValuesFormater(data: AttendanceFormaterProps[], attendanceConfig: attendanceConfig): RowsDataProps {
     const localData: RowsDataProps = {}
-    let status, absenceOption, eventId
 
     for (const event of data) {
-        eventId = event.event
+        let status
+        let absenceOption
+        const eventId = event.event
         for (const dataValue of event.dataValues) {
             if (attendanceConfig?.status === dataValue.dataElement) {
                 status = dataValue.value
@@ -68,7 +69,15 @@ export function attendanceDataValuesFormater(data: AttendanceFormaterProps[], at
                 absenceOption = dataValue.value
             }
         }
-        localData[event.occurredAt?.split("T")?.[0]] = { status, absenceOption, eventId }
+        const dateKey = event.occurredAt?.split("T")?.[0]
+        if (!dateKey) continue
+
+        // Merge same-day values so status and absence reason can come from different event updates.
+        localData[dateKey] = {
+            status: status ?? localData?.[dateKey]?.status,
+            absenceOption: absenceOption ?? localData?.[dateKey]?.absenceOption,
+            eventId: eventId ?? localData?.[dateKey]?.eventId,
+        }
     }
     return localData
 }

@@ -40,22 +40,32 @@ export function RequestBroker({ requestRef }: { requestRef: React.RefObject<Arra
      */
     function makeCancellablePromise(promise: Promise<any>): Promise<any> & { cancel: () => void } {
         let canceled = false;
+        let settled = false;
+        let rejectWrapped: ((reason?: any) => void) | null = null;
+        const canceledError = Object.assign(new Error("Request canceled"), { name: "CanceledError" });
 
         const wrappedPromise: any = new Promise((resolve, reject) => {
+            rejectWrapped = (reason?: any) => {
+                if (!settled) {
+                    settled = true;
+                    reject(reason);
+                }
+            };
+
             promise.then((value) => {
-                if (!canceled) {
+                if (!canceled && !settled) {
+                    settled = true;
                     resolve(value);
                 } else {
-                    console.log("Promise was canceled, ignoring resolved value.", value);
+                    rejectWrapped?.(canceledError);
                 }
-                // If canceled, ignore resolved value
             }).catch((error) => {
-                if (!canceled) {
+                if (!canceled && !settled) {
+                    settled = true;
                     reject(error);
                 } else {
-                    console.log("Promise was canceled, ignoring resolved error.", error);
+                    rejectWrapped?.(canceledError);
                 }
-                // If canceled, ignore rejection error
             });
         });
 
@@ -65,6 +75,7 @@ export function RequestBroker({ requestRef }: { requestRef: React.RefObject<Arra
          */
         wrappedPromise.cancel = () => {
             canceled = true;
+            rejectWrapped?.(canceledError);
         };
 
         return wrappedPromise;

@@ -19,9 +19,8 @@ export function useTableData({ module }: { module: Modules }) {
                 } : {})
         };
 
-        const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
-
         try {
+            const { formattedBasicTableData, pagination } = await getBasicData(updatedProps)
             switch (module) {
                 case Modules.Enrollment: {
                     setTableData({ pagination: pagination, data: [...formattedBasicTableData] });
