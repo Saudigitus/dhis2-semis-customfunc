@@ -1,10 +1,13 @@
 import { getDateValidationIssue } from "../format/checkDateFormat";
+import { fieldsOfModule, otherClassWarnings, validateEnrollmentDate, validateFieldValues } from "./valueChecks";
 
 const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
 const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY-MM-DD"
 const DATE_VALUE_TYPE = "DATE"
 
-const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string, dataStore: any) => {
+// "selectedClass": registration values of the class selected on screen ({ dataElement, value }),
+// used to warn about rows of another class (enrollment files).
+const madatoryFieldsValidator = (program: any, fileRowData: any, module: string, profile: string, dataStore: any, selectedClass: { dataElement: string, value: any }[] = []) => {
     const validData: any[] = []
     const invalidData: any[] = []
     const students = fileRowData
@@ -13,6 +16,8 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
     const uniqueAttributes: any[] = program.programTrackedEntityAttributes.filter((attribute: any) => {
         return attribute.trackedEntityAttribute?.unique
     })
+    // Fields whose options and value types are checked (only those the module sends).
+    const checkedFields = fieldsOfModule(program, module, dataStore)
 
 
     students.forEach((student: any) => {
@@ -26,8 +31,10 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
             ? validateAttendanceFields(student, attendance)
             : { filledEntries: [], emptyEntries: [] }
         const hasAttendanceValues = !isAttendance || filledEntries.length !== 0
+        // Values the server would refuse (option, value type) and an empty enrollment date.
+        const valueErrors = [...validateFieldValues(student, checkedFields), ...validateEnrollmentDate(student, module, profile)]
 
-        if (hasAttendanceValues && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0) {
+        if (hasAttendanceValues && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0 && valueErrors.length === 0) {
 
             validData.push({
                 ...student,
@@ -40,12 +47,13 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                             key: `${field?.programStageName} - ${field?.displayName ?? field?.name}`,
                             error: "Empty required field"
                         }
-                    })
+                    }),
+                    ...(module === "enrollment" ? otherClassWarnings(student, dataStore?.registration?.programStage, selectedClass, program) : [])
                 ],
             })
         }
 
-        if (emptyEntries.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0) {
+        if (emptyEntries.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0 || valueErrors.length !== 0) {
             invalidData.push({
                 ...student,
                 errors: [
@@ -60,7 +68,8 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
                     }),
                     ...mandatoryAttributeErrors.map((field: any) => { return { key: field?.displayName ?? field?.name, error: "Empty required field" } }),
                     ...mandatoryDataElementErrors.map((field: any) => { return { key: field, error: "Empty required field" } }),
-                    ...invalidDateFormatErrors
+                    ...invalidDateFormatErrors,
+                    ...valueErrors
                 ]
             })
         }
