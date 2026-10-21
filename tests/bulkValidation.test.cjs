@@ -143,3 +143,29 @@ test('attendance: only the option mapped as absence takes a reason, from the lis
     assert.deepEqual(check({ '2025-10-01': 'absent | FLU' }).invalidData[0].errors, [{ key: '2025-10-01', error: '"absent | FLU" is not a valid attendance option' }]);
     assert.equal(check({ '2025-10-01': 'present | SICK' }).invalidData.length, 1);
 });
+
+test('performance: the terms come from the configuration, any number and any name (SEMIS-217)', () => {
+    const term = (id, name, compulsory = false) => ({ id, name, programStageDataElements: [{ compulsory, dataElement: { id: 'math', displayName: 'Mathematics', valueType: 'NUMBER' } }] });
+    const perfProgram = (...terms) => ({ ...program, programStages: [...program.programStages, ...terms] });
+    const store = (...ids) => ({ ...dataStore, performance: { programStages: ids.map(programStage => ({ programStage })) } });
+    const check = (prog, st, sections) => madatoryFieldsValidator(prog, [row({ surname: '' }, sections)], 'performance', PROFILE, st);
+
+    // One term, not named "Term 1": the file reaches the summary (before: the check failed without a message).
+    const one = check(perfProgram(term('t1', 'First term')), store('t1'), { 'First term': { 't1.math': '12' } });
+    assert.equal(one.validData.length, 1);
+    assert.equal(one.invalidData.length, 0);
+
+    // Two terms, a mark empty: a warning of that term only.
+    const two = check(perfProgram(term('t1', 'Semester A'), term('t2', 'Semester B')), store('t1', 't2'),
+        { 'Semester A': { 't1.math': '10' }, 'Semester B': { 't2.math': '' } });
+    assert.equal(two.validData.length, 1);
+    assert.deepEqual(two.validData[0].warnings, [{ key: 'Semester B - Mathematics', error: 'Empty required field' }]);
+
+    // A configured term that is not in the file is skipped.
+    assert.equal(check(perfProgram(term('t1', 'Semester A'), term('t2', 'Semester B')), store('t1', 't2'), { 'Semester A': { 't1.math': '10' } }).validData.length, 1);
+
+    // A compulsory mark is checked in every configured term (before: only when one term was configured).
+    const required = check(perfProgram(term('t1', 'Semester A'), term('t2', 'Semester B', true)), store('t1', 't2'),
+        { 'Semester A': { 't1.math': '10' }, 'Semester B': { 't2.math': '' } });
+    assert.deepEqual(required.invalidData.map(x => x.errors.length), [1]);
+});
