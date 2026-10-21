@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDataEngine } from '@dhis2/app-runtime'
 import { useSearchTei } from './useSearchTei'
 import { DataStoreProps } from 'dhis2-semis-types'
 import useShowAlerts from '../commons/useShowAlert'
@@ -13,6 +14,7 @@ interface useSearchEnrollmentsProps {
 }
 
 export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
+    const engine = useDataEngine()
     const { show } = useShowAlerts()
     const { getEvents } = useGetEvents()
     const { getTrackersearch } = useSearchTei()
@@ -21,6 +23,24 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
     const { registration, program, socioEconomics } = props
     const [totalResults, setTotalResults] = useState<any>(null);
     const [enrollmentValues, setEnrollmentValues] = useState<any[]>([])
+
+    // The tracker API does not return orgUnitName on events, so the School of the enrollment
+    // history is filled with one request for all the schools found.
+    const addSchoolNames = async (teis: any[]) => {
+        const rows = teis.flatMap(tei => tei.registrationEvents)
+        const ids = [...new Set(rows.filter(row => !row.orgUnitName && row.orgUnitId).map(row => row.orgUnitId))]
+        if (!ids.length) return
+
+        try {
+            const response: any = await engine.query({
+                results: { resource: "organisationUnits", params: { filter: `id:in:[${ids.join(",")}]`, fields: "id,displayName", paging: false } }
+            })
+            const names = Object.fromEntries((response?.results?.organisationUnits ?? []).map((ou: any) => [ou.id, ou.displayName]))
+            for (const row of rows) row.orgUnitName = row.orgUnitName || names[row.orgUnitId]
+        } catch {
+            // Without the names the history still shows the year, grade and class.
+        }
+    }
 
     const getEnrollmentsData = ({ filters, setShowResults, orgUnit }: { filters: string, setShowResults: any, orgUnit: string }) => {
         const teisWithRegistrationEvents: any[] = [];
@@ -57,6 +77,7 @@ export default function useSearchEnrollments(props: useSearchEnrollmentsProps) {
                     })
                 }
 
+                await addSchoolNames(teisWithRegistrationEvents)
                 setEnrollmentValues(teisWithRegistrationEvents)
                 setLoading(false)
                 setShowResults(true)
