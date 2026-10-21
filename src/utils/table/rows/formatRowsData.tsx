@@ -57,10 +57,11 @@ export function attributes(data: attributesProps[]): RowsDataProps {
 
 export function attendanceDataValuesFormater(data: AttendanceFormaterProps[], attendanceConfig: attendanceConfig): RowsDataProps {
     const localData: RowsDataProps = {}
-    let status, absenceOption, eventId
 
     for (const event of data) {
-        eventId = event.event
+        // Each day starts empty: a day without a reason must not show the reason of the day before.
+        let status, absenceOption
+        const eventId = event.event
         for (const dataValue of event.dataValues) {
             if (attendanceConfig?.status === dataValue.dataElement) {
                 status = dataValue.value
