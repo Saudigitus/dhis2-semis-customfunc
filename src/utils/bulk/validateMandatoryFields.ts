@@ -1,9 +1,17 @@
 import { getDateValidationIssue } from "../format/checkDateFormat";
+import { classRecordErrors, isClassRecordRow } from "./classRecord";
 import { enrollmentDateName, fieldsOfModule, otherClassWarnings, validateEnrollmentDate, validateFieldValues } from "./valueChecks";
 
 const DATE_FORMAT_VALIDATION_ERROR = "Invalid date format. Expected YYYY-MM-DD"
 const DATE_VALUE_VALIDATION_ERROR = "Invalid date value. Use a real date in YYYY-MM-DD"
 const DATE_VALUE_TYPE = "DATE"
+// Written by the attendance export on the days without school (locked cells).
+const NON_SCHOOL_DAY = "Non School Day"
+// Offered in the attendance file when the class attendance status is enabled.
+const PRESENT = "present"
+// "absent | SICK": the absence with its reason of absence in the same cell (same separator in
+// dhis2-semis-components, export and import).
+const REASON_SEPARATOR = " | "
 
 // "selectedClass": registration values of the class selected on screen ({ dataElement, value }),
 // used to warn about rows of another class (enrollment files).
@@ -21,20 +29,29 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
 
     students.forEach((student: any) => {
-        const mandatoryAttributeErrors = validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile)
+        // Attendance files: the row "Class record status" is not a person; only its values are checked.
+        if (module === "attendance" && isClassRecordRow(student)) {
+            const errors = classRecordErrors(student)
+            if (errors.length) invalidData.push({ ...student, classRecord: true, errors })
+            else validData.push({ ...student, classRecord: true, warnings: [] })
+            return
+        }
+
+        // The person fields are saved only by the enrollment import: the other files (attendance,
+        // performance, final result) may hold only the columns of the list.
+        const mandatoryAttributeErrors = module === "enrollment" ? validateMandatoryAttributtes(student, madatoryFieldsAttributes, profile) : []
         const mandatoryDataElementErrors = validateMandatoryDataElements(student, program, profile, dataStore, module)
         const invalidDateFormatErrors = validateDateFields(student, program, profile)
         // The attendance cells exist only in attendance files. For the other modules the
         // attendance check does not apply, so it must neither fail nor block the row.
         const isAttendance = module === "attendance"
-        const { filledEntries, emptyEntries } = isAttendance
-            ? validateAttendanceFields(student, attendance)
-            : { filledEntries: [], emptyEntries: [] }
-        const hasAttendanceValues = !isAttendance || filledEntries.length !== 0
+        const { filledEntries, invalidEntries } = isAttendance
+            ? validateAttendanceFields(student, attendance, program)
+            : { filledEntries: [], invalidEntries: [] }
         // Values the server would refuse (option, value type) and an empty enrollment date.
         const valueErrors = [...validateFieldValues(student, checkedFields), ...validateEnrollmentDate(student, module, profile, program)]
 
-        if (hasAttendanceValues && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0 && valueErrors.length === 0) {
+        if (invalidEntries.length === 0 && mandatoryAttributeErrors.length === 0 && mandatoryDataElementErrors.length === 0 && invalidDateFormatErrors.length === 0 && valueErrors.length === 0) {
 
             validData.push({
                 ...student,
@@ -53,12 +70,12 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
             })
         }
 
-        if (emptyEntries.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0 || valueErrors.length !== 0) {
+        if (invalidEntries.length !== 0 || mandatoryAttributeErrors.length !== 0 || mandatoryDataElementErrors.length !== 0 || invalidDateFormatErrors.length !== 0 || valueErrors.length !== 0) {
             invalidData.push({
                 ...student,
                 errors: [
-                    ...emptyEntries.map((validateAttendanceField: any) => {
-                        return { key: validateAttendanceField, error: "No attendance to this date" }
+                    ...invalidEntries.map((day: string) => {
+                        return { key: day, error: `"${String(student?.Attendance?.[day]).trim()}" is not a valid attendance option` }
                     }),
                     ...(validateOptionalFields(student, module, program) || []).map((field: any) => {
                         return {
@@ -188,22 +205,27 @@ const validateDateFields = (student: any, program: any, profile: string) => {
 }
 
 // Attendance files only: the caller runs this check for the attendance module alone.
-const validateAttendanceFields = (student: any, attendance: any): { filledEntries: string[], emptyEntries: string[] } => {
-    const statusOptions = attendance?.statusOptions?.map((x: any) => x.code)
-    const allowAttendanceStatus = attendance?.attendanceStatus?.allowAttendanceStatus
+// An empty cell means nothing to record; "Non School Day" is written by the export on the days
+// without school; any other value must be one of the attendance options, "present" (offered in
+// the file when the class attendance status is enabled: it removes an absence saved before) or the
+// option mapped as absence with a reason of absence of the list ("absent | SICK").
+export const validateAttendanceFields = (student: any, attendance: any, program?: any): { filledEntries: string[], invalidEntries: string[] } => {
+    const absent = (attendance?.statusOptions ?? []).find((x: any) => x?.configKey === "absentCode")?.code
+    const stage = (program?.programStages ?? []).find((x: any) => x?.id === attendance?.programStage)
+    const reasons: string[] = ((stage?.programStageDataElements ?? []).find((x: any) => x?.dataElement?.id === attendance?.absenceReason)
+        ?.dataElement?.optionSet?.options ?? []).map((option: any) => String(option?.value ?? option?.code ?? "").trim()).filter(Boolean)
+    const statusOptions: string[] = [
+        ...(attendance?.statusOptions ?? []).map((x: any) => x.code),
+        ...(attendance?.attendanceStatus?.allowAttendanceStatus ? [PRESENT] : []),
+        ...(absent ? reasons.map(reason => `${absent}${REASON_SEPARATOR}${reason}`) : [])
+    ]
+    const days = student?.Attendance ?? {}
+    const value = (day: string) => days[day] === undefined || days[day] === null ? "" : String(days[day]).trim()
 
-    const emptyEntries = Object.keys(student?.Attendance).filter(key => student?.Attendance[key] === ""
-        || student?.Attendance[key] === null || student?.Attendance[key] === undefined
-    );
+    const filledEntries = Object.keys(days).filter(day => statusOptions.includes(value(day)))
+    const invalidEntries = Object.keys(days).filter(day => value(day) !== "" && value(day) !== NON_SCHOOL_DAY && !statusOptions.includes(value(day)))
 
-    const filledEntries = Object.keys(student?.Attendance).filter(key => {
-        if (allowAttendanceStatus) return key
-        if (statusOptions.includes(student?.Attendance[key])) {
-            return key
-        }
-    });
-
-    return { filledEntries, emptyEntries };
+    return { filledEntries, invalidEntries };
 }
 
 const validateOptionalFields = (student: any, module: string, program: any) => {
