@@ -21,6 +21,7 @@ interface EventQueryProps {
     enrollment?: string
     totalPages?: boolean
     enrollmentStatus?: string
+    events?: string
 }
 
 interface DataValuesProps {

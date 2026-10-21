@@ -151,7 +151,7 @@ export function useModulesData() {
 
             loadedEvents = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             fetchedEvents = [...fetchedEvents, ...loadedEvents]
-            
+
             page++
         } while (loadedEvents?.length === pageSize)
 
@@ -171,7 +171,7 @@ export function useModulesData() {
     }
 
     async function getStageData({ tableDataProps, formattedBasicTableData, module }: { tableDataProps: GetTableDataProps, formattedBasicTableData: any, module?: Modules }) {
-        const { order, program, orgUnit, baseProgramStage, occurredAfter, occurredBefore, attendanceConfig } = tableDataProps;
+        const { order, program, orgUnit, baseProgramStage } = tableDataProps;
         let copy = []
 
         for (let i = 0; i < formattedBasicTableData.length; i++) {
@@ -183,8 +183,6 @@ export function useModulesData() {
                     programStage: baseProgramStage!,
                     orgUnit: orgUnit,
                     trackedEntities: formattedBasicTableData[i].trackedEntity,
-                    ...(occurredAfter ? { occurredAfter: occurredAfter } : {}),
-                    ...(occurredBefore ? { occurredBefore: occurredBefore } : {})
                 }).catch((error) => {
                     show({
                         message: `${("Could not get events")}: ${error.message}`,
@@ -199,10 +197,9 @@ export function useModulesData() {
             const data = eventsResults?.results?.instances ? eventsResults?.results?.instances : eventsResults?.results?.events ?? []
             const filteredEvents = data.filter((x: any) => x.enrollment === formattedBasicTableData[i].enrollmentId) as unknown as any || []
 
+            console.log(filteredEvents,'pop one')
             copy[i] = {
-                ...(Modules.Attendance == module ?
-                    attendanceDataValuesFormater(filteredEvents, attendanceConfig as unknown as any)
-                    : formatRowsData({ registrationInstances: filteredEvents ?? [], teiInstances: [], isBasicStage: false })[0]),
+                ...formatRowsData({ registrationInstances: filteredEvents ?? [], teiInstances: [], isBasicStage: false })[0],
                 ...formattedBasicTableData[i], ...(Modules.Final_Result == module ? { frEvent: filteredEvents[0] ?? {} } : {})
             }
         }
