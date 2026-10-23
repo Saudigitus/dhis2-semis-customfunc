@@ -108,7 +108,9 @@ const validateMandatoryDataElements = (student: any, program: any, profile: stri
         "final-result": [dataStore?.['final-result']?.programStage],
         "enrollment": [dataStore?.registration?.programStage,
         dataStore?.['socio-economics']?.programStage],
-        "attendance": [dataStore?.attendance?.programStage],
+        // Attendance files have only one column per day: the import takes the academic year and the
+        // class (filters) from the screen, and the status and reason from each day cell.
+        "attendance": [],
         // Every term configured for Performance (any number, any name).
         "performance": dataStore?.performance?.programStages?.map((item: any) => item?.programStage) ?? [],
     }

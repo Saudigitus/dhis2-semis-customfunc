@@ -123,6 +123,16 @@ test('attendance: the row "Class record status" is not a person; only ACTIVE / C
     assert.equal(wrong.invalidData[0].classRecord, true);
 });
 
+test('attendance: an exported file is valid even when the attendance stage has required fields', () => {
+    const required = (id, name) => ({ compulsory: true, dataElement: { id, displayName: name, valueType: 'TEXT' } });
+    const withRequired = { ...program, programStages: program.programStages.map(s => s.id === 'att'
+        ? { ...s, programStageDataElements: [required('ay', 'Academic Year'), required('grade', 'Grade'), required('status', 'Attendance')] } : s) };
+    const result = madatoryFieldsValidator(withRequired, [row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'absent' } })], 'attendance', PROFILE, dataStore);
+
+    assert.equal(result.invalidData.length, 0);
+    assert.equal(result.validData.length, 1);
+});
+
 test('attendance: "present" is accepted when the class attendance status is enabled (SEMIS-215)', () => {
     const store = { ...dataStore, attendance: { ...dataStore.attendance, statusOptions: [{ code: 'absent' }], attendanceStatus: { allowAttendanceStatus: true } } };
     const ok = validate([row({ surname: 'Doe' }, { Attendance: { '2025-10-01': 'present' } })], 'attendance', store);
