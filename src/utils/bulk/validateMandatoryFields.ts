@@ -96,7 +96,6 @@ const madatoryFieldsValidator = (program: any, fileRowData: any, module: string,
 
 const validateMandatoryAttributtes = (student: any, madatoryFieldsAttributes: any, profile: string): [] => {
     //FILTER ALL NULL, UNDEFINED AND EMPTY ATTRIBUTES
-    console.log(student, madatoryFieldsAttributes)
     return madatoryFieldsAttributes.filter(({ trackedEntityAttribute: { id } }: any) => {
         const value = student?.[profile]?.[id];
         return value === undefined || value === null || value === '';
