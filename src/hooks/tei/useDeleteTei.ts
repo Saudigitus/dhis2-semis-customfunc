@@ -52,8 +52,6 @@ export function useDeleteTEI(): any {
 
                 if (!results) throw new Error("Tracked Entity not found");
 
-                console.log(results)
-
                 await engine.mutate(DELETE_TRACKER_MUTATION, {
                     variables: { data: returnTrackerBody(results) },
                 })

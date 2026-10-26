@@ -45,15 +45,11 @@ export function RequestBroker({ requestRef }: { requestRef: React.RefObject<Arra
             promise.then((value) => {
                 if (!canceled) {
                     resolve(value);
-                } else {
-                    console.log("Promise was canceled, ignoring resolved value.", value);
                 }
                 // If canceled, ignore resolved value
             }).catch((error) => {
                 if (!canceled) {
                     reject(error);
-                } else {
-                    console.log("Promise was canceled, ignoring resolved error.", error);
                 }
                 // If canceled, ignore rejection error
             });
