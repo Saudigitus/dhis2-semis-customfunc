@@ -1,0 +1,72 @@
+import { useCallback, useState } from "react";
+import { useDataEngine } from "@dhis2/app-runtime";
+
+
+const DELETE_TRACKER_MUTATION = {
+    resource: "tracker",
+    type: 'create',
+    data: ({ data }: { data: any }) => data,
+    params: {
+        async: false,
+        importStrategy: "DELETE",
+    },
+} as any;
+
+const TRACKER_QUERY = {
+    results: {
+        resource: "tracker/trackedEntities",
+        id: ({ id }: { id: string }) => id,
+        params: {
+            fields: "*",
+        },
+    },
+} as any;
+
+type DeleteTrackerCallbacks = {
+    onComplete?: () => void;
+    onError?: (error: unknown) => void;
+};
+
+const returnTrackerBody = (trackedEntity: any) => ({
+    trackedEntities: [{
+        ...trackedEntity,
+        deleted: true,
+    }]
+});
+
+
+export function useDeleteTEI(): any {
+    const engine = useDataEngine();
+    const [error, setError] = useState<unknown>(null)
+    const [loading, setLoading] = useState<boolean>(false)
+
+    const deleteTEI = useCallback(
+        async (enrollmentId: string, { onComplete, onError }: DeleteTrackerCallbacks = {}) => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const { results } = (await engine.query(TRACKER_QUERY, {
+                    variables: { id: enrollmentId },
+                }));
+
+                if (!results) throw new Error("Tracked Entity not found");
+
+                await engine.mutate(DELETE_TRACKER_MUTATION, {
+                    variables: { data: returnTrackerBody(results) },
+                })
+
+                onComplete?.();
+            } catch (err) {
+                setError(err);
+                onError?.(err);
+                throw err;
+            } finally {
+                setLoading(false);
+            }
+        },
+        [engine]
+    );
+
+    return { deleteTEI, loading, error }
+}

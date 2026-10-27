@@ -1,0 +1,5 @@
+/.git
+/.vscode
+/tsconfig.json
+/vite.config.ts
+/storybook

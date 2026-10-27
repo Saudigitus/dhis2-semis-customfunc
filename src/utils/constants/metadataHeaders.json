@@ -1,0 +1,37 @@
+[
+    {
+        "header": "programid",
+        "key": "programId",
+        "width": 25
+    },
+    {
+        "header": "programName",
+        "key": "programName",
+        "width": 25
+    },
+    {
+        "header": "",
+        "key": "",
+        "width": 25
+    },
+    {
+        "header": "id",
+        "key": "id",
+        "width": 25
+    },
+    {
+        "header": "name",
+        "key": "name",
+        "width": 25
+    },
+    {
+        "header": "valueType",
+        "key": "valueType",
+        "width": 25
+    },
+    {
+        "header": "options",
+        "key": "options",
+        "width": 25
+    }
+]

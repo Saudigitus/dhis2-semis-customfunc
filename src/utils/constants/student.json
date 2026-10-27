@@ -1,0 +1,91 @@
+{
+    "attendance": {
+        "absenceReason": "oLUMMT84ILM",
+        "lastUpdate": "2024-10-17 12:14:41",
+        "programStage": "Ljyrr3cktAr",
+        "status": "d0MKWRNGv0a",
+        "statusOptions": [
+            {
+                "code": "absent",
+                "color": "#E57373",
+                "icon": "correct_blue_fill",
+                "key": "absent"
+            },
+            {
+                "code": "present",
+                "color": "#81C784",
+                "icon": "wrong_red_fill",
+                "key": "present"
+            }
+        ]
+    },
+    "defaults": {
+        "allowSearching": true,
+        "currentAcademicYear": "2024",
+        "defaultOrder": "gz8w04YBSS0:asc"
+    },
+    "filters": {
+        "dataElements": [
+            {
+                "code": "grade",
+                "dataElement": "kNNoif9gASf",
+                "order": 0
+            },
+            {
+                "code": "class",
+                "dataElement": "RhABRLO2Fae",
+                "order": 1
+            }
+        ]
+    },
+    "final-result": {
+        "programStage": "hcrjYJ6Yl5F",
+        "status": "bsyU0WFfskG"
+    },
+    "key": "student",
+    "lastUpdate": "2024-10-17 12:14:41",
+    "performance": {
+        "programStages": [
+            {
+                "programStage": "mBEhR2M4DRQ"
+            },
+            {
+                "programStage": "aDmsN3qemOA"
+            },
+            {
+                "programStage": "rZGdcch2PCh"
+            }
+        ]
+    },
+    "program": "wQaiD2V27Dp",
+    "registration": {
+        "academicYear": "iDSrFrrVgmX",
+        "grade": "kNNoif9gASf",
+        "lastUpdate": "2024-05-09 15:50:41",
+        "programStage": "Ni2qsy2WJn4",
+        "section": "RhABRLO2Fae"
+    },
+    "socio-economics": {
+        "programStage": "Wi3KEZ7C3w9"
+    },
+    "trackedEntityType": "eMLK4VQm3Kj",
+    "transfer": {
+        "destinySchool": "kQbquG7UivM",
+        "programStage": "uewAr6TmLkw",
+        "status": "YnwITieplwy",
+        "statusOptions": [
+            {
+                "code": "Pending",
+                "key": "pending"
+            },
+            {
+                "code": "Approved",
+                "key": "approved"
+            },
+            {
+                "code": "Reproved",
+                "key": "reproved"
+            }
+        ]
+    }
+}
