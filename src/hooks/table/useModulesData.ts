@@ -53,21 +53,20 @@ export function useModulesData() {
 
     async function getBasicData(tableDataProps: GetTableDataProps) {
         cancelAllOperations()
-        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging } = tableDataProps;
+        const { page, pageSize, order, program, orgUnit, baseProgramStage, attributeFilters, dataElementFilters, paging, eventOrgUnit } = tableDataProps;
 
         const eventsResults = makeCancellablePromise(
             getCompleteEvents({
                 orgUnitMode: orgUnit != null ? "SELECTED" : "ACCESSIBLE",
-                page,
-                pageSize,
-                ...(paging ? { paging } : {}),
+                // the events of the org unit are filtered and paged here, so all of them are read
+                ...(eventOrgUnit ? { paging: false } : { page, pageSize, ...(paging ? { paging } : {}) }),
                 program: program as unknown as string,
                 order: order || "occurredAt:desc",
                 programStage: baseProgramStage,
                 filter: dataElementFilters,
                 filterAttributes: attributeFilters,
                 orgUnit: orgUnit,
-                totalPages: true
+                ...(eventOrgUnit ? {} : { totalPages: true })
             })
                 .catch((error) => {
                     show({
@@ -80,7 +79,10 @@ export function useModulesData() {
 
         requestRef.current.push(eventsResults);
         const eventsResultsResponse = await eventsResults
-        const data = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
+        const allData = eventsResultsResponse?.results?.instances ? eventsResultsResponse?.results?.instances : eventsResultsResponse?.results?.events
+        const orgUnitData = eventOrgUnit ? (allData ?? []).filter((x: { orgUnit: string }) => x.orgUnit === eventOrgUnit) : allData
+        const currentPage = page ?? 1, currentPageSize = pageSize ?? 10
+        const data = eventOrgUnit ? orgUnitData.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize) : allData
 
         const registrationTrackedEntities = data.map((x: { trackedEntity: string }) => x.trackedEntity).toString()
 
@@ -111,7 +113,12 @@ export function useModulesData() {
             registrationInstances,
             teiInstances,
             formattedBasicTableData: formatRowsData({ registrationInstances, teiInstances, isBasicStage: true }),
-            pagination: {
+            pagination: eventOrgUnit ? {
+                page: currentPage,
+                pageSize: currentPageSize,
+                totalPages: Math.ceil(orgUnitData.length / currentPageSize),
+                totalElements: orgUnitData.length,
+            } : {
                 page: eventsResultsResponse?.results?.pager?.page ?? eventsResultsResponse?.results?.page,
                 pageSize: eventsResultsResponse?.results?.pager?.pageSize ?? eventsResultsResponse?.results?.pageSize,
                 totalPages: eventsResultsResponse?.results?.pager?.pageCount ?? eventsResultsResponse?.results?.pageCount,
