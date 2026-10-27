@@ -19,6 +19,10 @@ interface GetTableDataProps {
     allowAttendanceStatus?:boolean
     // Filters for the attendance records only (class fields that the attendance stage has).
     attendanceDataElementFilters?: any[]
+    // Keeps only the events registered at this org unit. The orgUnit filter of the server applies to the
+    // tracked entity owner, which changes after a transfer, so the events are read for every accessible
+    // org unit and filtered here (e.g. the Outgoing transfers of a school).
+    eventOrgUnit?: string
 }
 
 interface GetAttendanceDataProps {
